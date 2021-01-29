@@ -15,7 +15,7 @@
  *
  */
 
-package io.github.townyadvanced.flagwar.object;
+package io.github.townyadvanced.flagwar.objects;
 
 import io.github.townyadvanced.flagwar.CellAttackThread;
 import io.github.townyadvanced.flagwar.FlagWar;

@@ -45,7 +45,7 @@ import io.github.townyadvanced.flagwar.FlagWarAPI;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.events.CellAttackCanceledEvent;
 import io.github.townyadvanced.flagwar.events.CellAttackEvent;
-import io.github.townyadvanced.flagwar.object.CellUnderAttack;
+import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import io.github.townyadvanced.flagwar.events.CellDefendedEvent;
 import io.github.townyadvanced.flagwar.events.CellWonEvent;
 import org.bukkit.entity.Player;

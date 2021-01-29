@@ -19,8 +19,8 @@ package io.github.townyadvanced.flagwar;
 
 import com.palmergames.bukkit.towny.object.Town;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
-import io.github.townyadvanced.flagwar.object.Cell;
-import io.github.townyadvanced.flagwar.object.CellUnderAttack;
+import io.github.townyadvanced.flagwar.objects.Cell;
+import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import java.util.List;
 import org.bukkit.entity.Player;
 

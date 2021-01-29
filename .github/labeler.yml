@@ -1,11 +1,31 @@
 flagwar-events:
-    - src/com/palmergames/bukkit/towny/war/flagwar/events/*
+    - src/io/github/townyadvanced/flagwar/events/*
 
 flagwar-listeners:
-    - src/com/palmergames/bukkit/towny/war/flagwar/listeners/*
+    - src/io/github/townyadvanced/flagwar/listeners/*
+
+flagwar-exceptions:
+    - src/io/github/townyadvanced/flagwar/exceptions/*
+
+flagwar-objects:
+    - src/io/github/townyadvanced/flagwar/objects/*
+
+flagwar-commands:
+    - src/io/github/townyadvanced/flagwar/commands/*
+
+flagwar-configuration:
+    - src/io/github/townyadvanced/flagwar/config/*
+    - resources/config.yml
 
 github:
     - .github/*
 
 resources:
     - resources/*
+
+legal:
+    - LICENSE
+    - NOTICE
+    - resources/LICENSE.TXT
+    - resources/NOTICE.TXT
+    - .github/CONTRIBUTING.MD

@@ -18,7 +18,7 @@
 package io.github.townyadvanced.flagwar.events;
 
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
-import io.github.townyadvanced.flagwar.object.CellUnderAttack;
+import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;

@@ -15,7 +15,7 @@
  *
  */
 
-package io.github.townyadvanced.flagwar.command;
+package io.github.townyadvanced.flagwar.commands;
 
 import com.palmergames.bukkit.util.Colors;
 import io.github.townyadvanced.flagwar.FlagWar;

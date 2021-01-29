@@ -17,7 +17,7 @@
 
 package io.github.townyadvanced.flagwar.events;
 
-import io.github.townyadvanced.flagwar.object.Cell;
+import io.github.townyadvanced.flagwar.objects.Cell;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
