@@ -1,0 +1,70 @@
+################################################################################
+#                          Flag War for TownyAdvanced                          #
+#                       Copyright (c) 2021 TownyAdvanced                       #
+#   ========================================================================   #
+#       Licensed under the Apache License, Version 2.0 (the "License");        #
+#   you may not use this file except in compliance with the License.           #
+#   You may obtain a copy of the License at:                                   #
+#                                                                              #
+#                   http://www.apache.org/licenses/LICENSE-2.0                 #
+#                                                                              #
+#       Unless required by applicable law or agreed to in writing, software    #
+#   distributed under the License is distributed on an "AS IS" BASIS,          #
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   #
+#   See the License for the specific language governing permissions and        #
+#   limitations under the License.                                             #
+################################################################################
+
+# Note: Do not modify config_version, unless you want to regenerate your config
+config_version: 1.0
+
+# Not Yet Implemented! Everything currently hard-coded in American English.
+translation: "en_US"
+
+# (Cosmetic) Show the ASCII banner on startup.
+show-startup-marquee: true
+
+# General Gameplay Rules
+rules:
+    # Disabling this effectively disables the whole plugin... but it will stay loaded.
+    allow_attacks: true
+
+    # Force attackers to only attack edge plots.
+    only_attack_borders: true
+
+    # True: Attackers capture plots when they win. Disable if you prefer *not* dealing with that.
+    flag_takes_ownership_of_town_blocks: true
+
+    # Not yet implemented - Supplies fell off the wagon during the move.
+    prevent_interaction_while_flagged: true
+
+    # Not yet implemented - Supplies fell off the wagon during the move.
+    time_to_wait_after_flagged: 600000
+
+player_limits:
+    min_online_in_town: 2
+    min_online_in_nation: 3
+    max_active_flags_per_player: 1
+
+# Defines the War Flag structure.
+# If the defined block is air, or is affected by gravity, it will be overridden by our defaults.
+flag:
+    waiting_time: "1m" # Time to capture a plot.
+    base_block: 'OAK_FENCE' # Block required to place a flag.
+    light_block: 'TORCH' # TORCH and SOUL_TORCH good. REDSTONE_TORCH questionable.
+
+# Define Beacon Structure
+beacon:
+    draw: true
+    radius: 3
+    height_above_flag.min: 3
+    height_above_flag.max: 64
+    wireframe_block: 'GLOWSTONE'
+
+# Define Economy Transactions
+economy:
+    using_economy: true # Not yet implemented, depends on Towny using economy.
+    town_block_captured: 10.0
+    home_block_captured: 100.0
+    war_flag_cost: 10.0
+    attack_defended_reward: 10.0

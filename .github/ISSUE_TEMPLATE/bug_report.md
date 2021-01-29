@@ -23,22 +23,23 @@ assignees: ''
 Do not say "latest".
 
 
+### What is your Flag War version?
+Do not say "latest".
+
+
 ### What is your spigot/craftbukkit version?
 Do not say "latest".
 
 
 
-### Please use Pastebin.com to link the following files:
+### Please use a pastebin service to link the following files:
 
-**Skipping these files is not an option. It is the easiest way to diagnose an issue ticket properly. If you do skip this step then your ticket will most likely be deleted and you will be asked to resubmit.**
-1. Your full server startup from the logs\latest.log :
-2. Your Towny config.yml (if using MySQL please remove password,) :
-3. Your townyperms.yml :
-4. Your log's error : 
+**Skipping these files is not an option. It is the easiest way to diagnose an issue ticket properly.
+If you do skip this step then your ticket will most likely be deleted, and you will be asked to resubmit.**
+1. Your full server startup from the `logs\latest.log` file :
+2. Your FlagWar config :
+3. Your log's error :
 
-(optional) If this is to do with permissions, 
-5. Your permissions file :
-
-(optional) If this is to do with chat,
-6. Your chatconfig.yml :
-7. Your channels.yml :
+(optional) If this is to do with permissions,
+4. Your Towny permissions file :
+5. Your Perm Plugin's data :

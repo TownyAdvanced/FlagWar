@@ -1,104 +1,103 @@
-## [Towny Advanced](https://townyadvanced.github.io) - Developed by [LlmDl](https://github.com/LlmDl)
+# [Flag War for Towny Advanced](https://townyadvanced.github.io/wars)
+
+Flag War is the first warfaring system for servers in the TownyAdvanced ecosystem.
+
+Originally Flag War was called Cell War and was composed by [Shade]() as part of the
+[Towny](https://github.com/TownyAdvanced/Towny) plugin.
+It has since then been adapted over time to retain its functionality.
+
+Flag War works similar to a strategy game, where players can capture regions of other Nations and
+Towns quickly and with pin-point precision.
+
+About mid-2020, an effort to split it off was made with work started towards necessary API changes
+in Towny itself. The actual split of Flag War began January 2021.
 
 ___
 
-<p><img align=right src="https://user-images.githubusercontent.com/879756/65964696-19d6b300-e423-11e9-9cb0-d193225ee40f.png">
-I took over from ElgarL after MC 1.8 was released. Past developers have included: Shadeness, FuzzieWuzzie, ElgarL. 
-With help coming from other developers from time to time including dumptruckman, ole8pie, SwearWord, gravypod, andrewyunt and more.
+## Current Recommended Versions
+* [Latest Release](# "Pending Release") - Supports servers running Towny v0.96.6.0
+* [Latest Pre-Release](# "Pending Release") - Supports servers running Towny v0.97.x.x
 
-Towny is one of the oldest still-in-development plugins for Minecraft. It was created by Shadeness for the now-defunct server platform called hMod.
-
-It is the second-oldest land protection plugin to become popular for Minecraft, having been beaten by WorldGuard by just a couple months, Towny is now over 10 years old! Go check out some of the [features](https://github.com/TownyAdvanced/Towny/wiki#features) Towny has and see why it's still popular for yourself.
-</p>
+Note: Prior to Towny v0.9x.x.x - Flag War is included in Towny.
 
 ___
 
-### Current Recommended Versions
-* [Latest Release](https://github.com/TownyAdvanced/Towny/releases/latest/) supports MC 1.14.* & 1.15.* & 1.16.*.
-* [Latest Pre-Release](https://github.com/TownyAdvanced/Towny/releases) <img src="https://img.shields.io/github/tag/townyadvanced/towny.svg?sort=semver&label=">  supports MC 1.14.* & 1.15.* & 1.16.*.
+## Staying up to date
 
-<table>
-<tr><th> Minecraft Version</th><th>Towny Version</th></tr>
-<tr align=center><td> MC 1.16.* </td><td rowspan=3> Use <a href=https://github.com/TownyAdvanced/Towny/releases/tag/0.96.6.0>0.96.6.0</a> or the above Latest Pre-Release. </td>
-<tr align=center><td> MC 1.15.* </td>
-<tr align=center><td> MC 1.14.* </td>
-<tr align=center><td> MC 1.13.2 </td><td> <a href=https://github.com/TownyAdvanced/Towny/releases/tag/0.96.2.0for1.13.2>0.96.2.0 for 1.13.2</a> </td>
-<tr align=center><td> MC 1.12.2 </td><td> <a href=https://github.com/TownyAdvanced/Towny/releases/tag/0.96.2.0for1.12.2>0.96.2.0 for 1.12.2</a> </td>
-<tr align=center><td> MC 1.11.2 </td><td> <a href=https://www.dropbox.com/s/cfpm4iy0sbzmti4/Towny_Advanced%200.93.1.0%20for%20MC%201.11.2.zip?dl=0>0.93.1.0 for 1.11.2</a> </td>
-<tr align=center><td> MC 1.10.2 </td><td> <a href=https://www.dropbox.com/s/x2i3wqaj8n6gdh1/Towny_Advanced%200.93.1.0%20for%20MC%201.10.2.rar?dl=0>0.93.1.0 for 1.10.2</a> </td>
-<tr align=center><td> MC 1.9.4 </td><td> <a href=https://www.dropbox.com/s/eh81i4618bfmvjm/Towny_Advanced%200.93.1.0%20for%20MC%201.9.4.zip?dl=0>0.93.1.0 for 1.9.4</a> </td>
-<tr align=center><td> MC 1.8.9 </td><td> <a href=https://www.dropbox.com/s/e83206cfed61hsw/Towny_Advanced%200.93.1.0a%20for%20MC%201.8.9.zip?dl=0>0.93.1.0a for 1.8.9</a> </td>
-<tr align=center><td> MC 1.7.10 </td><td> <a href=https://www.dropbox.com/s/vmf2g5bj7ab4coo/Towny_Advanced%200.92.0.0%20-%20MC%201.7.10.zip?dl=0>0.92.0.0 for 1.7.10</a> </td>
-<tr align=center><td> MC 1.6.4 </td><td> <a href=https://www.dropbox.com/s/5n9r60ivldh5i8f/Towny_Advanced%200.88.0.0%20%281.6.4%29.zip?dl=0>0.88.0.0 for 1.6.4</a> </td>
-<tr align=center><td> MC 1.5.2 </td><td> <a href=https://www.dropbox.com/s/euydq4qsljheoms/Towny_Advanced%200.88.0.0%20%281.5.2%29.zip?dl=0>0.88.0.0 for 1.5.2</a> </td>
-<tr align=center><td> MC 1.2.5 </td><td> <a href=https://www.dropbox.com/s/xstn1vdexxc1k5q/Towny_Advanced%200.82.0.0%20for%201.2.5.zip?dl=0>0.82.0.0</a> </td>
-</table>
-
-___
-
-### Staying up to date
 <p><img align=right src="https://user-images.githubusercontent.com/879756/65964779-3a067200-e423-11e9-9928-938b976af2c2.gif" height="155">
-    
-Now that all Release builds and Development builds are being made available here on github's [Releases](https://github.com/TownyAdvanced/Towny/releases) tab I am recommending that server admins "watch" Towny on github. Just click the watch button in the upper right and select "Releases Only".
-    
-Alternatively, if you [watch the resource](https://www.spigotmc.org/resources/towny-advanced.72694/watch) on Spigot you will be notified on that website when a new build is out.
+
+All Release builds and Development builds are being made available here on github's
+[Releases](https://github.com/TownyAdvanced/FlagWar/releases) tab. We encourage server admins to
+"watch" Flag War on github. Just click the watch button in the upper right and select "Releases Only".
 </p>
 
 ___
 
-### Connect/Support
-The documentation found on the [Towny Wiki](https://github.com/TownyAdvanced/Towny/wiki) is updated every time a Release version of Towny is put out. If you are using a development build it is expected that you have read the [changelog](https://git.io/fjbS3) for any important changes since the previous Release build.
+## Connect/Support
 
-Some important pages to look over:
+The documentation found on [the Flag War Wiki](https://github.com/TownyAdvanced/FlagWar/wiki) is
+updated every time a Release version of Flag War is put out.
+
+<!--
+- Some important pages to look over:
 - [Installing Towny](https://github.com/TownyAdvanced/Towny/wiki/Installation)
 - [How Towny Works](https://github.com/TownyAdvanced/Towny/wiki/How-Towny-Works)
+-->
 
-Here on github's [Issue Tracker](https://github.com/TownyAdvanced/Towny/issues) you can file [bug reports](https://github.com/TownyAdvanced/Towny/issues/new?assignees=&labels=&template=bug_report.md&title=), [feature requests](https://github.com/TownyAdvanced/Towny/issues/new?assignees=&labels=&template=feature_request.md&title=Suggestion%3A+), or just ask [general questions.](https://github.com/TownyAdvanced/Towny/discussions/new?category=Q-A)
+Here on github's [Issue Tracker](https://github.com/TownyAdvanced/FlagWar/issues) you can file
+[bug reports](https://github.com/TownyAdvanced/FlagWar/issues/new?assignees=&labels=&template=bug_report.md&title=),
+[feature requests](https://github.com/TownyAdvanced/FlagWar/issues/new?assignees=&labels=&template=feature_request.md&title=Suggestion%3A+),
+or just ask [general questions](https://github.com/TownyAdvanced/Towny/discussions/new?category=Q-A)
+on the Towny discussion board.
 
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/TownyAdvanced/Towny.svg)](http://isitmaintained.com/project/TownyAdvanced/Towny "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/TownyAdvanced/Towny.svg)](http://isitmaintained.com/project/TownyAdvanced/Towny "Percentage of issues still open")
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/TownyAdvanced/FlagWar.svg)](http://isitmaintained.com/project/TownyAdvanced/FlagWar "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/TownyAdvanced/FlagWar.svg)](http://isitmaintained.com/project/TownyAdvanced/FlagWar "Percentage of issues still open")
 
-If you still need help, join us on the [Discord server]( https://discord.gg/gnpVs5m ), where you can find cutting edge updates and discussion on the development of the plugin.
+If you still need help, join us on the [Discord server]( https://discord.gg/gnpVs5m ),
+where you can find cutting edge updates and discussion on the development of the plugin.
 
-If you want to support the developer consider [becoming a Sponsor](https://github.com/sponsors/LlmDl).
-
-___
-
-### Video Tutorials
-Courtesy of Major_Graft, we have a new series of Tutorial Videos [available on the Towny website.](https://townyadvanced.github.io/tutorials.html)
-
-___
-
-### Contributing
-If you'd like to contribute to the Towny code, see the [Contributing.md](https://github.com/LlmDl/Towny/blob/master/.github/CONTRIBUTING.MD).
+If you want to support the developer consider becoming a Sponsor.
 
 ___
 
-### Licensing
-Towny is licensed under the [Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported (CC BY-NC-ND 3.0) License ](http://creativecommons.org/licenses/by-nc-nd/3.0/)
+## Video Tutorials
 
-We don't object to you making your own forks and builds but we do object to people being selfish, which is why we specify No Derivative Works.
-If you want to modify the code to add some nice feature the least you can do is ask and submit a pull request to allow everyone to benefit from it.
-
-___
-
-### Importing Towny for API use
-[![](https://jitpack.io/v/TownyAdvanced/Towny.svg)](https://jitpack.io/#TownyAdvanced/Towny)
-
-Developers who wish to use the Towny API in their plugins may read [the following instructions on adding Towny via a maven pom.xml.](https://github.com/TownyAdvanced/Towny/wiki/TownyAPI#getting-started-with-towny-and-your-ide)
+Courtesy of Major_Graft, we have a new series of Tutorial Videos [available on the Towny website.](https://townyadvanced.github.io/tutorials.html).
+These are geared more towards Towny in general, but are good resources for your review none the less.
 
 ___
 
-### Building Towny
-If you would like to build from a specific branch yourself, you can do so with either [Apache Ant](https://ant.apache.org/) or [Apache Maven](http://maven.apache.org/), depending on the age of the branch.
+## Contributing
 
-For building, open your terminal / command prompt and navigate to the Towny Directory (either extracted, or cloned).
+If you'd like to contribute to the FlagWar code, familiarize yourself with the
+[Contributing](https://github.com/TownyAdvanced/FlagWar/blob/master/.github/CONTRIBUTING.MD) guidelines.
 
-- **Maven**
+___
 
-    - Run `mvn clean package` to generate the plugin in the `target` directory, within the Towny folder. 
+## Licensing
 
+Flag War is licensed under the
+[Apache License, Version 2.0](https://github.com/TownyAdvanced/FlagWar/blob/master/LICENSE).
 
-- **Ant** (_Deprecated_)
+The decision to not use [Towny's license (CC BY-ND-NC 3.0)](http://creativecommons.org/licenses/by-nc-nd/3.0/)
+was made for the following reason: We want you to be allowed to adapt, extend, or modify it to fit your needs.
 
-    - For older branches using the Ant build system, the main command to use would be: `ant clean jar`. This command will _exit_ the Towny directory, creating a lib folder alongside it. A Towny.jar file will be generated and placed within there.
-    - _Note: As Ant is being deprecated, older branches may eventually not be able to be built against without modification of the `build.xml` file. We leave no guarantee that the file repo providing the dependencies will stay up._
+Want to adapt it to Factions? How about PlotSquared? Be our guest! Just don't forget to read the license first.
+
+We would still love for you to PR back when feasible. It's a great way to give back to the project.
+
+___
+
+## Building Flag War
+
+If you would like to build from a specific branch yourself, you can do so with [Apache Maven](http://maven.apache.org/).
+
+Please make sure you have Maven on your PATH before you proceed with this method.
+
+- Open your terminal shell / command prompt and navigate to the `.../FlagWar` directory.
+
+- Run `mvn clean package` to generate the plugin in the `.../FlagWar/target` directory.
+
+- (Optional) Run `mvn install` to install Flag War to your local maven repository.
+
+Alternatively, you can build it through your IDE provided that it bundles Maven with itself, or can
+hook into it. See your IDE's documentation for details.
