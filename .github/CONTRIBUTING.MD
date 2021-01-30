@@ -3,28 +3,58 @@
 ## Contributing Code
 
 Code contributions are welcome and are made via GitHub's Pull Request.
-You can ask for any information/help on your idea/contribution in the [TownyAdvanced Discord](https://discord.gg/gnpVs5m).
+You can ask for any information/help on your idea/contribution in the
+[TownyAdvanced Discord](https://discord.gg/gnpVs5m).
 
-* Please make sure to read our [License](https://github.com/TownyAdvanced/FlagWar/blob/master/LICENSE). If you do not agree with the terms and conditions of our license, please do not contribute any code.
-* By making a pull request, you represent that you have the right to waive copyright and related rights to your contribution, and agree that all copyright and related rights in your contributions are waived, and you acknowledge that the TownyAdvanced organization has the copyright to use and modify your contribution under our [License](https://github.com/TownyAdvanced/FlagWar/blob/master/LICENSE) for perpetuity.
+* FlagWar is licensed under the
+  [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt). Please read it to
+  familiarize yourself with the license.
+  - If you disagree with the license, do not submit your code.
+* By opening a Pull Request on GitHub, you represent that you have read and agree with
+  the terms of the project's license; and that you are the author of your changes; or that the code
+  you add is either available in the public domain, or by permission of the original author
+  (with you providing proof.)
+
+## Contributing Localizations
+
+Community Translations are greatly appreciated, and allow FlagWar to be used by many others that
+may not speak the language used by the developers.
+
+A few ground rules for translations:
+- No machine-generated text translations. You cannot trust some files spat out by some bot running
+  on Amazon, Google, or Microsoft servers.
+- Adhere to the Java Locale language tag when naming your localization.
+  - [List of Locales supported in Java 8](https://www.oracle.com/java/technologies/javase/jdk8-jre8-suported-locales.html)
+  - Example: es_MX, en_US, de_DE
 
 # Pull & Code Requirements
 
 ## Pull-Request Requirements
 
-1. Keep your commit message(s) self-explanitory, description should be a brief explanation and include an issue reference (if applicable.).
-2. Pull Requests should be simple and straight-forward. One pull request for one feature. Changed Files should only show a difference where code has been removed or added, no re-formatting of entire files.
-3. Test everything you've touched before pull-requesting. (Exception being language files, we don't expect you to check all lang strings.)
+1. Keep your commit message(s) self-explanatory. The description should be a brief explanation and,
+   if applicable, include a hash-tagged reference to any directly related issues or pull requests.
+2. Pull Requests should be simple and straight-forward. One pull request for one feature. Changed
+   Files should only show a difference where code has been removed, added, or refactored &mdash;
+   no re-formatting of entire files for formatting's sake.
+3. Test everything you've touched before requesting changes to be merged. Untested code will be
+   rejected, and you may end up on our naughty list.
 
 ## General Code Requirements
 
-> With the inclusion of the Maven build system, FlagWar also makes use of a [EditorConfig](https://editorconfig.org) file.
-> IDEs that support it should automatically follow parts of this section.
+> FlagWar makes use of an [EditorConfig](https://editorconfig.org) file to help ensure consistent
+> formatting among contributors.
+>
+> [Editors that support it](https://editorconfig.org/#pre-installed) should automatically follow
+> part 1 of this section, and partially assist with part 4.
+>
+> Some editors do not include native support, but may have
+> [plugins available](https://editorconfig.org/#download).
 
 1. Spaces, Not Tabs
    - The source should be indented using spaces rather than tabs. Standard indentation consists of
      4 spaces per every indent, but this can vary at times. Please respect the original.
-   - Please disable any automated source formatting in your IDE if applicable, or set it to use 4 spaces.
+   - Please disable any automated source formatting in your IDE if applicable, or set it to use 4
+     spaces.
 2. Keep your Java compiler target set to language level 8.
    - A good portion of servers are not capable of running on top of newer runtimes, yet.
 3. Avoid using Wildcard imports.
@@ -34,7 +64,8 @@ You can ask for any information/help on your idea/contribution in the [TownyAdva
    - This is done to avoid us changing the lines everytime, each IDE is different, so we don't have
      a constant here and there.
    - This also keeps file compares on github simpler for maintainers to parse through.
-5. Do not use NMS (Net Minecraft Server) or CraftBukkit (server-specific) code. FlagWar uses the Spigot API only.
+5. Do not use NMS (Net Minecraft Server) or CraftBukkit (server-specific) code. FlagWar uses the
+   Spigot API only.
 6. Reflection should be a _last resort_ reserved for special circumstances.
    - Reflection among our internal classes is **not acceptable**. This is just bad design.
 7. No Packet-Handling, period.
@@ -70,7 +101,9 @@ include a dependency or 3rd-party library.
 
 ## Updating Language Files
 
-<!-- TODO: Rewrite this section after Flag War implements it's own language files. -->
+>   **CAUTION**
+>   This section is in dire need of being rewritten still. It may not be accurate to the final
+>   specifications yet to be laid out. We may duplicate old code, or switch to a new system here...
 
 The language files are stored in the resources section of the project. (`resources/"language".yml`)
 To update / change an existing language file, fork this repo and then edit the "language".yml in your fork.

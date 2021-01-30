@@ -1,4 +1,4 @@
-Flag War
+FlagWar
 Copyright 2021 The TownyAdvanced Group
 
 This plugin is licensed under the Apache License, Version 2.0. The full legal text is available to
@@ -11,3 +11,12 @@ This plugin was originally developed by the TownyAdvanced Group as part of the T
 (https://github.com/TownyAdvanced/Towny)
 Towny originally developed by Chris Holland (aka Shade, Zren) between 2010-2012.
 (https://github.com/Zren/Towny)
+
+Any prior code not belonging to the FlagWar project (anything on the com.palmergames.* class path)
+remains under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+[CC BY-ND-NC 3.0] (https://creativecommons.org/licenses/by-nc-nd/3.0/).
+
+==================================================================================
+3rd Party Works
+Notices for libraries and other works not belonging to the contributors of FlagWar
+----------------------------------------------------------------------------------

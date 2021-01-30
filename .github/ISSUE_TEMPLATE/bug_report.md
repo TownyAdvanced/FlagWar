@@ -7,6 +7,15 @@ assignees: ''
 
 ---
 
+<!--
+Before submitting a bug report, please check the following:
+- Are your configuration files valid? Run them through a validator, or open them up in an IDE if you
+    are not sure about the answer.
+- Are you on the latest build? If not grab it, or ask for a build.
+- Has the issue already been reported? If so, comment on it instead. You may also wish to check on
+    the Towny issue tracker, or the Discussion boards.
+-->
+
 ### What steps will reproduce the problem?
 1.
 2.
@@ -19,16 +28,24 @@ assignees: ''
 3.
 
 
-### What is your Towny version?
+### What is your Towny version number?
 Do not say "latest".
 
 
-### What is your Flag War version?
+### What is your FlagWar version number?
 Do not say "latest".
 
 
-### What is your spigot/craftbukkit version?
-Do not say "latest".
+### What is your Spigot/Paper/Fork server version?
+Do not say "latest". Run the `/version` command.
+
+```shell
+## THIS IS AN EXAMPLE! REPLACE ME!
+> version
+[... INFO]: This server is running Example version git-Example-420 (MC: 1.16.5) (Implementing API version 1.16.5-R0.1-SNAPSHOT)
+[... INFO]: Checking version, please wait...
+[... INFO]: You are 42 version(s) behind  #<< This is a bad sign
+```
 
 
 
