@@ -24,13 +24,14 @@ Sections
 --------
 1) [Licensing](README.md#Licensing)
 2) [Administrator Resources](README.md#Administrator Resources)
-    - [Supported Releases](README.md#Supported Releases)
-    - [Staying up to Date](README.md#Staying up to Date)
-    - [Getting Support](README.md#Getting Support)
+   - [Supported Releases](README.md#Supported Releases)
+   - [Staying up to Date](README.md#Staying up to Date)
+   - [Getting Support](README.md#Getting Support)
 3) [Developer Resources](README.md#Developer Resources)
-    - [Contributing Code][contrib-code]
-    - [Localizing FlagWar][contrib-localize]
-    - [Building FlagWar](README.md#Building FlagWar)
+   - [Contributing Code][contrib-code]
+   - [Contributing Documentation][contrib-docs] - WIP
+   - [Localizing FlagWar][contrib-localize] - WIP
+   - [Building FlagWar](README.md#Building FlagWar)
 4) [Supporting the Project](README.md#Supporting the Project)
 
 Licensing
