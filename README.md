@@ -22,17 +22,17 @@ its 10th anniversary.
 
 Sections
 --------
-1) [Licensing](README.md#Licensing)
-2) [Administrator Resources](README.md#Administrator Resources)
-   - [Supported Releases](README.md#Supported Releases)
-   - [Staying up to Date](README.md#Staying up to Date)
-   - [Getting Support](README.md#Getting Support)
-3) [Developer Resources](README.md#Developer Resources)
+1) [Licensing][licensing]
+2) [Administrator Resources][admin-resources]
+   - [Supported Releases][supported-releases]
+   - [Staying up to Date][staying-updated]
+   - [Getting Support][get-support]
+3) [Developer Resources][developer-resources]
    - [Contributing Code][contrib-code]
    - [Contributing Documentation][contrib-docs] - WIP
    - [Localizing FlagWar][contrib-localize] - WIP
-   - [Building FlagWar](README.md#Building FlagWar)
-4) [Supporting the Project](README.md#Supporting the Project)
+   - [Building FlagWar][building]
+4) [Supporting the Project][supporting-flagwar]
 
 Licensing
 ---------
@@ -164,32 +164,36 @@ You can support the project in multiple ways:
   See the sidebar for open sponsorships, and learn about GitHub's [Sponsors Program][gh-sponsors].
 
 <!-- Links -->
+[admin-resources]: README.md#administrator-resources "Administrator Resources"
 [apache-v2]: LICENSE "Apache License, Version 2.0"
 [atom]: https://atom.io/ "A hackable text editor for the 21st Century (Free, Cross Platform)"
 [bug]: https://github.com/TownyAdvanced/FlagWar/issues/new?assignees=&labels=&template=bug_report.md&title= "Report a FlagWar bug"
+[building]: README.md#building-flagwar "Building FlagWar"
 [cc by-nc-nd 3.0]: https://creativecommons.org/licenses/by-nc-nd/3.0/legalcode "Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported"
 [cc by]: https://creativecommons.org/licenses/by/4.0/ "Creative Commons Attribution 4.0 International"
 [contrib-code]: README.md#contributing-code "Contributing Code"
 [contrib-docs]: README.md#contributing-documentation "Contributing Documentation"
+[contrib-localize]: README.md#localizing-FlagWar "Localizing FlagWar"
 [contributing]: ./.github/CONTRIBUTING.MD "FlagWar Contributing Guidelines"
+[developer-resources]: README.md#developer-resources "Developer Resources"
 [discord]: https://discord.gg/gnpVs5m "Join the TownyAdvanced Discord server"
 [discuss-towny]: https://github.com/TownyAdvanced/Towny/discussions/categories/q-a "View Towny's Q&A Discussion Board"
 [eclipse]: https://www.eclipse.org/eclipseide/ "The Leading Open Platform for Professional Developers"
 [feature]: https://github.com/TownyAdvanced/FlagWar/issues/new?assignees=&labels=&template=feature_request.md&title=Suggestion%3A+ "Request a new feature or tweak"
+[get-support]: README.md#getting-support "Getting Support"
 [gh-sponsors]: https://github.com/sponsors "Invest in the software that powers your world"
 [git-docs]: https://git-scm.com/doc "Git Documentation"
 [git]: https://git-scm.org/ "Git Version Control Software"
 [github-docs]: https://docs.github.com/ "GitHub Documentation"
 [gpl-apache]: https://www.gnu.org/licenses/license-list.html#apache2 "GPL Compatible Free Software Licenses"
 [idea]: https://www.jetbrains.com/idea/ "The Capable and Ergonomic Java IDE by JetBrains"
-[iim-percent]: http://isitmaintained.com/project/TownyAdvanced/FlagWar "Percentage of Issues 'Open'"
 [iim-percent-badge]: http://isitmaintained.com/badge/open/TownyAdvanced/FlagWar.svg
-[iim-time]: http://isitmaintained.com/project/TownyAdvanced/FlagWar "Average Issue Resolution Time"
+[iim-percent]: http://isitmaintained.com/project/TownyAdvanced/FlagWar "Percentage of Issues 'Open'"
 [iim-time-badge]: http://isitmaintained.com/badge/resolution/TownyAdvanced/FlagWar.svg
 [iim-time]: http://isitmaintained.com/project/TownyAdvanced/FlagWar "Average Issue Resolution Time"
 [issue-tracker]: https://github.com/TownyAdvanced/FlagWar/issues "FlagWar Issue Tracker"
 [jdk]: https://sdkman.io/jdks "JDK Distributions | SDKMAN!"
-[contrib-localize]: README.md#localizing-FlagWar "Localizing FlagWar"
+[licensing]: README.md#licensing "Licensing"
 [m2home]: https://issues.apache.org/jira/browse/MNG-5607 "Don't use M2_HOME in mvn shell/command scripts anymore"
 [maven]: https://maven.apache.org/ "Apache Maven Software Project Management and Comprehension Tool"
 [netbeans]: https://netbeans.apache.org/ "Fits the Pieces Together"
@@ -198,7 +202,10 @@ You can support the project in multiple ways:
 [osi]: https://opensource.org/licenses "Licenses & Standards | Open Source Initiative"
 [releases]: https://github.com/TownyAdvanced/FlagWar/releases "FlagWar Tagged Releases"
 [sponsor-LlmDl]: https://github.com/sponsors/LlmDl "Sponsor LlmDl, the current TownyAdvanced lead developer and maintainer"
+[staying-updated]: README.md#staying-up-to-date "Staying up to Date"
 [sublime]: https://www.sublimetext.com/ "A sophisticated text editor for code, markup and prose (Trialware, Cross Platform)"
+[supported-releases]: README.md#supported-releases "Supported Releases"
+[supporting-flagwar]: README.md#supporting-the-project "Supporting the Project"
 [vim]: https://www.vim.org "The ubiquitous text editor"
 [vscode]: https://code.visualstudio.com "Code editing. Redefined. (Free, Cross Platform)"
 [wiki]: https://github.com/TownyAdvanced/FlagWar/wiki "Official FlagWar Documentation"
