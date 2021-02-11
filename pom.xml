@@ -9,10 +9,23 @@
     <packaging>jar</packaging>
     <version>0.1.0</version>
 
+    <properties>
+        <java.version>1.8</java.version>
+        <project.bukkitAPIVersion>1.14</project.bukkitAPIVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <plugin.javadoc.version>3.2.0</plugin.javadoc.version>
+    </properties>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
+            <comments>Governs all FlagWar source code, with any exceptions noted in the NOTICE file.</comments>
             <url>https://github.com/TownyAdvanced/FlagWar/blob/main/LICENSE.md</url>
+        </license>
+        <license>
+            <name>Creative Commons Attribution 4.0 International (CC BY 4.0)</name>
+            <comments>Governs written documentation for FlagWar.</comments>
+            <url>https://creativecommons.org/licenses/by/4.0/legalcode</url>
         </license>
     </licenses>
 
@@ -20,12 +33,6 @@
         <name>TownyAdvanced</name>
         <url>https://github.com/TownyAdvanced</url>
     </organization>
-
-    <properties>
-        <java.version>1.8</java.version>
-        <project.bukkitAPIVersion>1.14</project.bukkitAPIVersion>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <distributionManagement>
         <repository>
@@ -86,16 +93,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>3.0.0-M1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>3.0.0-M1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.9.1</version>
             </plugin>
@@ -111,7 +108,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>${plugin.javadoc.version}</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>
@@ -122,9 +119,10 @@
                 </executions>
                 <configuration>
                     <source>${java.version}</source>
+                    <notimestamp>true</notimestamp>
                 </configuration>
             </plugin>
-            <plugin>  <!-- Create sources.jar -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.2.1</version>
@@ -133,42 +131,6 @@
                         <id>attach-sources</id>
                         <goals>
                             <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
-                <configuration>
-                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
-                    <relocations>
-                        <!-- Example (This was planned, but not used...)
-                        <relocation>
-                            <pattern>de.leonhard.storage</pattern>
-                            <shadedPattern>${project.groupId}.lib.storage</shadedPattern>
-                        </relocation>
-                        -->
-                    </relocations>
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>META-INF/*.MF</exclude>
-                                <exclude>META-INF/NOTICE.txt</exclude>
-                                <exclude>META-INF/LICENSE.txt</exclude>
-                                <exclude>META-INF/maven/**</exclude>
-                                <exclude>Licenses.txt</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -195,20 +157,43 @@
 
     <profiles>
         <profile>
-            <id>no-jdoc</id>
+            <!-- Use if you don't need Javadocs, or if the `alternatives` profile does not work for you. -->
+            <id>no-javadocs</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <configuration>
-                            <source>${java.version}</source>
-                            <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-                        </configuration>
+                        <version>${plugin.javadoc.version}</version>
                         <executions>
                             <execution>
                                 <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- Use if you need Javadocs on Linux distributions using the (update-)alternatives system. -->
+            <id>alternatives</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${plugin.javadoc.version}</version>
+                        <configuration>
+                            <source>${java.version}</source>
+                            <javadocExecutable>/usr/bin/javadoc</javadocExecutable>
+                            <notimestamp>true</notimestamp>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
