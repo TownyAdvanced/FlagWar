@@ -19,7 +19,13 @@
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
+            <comments>Governs all FlagWar source code, with any exceptions noted in the NOTICE file.</comments>
             <url>https://github.com/TownyAdvanced/FlagWar/blob/main/LICENSE.md</url>
+        </license>
+        <license>
+            <name>Creative Commons Attribution 4.0 International (CC BY 4.0)</name>
+            <comments>Governs written documentation for FlagWar.</comments>
+            <url>https://creativecommons.org/licenses/by/4.0/legalcode</url>
         </license>
     </licenses>
 
