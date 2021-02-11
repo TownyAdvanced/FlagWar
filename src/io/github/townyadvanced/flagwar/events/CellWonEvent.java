@@ -39,21 +39,36 @@ public class CellWonEvent extends Event implements Cancellable {
 
 	private final CellUnderAttack cellAttackData;
 
-	public CellWonEvent(CellUnderAttack cellAttackData) {
-		super();
+    /**
+     * Associates a {@link CellUnderAttack} with the CellWonEvent to be later parsed for information.
+     * @param cellAttackData the CellUnderAttack to associate to the event.
+     */
+    public CellWonEvent(CellUnderAttack cellAttackData) {
 		this.cellAttackData = cellAttackData;
 	}
 
+    /**
+     * Returns the {@link CellUnderAttack} from the event to be further parsed for data.
+     * @return The CellUnderAttack from the event.
+     */
 	public CellUnderAttack getCellAttackData() {
 		return cellAttackData;
 	}
 
+    /**
+     * Check if the CellWonEvent was cancelled.
+     * @return true if the event was cancelled.
+     */
 	@Override
     public boolean isCancelled() {
         return cancelled;
     }
 
-     @Override
+    /**
+     * Sets the CellWonEvent as Canceled.
+     * @param cancel if event should cancel.
+     */
+    @Override
     public void setCancelled(boolean cancel) {
         this.cancelled = cancel;
     }
