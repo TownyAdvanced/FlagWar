@@ -13,6 +13,7 @@
         <java.version>1.8</java.version>
         <project.bukkitAPIVersion>1.14</project.bukkitAPIVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <plugin.javadoc.version>3.2.0</plugin.javadoc.version>
     </properties>
 
     <licenses>
@@ -101,7 +102,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>${plugin.javadoc.version}</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>
@@ -112,6 +113,7 @@
                 </executions>
                 <configuration>
                     <source>${java.version}</source>
+                    <notimestamp>true</notimestamp>
                 </configuration>
             </plugin>
             <plugin>
@@ -149,20 +151,43 @@
 
     <profiles>
         <profile>
-            <id>no-jdoc</id>
+            <!-- Use if you don't need Javadocs, or if the `alternatives` profile does not work for you. -->
+            <id>no-javadocs</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <configuration>
-                            <source>${java.version}</source>
-                            <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-                        </configuration>
+                        <version>${plugin.javadoc.version}</version>
                         <executions>
                             <execution>
                                 <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <!-- Use if you need Javadocs on Linux distributions using the (update-)alternatives system. -->
+            <id>alternatives</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${plugin.javadoc.version}</version>
+                        <configuration>
+                            <source>${java.version}</source>
+                            <javadocExecutable>/usr/bin/javadoc</javadocExecutable>
+                            <notimestamp>true</notimestamp>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
