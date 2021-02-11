@@ -9,6 +9,12 @@
     <packaging>jar</packaging>
     <version>0.1.0</version>
 
+    <properties>
+        <java.version>1.8</java.version>
+        <project.bukkitAPIVersion>1.14</project.bukkitAPIVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -20,12 +26,6 @@
         <name>TownyAdvanced</name>
         <url>https://github.com/TownyAdvanced</url>
     </organization>
-
-    <properties>
-        <java.version>1.8</java.version>
-        <project.bukkitAPIVersion>1.14</project.bukkitAPIVersion>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <distributionManagement>
         <repository>
