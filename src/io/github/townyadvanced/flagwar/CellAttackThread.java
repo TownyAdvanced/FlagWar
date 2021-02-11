@@ -20,15 +20,26 @@ package io.github.townyadvanced.flagwar;
 import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import java.util.TimerTask;
 
+/**
+ * Each {@link CellUnderAttack}'s attack thread, extending the {@link TimerTask}
+ */
 public class CellAttackThread extends TimerTask {
 
 	final CellUnderAttack cell;
 
+    /**
+     * Constructs the {@link CellAttackThread} for a given {@link CellUnderAttack}
+     * @param cellUnderAttack to assign the CellAttackThread to.
+     */
 	public CellAttackThread(CellUnderAttack cellUnderAttack) {
 
 		this.cell = cellUnderAttack;
 	}
 
+    /**
+     * Updates the war flag within the {@link CellUnderAttack}, and if {@link CellUnderAttack#hasEnded()} becomes true,
+     * runs {@link FlagWar#attackWon(CellUnderAttack)}
+     */
 	@Override
 	public void run() {
 

@@ -24,6 +24,9 @@ import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import java.util.List;
 import org.bukkit.entity.Player;
 
+/**
+ *  FlagWar Public API
+ */
 public class FlagWarAPI {
 
     private FlagWarAPI() {
@@ -36,7 +39,7 @@ public class FlagWarAPI {
      * @return True or False
      */
     public static boolean isUnderAttack (Cell cell) {
-        return io.github.townyadvanced.flagwar.FlagWar.isUnderAttack(cell);
+        return FlagWar.isUnderAttack(cell);
     }
 
     /**
@@ -45,7 +48,7 @@ public class FlagWarAPI {
      * @return True if there is a {@link CellUnderAttack} related to the given Town.
      */
     public static boolean isUnderAttack(Town town) {
-        return io.github.townyadvanced.flagwar.FlagWar.isUnderAttack(town);
+        return FlagWar.isUnderAttack(town);
     }
 
     /**
@@ -53,7 +56,7 @@ public class FlagWarAPI {
      * @return A {@link CellUnderAttack} list containing all Cells under attack.
      */
     public static List<CellUnderAttack> getCellsUnderAttack() {
-        return io.github.townyadvanced.flagwar.FlagWar.getCellsUnderAttack();
+        return FlagWar.getCellsUnderAttack();
     }
 
     /**
@@ -62,7 +65,7 @@ public class FlagWarAPI {
      * @return All {@link CellUnderAttack} objects related to the town.
      */
     public static List<CellUnderAttack> getCellsUnderAttack(Town town) {
-        return io.github.townyadvanced.flagwar.FlagWar.getCellsUnderAttack(town);
+        return FlagWar.getCellsUnderAttack(town);
     }
 
     /**
@@ -71,7 +74,7 @@ public class FlagWarAPI {
      * @return a CellUnderAttack list tied to a Player.
      */
     public static List<CellUnderAttack> getCellsUnderAttack(Player player) {
-        return io.github.townyadvanced.flagwar.FlagWar.getCellsUnderAttackByPlayer(player.getName());
+        return FlagWar.getCellsUnderAttackByPlayer(player.getName());
     }
 
     /**
@@ -80,7 +83,7 @@ public class FlagWarAPI {
      * @return a CellUnderAttack list tied to a given player name.
      */
     public static List<CellUnderAttack> getCellsUnderAttack(String playerName) {
-        return io.github.townyadvanced.flagwar.FlagWar.getCellsUnderAttackByPlayer(playerName);
+        return FlagWar.getCellsUnderAttackByPlayer(playerName);
     }
 
     /**
@@ -89,7 +92,7 @@ public class FlagWarAPI {
      * @return The number of flags a Player has in play.
      */
     public static int getNumActiveFlags(Player player) {
-        return io.github.townyadvanced.flagwar.FlagWar.getNumActiveFlags(player.getName());
+        return FlagWar.getNumActiveFlags(player.getName());
     }
 
     /**
@@ -98,7 +101,7 @@ public class FlagWarAPI {
      * @return The extracted CellUnderAttack object.
      */
     public static CellUnderAttack getAttackData(Cell cell) {
-        return io.github.townyadvanced.flagwar.FlagWar.getAttackData(cell);
+        return FlagWar.getAttackData(cell);
     }
 
     /**
