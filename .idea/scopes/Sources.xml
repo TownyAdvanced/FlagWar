@@ -1,3 +1,3 @@
 <component name="DependencyValidationManager">
-  <scope name="Sources" pattern="src:io.github.townyadvanced.flagwar..*" />
+  <scope name="Sources" pattern="file[FlagWar]:src/main/java/io/github/townyadvanced/flagwar//*" />
 </component>
