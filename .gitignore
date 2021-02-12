@@ -1,5 +1,7 @@
 # IDEA Specific
-/.idea
+/.idea/*
+!/.idea/copyright/
+!/.idea/scopes/
 *.iml
 
 # Eclipse Specific
