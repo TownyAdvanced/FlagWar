@@ -4,20 +4,17 @@ version: ${project.version}
 api-version: ${project.bukkitAPIVersion}
 
 authors:
-    - Shade / Zren (Creator)
-    - FuzzeWuzze (FuzzeFork)
-    - ElgarL (TownyAdvanced, Ret.)
-    - LlmDl (TownyAdvanced, Maint.)
-    - EmperorKoala (Defibrulator)
-    - TheFlagCourier (Modularization)
+    - Shade / Zren (CellWar, Towny)
+    - ElgarL (TownyAdvanced)
+    - LlmDl (TownyAdvanced)
+    - TheFlagCourier (FlagWar)
+    - Various Contributors
 
-website: 'http://townyadvanced.github.io/wars'
+website: 'http://townyadvanced.github.io/flagwar'
 
 prefix: FlagWar
 
-description: >
-    The original warfare feature for TownyAdvanced, now its
-    own plugin.
+description: An OG war system for TownyAdvanced. Celebrating a decade of Towny Warfare.
 
 depend:
     - Towny
