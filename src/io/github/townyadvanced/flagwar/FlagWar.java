@@ -1,18 +1,17 @@
 /*
- * Copyright 2021 TownyAdvanced
+ * Copyright (c) 2021 TownyAdvanced
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *          http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package io.github.townyadvanced.flagwar;
@@ -35,6 +34,7 @@ import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.Translation;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import com.palmergames.bukkit.towny.utils.AreaSelectionUtil;
+import com.palmergames.bukkit.util.Version;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.events.CellAttackCanceledEvent;
 import io.github.townyadvanced.flagwar.events.CellAttackEvent;
@@ -72,6 +72,7 @@ public class FlagWar extends JavaPlugin {
 	private static final Map<String, List<CellUnderAttack>> cellsUnderAttackByPlayer = new HashMap<>();
 	private static final Map<Town, Long> lastFlag = new HashMap<>();
     private static final FlagWar plugin = FlagWar.getPlugin();
+    private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.0");
     private final Logger logger;
     private final FlagWarBlockListener flagWarBlockListener = new FlagWarBlockListener(this);
 	private final FlagWarCustomListener flagWarCustomListener = new FlagWarCustomListener(this);
@@ -93,12 +94,23 @@ public class FlagWar extends JavaPlugin {
             logger.severe(e.getMessage());
         }
 
-        welcome();
+        brandingMessage();
         checkTowny();
         loadFlagWarMaterials();
         registerEvents();
-        //registerCommands();
+    }
 
+    @Override
+    public void onDisable() {
+        logger.info("Stopping Flag War");
+        logger.info("Attempting to cancel all attacks gracefully.");
+        try {
+            for (CellUnderAttack cell : new ArrayList<>(cellsUnderAttack.values()))
+                attackCanceled(cell);
+        } catch (NullPointerException npe) {
+            npe.printStackTrace();
+        }
+        logger.info("Flag War Disabled.");
     }
 
     private void loadConfig() throws IOException, InvalidConfigurationException  {
@@ -140,13 +152,6 @@ public class FlagWar extends JavaPlugin {
         }
 	}
 
-	/*
-    private void registerCommands() {
-	    logger.info("Registering commands...");
-	    getCommand("flagwar.command.flagwar").setExecutor(new FlagWarCommand(this));
-    }
-	 */
-
     private void checkTowny() {
 	    logger.info("Checking against Towny...");
         Towny towny = Towny.getPlugin();
@@ -157,21 +162,20 @@ public class FlagWar extends JavaPlugin {
         else if (towny.isError()) {
             logger.severe("Towny is in Safe Mode! Disabling Flag War!");
             onDisable();
+        } else {
+            checkTownyVersionCompatibility(towny);
         }
     }
 
-    @Override
-    public void onDisable() {
-	    logger.info("Stopping Flag War");
-	    logger.info("Attempting to cancel all attacks gracefully.");
-		try {
-			for (CellUnderAttack cell : new ArrayList<>(cellsUnderAttack.values()))
-				attackCanceled(cell);
-		} catch (NullPointerException npe) {
-		    npe.printStackTrace();
+    private void checkTownyVersionCompatibility(Towny towny) {
+        Version townyVersion = Version.fromString(towny.getVersion());
+        if (townyVersion.compareTo(MIN_TOWNY_VER) < 0) {
+            String message = "The running copy of Towny is too old! You need at least Towny v"
+                + MIN_TOWNY_VER.toString() + " to use FlagWar with Towny.";
+            logger.severe(message);
+            onDisable();
         }
-		logger.info("Flag War Disabled.");
-	}
+    }
 
 	public void registerEvents() {
         logger.info("Registering Events...");
@@ -186,7 +190,7 @@ public class FlagWar extends JavaPlugin {
         return plugin;
     }
 
-    private void welcome() {
+    private void brandingMessage() {
         if (this.getConfig().getBoolean("show-startup-marquee")){
             String indent = "                  ";
             String marquee = String.format("%n%n"
