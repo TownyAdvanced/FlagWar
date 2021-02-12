@@ -1,0 +1,20 @@
+name: FlagWar
+main: io.github.townyadvanced.flagwar.FlagWar
+version: ${project.version}
+api-version: ${project.bukkitAPIVersion}
+
+authors:
+    - Shade / Zren (CellWar, Towny)
+    - ElgarL (TownyAdvanced)
+    - LlmDl (TownyAdvanced)
+    - TheFlagCourier (FlagWar)
+    - Various Contributors
+
+website: 'http://townyadvanced.github.io/flagwar'
+
+prefix: FlagWar
+
+description: An OG war system for TownyAdvanced. Celebrating a decade of Towny Warfare.
+
+depend:
+    - Towny
