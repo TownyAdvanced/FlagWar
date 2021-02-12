@@ -13,6 +13,10 @@ indent_size = 4
 indent_style = space
 
 ## Preserve trailing whitespace in markdown, ALWAYS!
-[*.{md,markdown}]
+[*.[mM][dD]]
 trim_trailing_whitespace = false
 
+[*.{[cC][mM][dD],[bB][aA][tT]}]
+end_of_line = crlf
+insert_final_newline = false
+indent_style = tab
