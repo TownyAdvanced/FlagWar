@@ -1,19 +1,17 @@
-
 /*
- * Copyright 2021 TownyAdvanced
+ * Copyright (c) 2021 TownyAdvanced
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *          http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package io.github.townyadvanced.flagwar.listeners;
@@ -52,15 +50,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.logging.Logger;
 
 public class FlagWarCustomListener implements Listener {
 
     private Towny towny;
+    private final Logger logger;
 
     public FlagWarCustomListener(FlagWar flagWar) {
 
 		if (flagWar.getServer().getPluginManager().getPlugin("Towny") != null)
 		    towny = Towny.getPlugin();
+
+		logger = flagWar.getLogger();
 
 	}
 
@@ -89,28 +93,18 @@ public class FlagWarCustomListener implements Listener {
 		Player player = event.getPlayer();
 		CellUnderAttack cell = event.getCell().getAttackData();
 
-		try {
-			FlagWar.townFlagged(FlagWar.cellToWorldCoord(cell).getTownBlock().getTown());
-		} catch (NotRegisteredException ignored) {}
+        tryTownFlagged(cell);
 
-		TownyUniverse universe = TownyUniverse.getInstance();
+        TownyUniverse universe = TownyUniverse.getInstance();
 
 		WorldCoord worldCoord = new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
 		universe.removeWarZone(worldCoord);
 
 		towny.updateCache(worldCoord);
 
-		String playerName;
-		if (player == null) {
-			playerName = "Greater Forces";
-		} else {
-			playerName = player.getName();
-			Resident playerRes = universe.getResident(player.getUniqueId());
-			if (playerRes != null)
-				playerName = playerRes.getFormattedName();
-		}
+		String playerName = getPlayerName(player, universe);
 
-		towny.getServer().broadcastMessage(Translation.of("msg_enemy_war_area_defended", playerName, cell.getCellString()));
+        towny.getServer().broadcastMessage(Translation.of("msg_enemy_war_area_defended", playerName, cell.getCellString()));
 
 		// Defender Reward
 		// It doesn't entirely matter if the attacker can pay.
@@ -129,31 +123,63 @@ public class FlagWarCustomListener implements Listener {
 				}
 
 				String formattedMoney = TownyEconomyHandler.getFormattedBalance(FlagWarConfig.getDefendedAttackReward());
-				if (defendingPlayer == null) {
-					if (attackingPlayer.getAccount().deposit(FlagWarConfig.getDefendedAttackReward(), "War - Attack Was Defended (Greater Forces)"))
-						try {
-							TownyMessaging.sendResidentMessage(attackingPlayer, Translation.of("msg_enemy_war_area_defended_greater_forces", formattedMoney));
-						} catch (TownyException ignored) {
-						}
-				} else {
-					if (attackingPlayer.getAccount().payTo(FlagWarConfig.getDefendedAttackReward(), defendingPlayer, "War - Attack Was Defended")) {
-						try {
-							TownyMessaging.sendResidentMessage(attackingPlayer, Translation.of("msg_enemy_war_area_defended_attacker", defendingPlayer.getFormattedName(), formattedMoney));
-						} catch (TownyException ignored) {
-						}
-						try {
-							TownyMessaging.sendResidentMessage(defendingPlayer, Translation.of("msg_enemy_war_area_defended_defender", attackingPlayer.getFormattedName(), formattedMoney));
-						} catch (TownyException ignored) {
-						}
-					}
-				}
-			} catch (EconomyException e) {
+                sendDefendedMessages(attackingPlayer, defendingPlayer, formattedMoney);
+            } catch (EconomyException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+    private void sendDefendedMessages(Resident attackingPlayer, Resident defendingPlayer, String formattedMoney) throws EconomyException {
+        if (defendingPlayer == null) {
+            if (attackingPlayer.getAccount().deposit(FlagWarConfig.getDefendedAttackReward(), "War - Attack Was Defended (Greater Forces)")) {
+                messageResident(attackingPlayer, Translation.of("msg_enemy_war_area_defended_greater_forces", formattedMoney));
+            }
+        } else {
+            if (attackingPlayer.getAccount().payTo(FlagWarConfig.getDefendedAttackReward(), defendingPlayer, "War - Attack Was Defended")) {
+                msgAttackDefended(attackingPlayer, defendingPlayer, formattedMoney);
+            }
+        }
+    }
+
+    private String getPlayerName(Player player, TownyUniverse universe) {
+        String playerName;
+        if (player == null) {
+            playerName = "Greater Forces";
+        } else {
+            playerName = player.getName();
+            Resident playerRes = universe.getResident(player.getUniqueId());
+            if (playerRes != null)
+                playerName = playerRes.getFormattedName();
+        }
+        return playerName;
+    }
+
+    private void messageResident(Resident resident, String message) {
+        try {
+            TownyMessaging.sendResidentMessage(resident, message);
+        } catch (TownyException e) {
+            logger.warning("Unable to send resident a message.");
+            logger.warning(e.getMessage());
+        }
+    }
+
+    private void msgAttackDefended(Resident atkRes, Resident defRes, String formattedMoney) {
+        try {
+            TownyMessaging.sendResidentMessage(atkRes, Translation.of("msg_enemy_war_area_defended_attacker", defRes.getFormattedName(), formattedMoney));
+        } catch (TownyException e) {
+            logger.warning("Unable to message an attacker about a defended attack!");
+            logger.warning(e.getMessage());
+        }
+        try {
+            TownyMessaging.sendResidentMessage(defRes, Translation.of("msg_enemy_war_area_defended_defender", atkRes.getFormattedName(), formattedMoney));
+        } catch (TownyException e) {
+            logger.warning("Unable to message a defender about a defended attack!");
+            logger.warning(e.getMessage());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
     public void onCellWonEvent(CellWonEvent event) {
 
@@ -185,80 +211,116 @@ public class FlagWarCustomListener implements Listener {
 			double amount = 0;
 			String moneyTransferMessage = null;
 			if (TownyEconomyHandler.isActive()) {
-				try {
-					String reasonType;
-					if (townBlock.isHomeBlock()) {
-						amount = FlagWarConfig.getWonHomeBlockReward();
-						reasonType = "Homeblock";
-					} else {
-						amount = FlagWarConfig.getWonTownBlockReward();
-						reasonType = "Townblock";
-					}
+			    String townBlockType = townOrHomeBlock(townBlock);
+			    amount = realEstateValue(townBlockType);
 
-					if (amount > 0) {
-						// Defending Town -> Attacker (Pillage)
-						String reason = String.format("War - Won Enemy %s (Pillage)", reasonType);
-						amount = Math.min(amount, defendingTown.getAccount().getHoldingBalance());
-						defendingTown.getAccount().payTo(amount, attackingResident, reason);
-
-						// Message
-						moneyTransferMessage = Translation.of("msg_enemy_war_area_won_pillage", attackingResident.getFormattedName(), TownyEconomyHandler.getFormattedBalance(amount), defendingTown.getFormattedName());
-					} else if (amount < 0) {
-						// Attacker -> Defending Town (Rebuild cost)
-						amount = -amount; // Inverse the amount so it's positive.
-						String reason = String.format("War - Won Enemy %s (Rebuild Cost)", reasonType);
-						if (!attackingResident.getAccount().payTo(amount, defendingTown, reason)) {
-							// Could Not Pay Defending Town the Rebuilding Cost.
-							TownyMessaging.sendGlobalMessage(Translation.of("msg_enemy_war_area_won", attackingResident.getFormattedName(), (attackingNation.hasTag() ? attackingNation.getTag() : attackingNation.getFormattedName()), cell.getCellString()));
-						}
-
-						// Message
-						moneyTransferMessage = Translation.of("msg_enemy_war_area_won_rebuilding", attackingResident.getFormattedName(), TownyEconomyHandler.getFormattedBalance(amount), defendingTown.getFormattedName());
-					}
-				} catch (EconomyException x) {
-					x.printStackTrace();
-				}
+			    if (amount > 0) {
+                    // Defending Town -> Attacker (Pillage)
+                    String reason = String.format("War - Won Enemy %s (Pillage)", townBlockType);
+                    amount = townPayAttackerSpoils(attackingResident, defendingTown, amount, reason);
+                    moneyTransferMessage = Translation.of("msg_enemy_war_area_won_pillage",
+                        attackingResident.getFormattedName(),
+                        TownyEconomyHandler.getFormattedBalance(amount),
+                        defendingTown.getFormattedName()
+                    );
+                } else if (amount < 0) {
+                    // Attacker -> Defending Town (Rebuild cost)
+                    amount = -amount; // Inverse the amount so it's positive.
+                    String reason = String.format("War - Won Enemy %s (Rebuild Cost)", townBlockType);
+                    attackerPayTownRebuild(cell, attackingResident, attackingNation, defendingTown, amount, reason);
+                    moneyTransferMessage = Translation.of("msg_enemy_war_area_won_rebuilding",
+                        attackingResident.getFormattedName(),
+                        TownyEconomyHandler.getFormattedBalance(amount),
+                        defendingTown.getFormattedName()
+                    );
+                }
 			}
 
 			// Defender loses townblock
-			if (FlagWarConfig.isFlaggedTownBlockTransferred()) {
-				// Attacker Claim Automatically
-				try {
-					townBlock.setTown(attackingTown);
-					townBlock.save();
-				} catch (Exception te) {
-					// Couldn't claim it.
-					TownyMessaging.sendErrorMsg(te.getMessage());
-					te.printStackTrace();
-				}
-			} else {
+            transferOrKeepTownblock(attackingTown, townBlock, defendingTown);
 
-				TownyMessaging.sendPrefixedTownMessage(attackingTown, Translation.of("msg_war_defender_keeps_claims"));
-				TownyMessaging.sendPrefixedTownMessage(defendingTown, Translation.of("msg_war_defender_keeps_claims"));
-			}
-
-			// Cleanup
+            // Cleanup
 			towny.updateCache(worldCoord);
 
 			// Event Message
-			TownyMessaging.sendGlobalMessage(Translation.of("msg_enemy_war_area_won", attackingResident.getFormattedName(), (attackingNation.hasTag() ? attackingNation.getTag() : attackingNation.getFormattedName()), cell.getCellString()));
+            messageWon(cell, attackingResident, attackingNation);
 
-			// Money Transfer message.
-			if (TownyEconomyHandler.isActive()) {
-				if (amount != 0 && moneyTransferMessage != null) {
-					try {
-						TownyMessaging.sendResidentMessage(attackingResident, moneyTransferMessage);
-					} catch (TownyException ignored) {
-					}
-					TownyMessaging.sendPrefixedTownMessage(defendingTown, moneyTransferMessage);
-				}
-			}
+            // Money Transfer message.
+            if (TownyEconomyHandler.isActive() && amount != 0 && moneyTransferMessage != null) {
+                messageResident(attackingResident, moneyTransferMessage);
+                TownyMessaging.sendPrefixedTownMessage(defendingTown, moneyTransferMessage);
+            }
 		} catch (NotRegisteredException e) {
 			e.printStackTrace();
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+    private void attackerPayTownRebuild(CellUnderAttack cell, Resident attackingResident, Nation attackingNation, Town defendingTown, double amount, String reason) {
+        try {
+            if (!attackingResident.getAccount().payTo(amount, defendingTown, reason))
+                messageWon(cell, attackingResident, attackingNation);
+        } catch (EconomyException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private double townPayAttackerSpoils(Resident attackingResident, Town defendingTown, double amount, String reason) {
+        try {
+            amount = Math.min(amount, defendingTown.getAccount().getHoldingBalance());
+            defendingTown.getAccount().payTo(amount, attackingResident, reason);
+        } catch (EconomyException e) {
+            e.printStackTrace();
+        }
+        return amount;
+    }
+
+    private void transferOrKeepTownblock(Town attackingTown, TownBlock townBlock, Town defendingTown) {
+        if (FlagWarConfig.isFlaggedTownBlockTransferred()) {
+            transferOwnership(attackingTown, townBlock);
+        } else {
+            TownyMessaging.sendPrefixedTownMessage(attackingTown, Translation.of("msg_war_defender_keeps_claims"));
+            TownyMessaging.sendPrefixedTownMessage(defendingTown, Translation.of("msg_war_defender_keeps_claims"));
+        }
+    }
+
+    private void messageWon(CellUnderAttack cell, Resident attackingResident, Nation attackingNation) {
+        if (attackingNation.hasTag())
+            TownyMessaging.sendGlobalMessage(Translation.of("msg_enemy_war_area_won", attackingResident.getFormattedName(), attackingNation.getTag(), cell.getCellString()));
+        else
+            TownyMessaging.sendGlobalMessage(Translation.of("msg_enemy_war_area_won", attackingResident.getFormattedName(), attackingNation.getFormattedName(), cell.getCellString()));
+    }
+
+    private double realEstateValue(String reasonType) {
+        double amount;
+        if (reasonType.equals("Homeblock"))
+            amount = FlagWarConfig.getWonHomeBlockReward();
+        else
+            amount = FlagWarConfig.getWonTownBlockReward();
+        return amount;
+    }
+
+    @NotNull
+    private String townOrHomeBlock(TownBlock townBlock) {
+        String reasonType;
+        if (townBlock.isHomeBlock())
+            reasonType = "Homeblock";
+        else
+            reasonType = "Townblock";
+        return reasonType;
+    }
+
+    private void transferOwnership(Town attackingTown, TownBlock townBlock) {
+        try {
+            townBlock.setTown(attackingTown);
+            townBlock.save();
+        } catch (Exception te) {
+            // Couldn't claim it.
+            TownyMessaging.sendErrorMsg(te.getMessage());
+            te.printStackTrace();
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
     public void onCellAttackCanceledEvent(CellAttackCanceledEvent event) {
 
@@ -267,21 +329,27 @@ public class FlagWarCustomListener implements Listener {
 
 		CellUnderAttack cell = event.getCell();
 
-		try {
-			FlagWar.townFlagged(FlagWar.cellToWorldCoord(cell).getTownBlock().getTown());
-		} catch (NotRegisteredException ignored) {}
+        tryTownFlagged(cell);
 
-		TownyUniverse universe = TownyUniverse.getInstance();
+        TownyUniverse universe = TownyUniverse.getInstance();
 
 		WorldCoord worldCoord = new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
 		universe.removeWarZone(worldCoord);
 		towny.updateCache(worldCoord);
 
-		System.out.println(cell.getCellString());
+		logger.info(cell.getCellString());
 	}
 
+    private void tryTownFlagged(CellUnderAttack cell) {
+        try {
+            FlagWar.townFlagged(FlagWar.cellToWorldCoord(cell).getTownBlock().getTown());
+        } catch (NotRegisteredException e) {
+            logger.warning(e.getMessage());
+        }
+    }
 
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     @SuppressWarnings("unused")
     public void onTownLeaveNation(NationPreTownLeaveEvent event) {
 		if (FlagWarConfig.isAllowingAttacks()) {
