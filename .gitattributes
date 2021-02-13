@@ -1,3 +1,2 @@
-* text=auto
+* text eol=lf
 *.{[cC][mM][dD], [bB][aA][tT]} text eol=crlf
-*.[sS][hH] text eol=lf
