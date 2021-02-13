@@ -71,7 +71,7 @@ public class FlagWar extends JavaPlugin {
     private static final Map<Cell, CellUnderAttack> cellsUnderAttack = new HashMap<>();
 	private static final Map<String, List<CellUnderAttack>> cellsUnderAttackByPlayer = new HashMap<>();
 	private static final Map<Town, Long> lastFlag = new HashMap<>();
-    private static final FlagWar plugin = FlagWar.getPlugin();
+    private static final FlagWar plugin = FlagWar.getInstance();
     private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.0");
     private final Logger logger;
     private final FlagWarBlockListener flagWarBlockListener = new FlagWarBlockListener(this);
@@ -186,7 +186,7 @@ public class FlagWar extends JavaPlugin {
         logger.info("Events registered.");
 	}
 
-    public static FlagWar getPlugin() {
+    public static FlagWar getInstance() {
         return plugin;
     }
 

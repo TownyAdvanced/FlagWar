@@ -49,12 +49,12 @@ public class FlagWarConfig {
 	}
 
 	public static boolean isAllowingAttacks() {
-	    return FlagWar.getPlugin().getConfig().getBoolean("rules.allow_attacks");
+	    return FlagWar.getInstance().getConfig().getBoolean("rules.allow_attacks");
 	}
 
 	public static long getFlagWaitingTime() {
 		return TimeTools.convertToTicks(
-		    TimeTools.getSeconds(FlagWar.getPlugin().getConfig().getString("flag.waiting_time")));
+		    TimeTools.getSeconds(FlagWar.getInstance().getConfig().getString("flag.waiting_time")));
 	}
 
 	public static long getTimeBetweenFlagColorChange() {
@@ -62,11 +62,11 @@ public class FlagWarConfig {
 	}
 
 	public static boolean isDrawingBeacon() {
-        return FlagWar.getPlugin().getConfig().getBoolean("beacon.draw");
+        return FlagWar.getInstance().getConfig().getBoolean("beacon.draw");
 	}
 
 	public static int getMaxActiveFlagsPerPerson() {
-	    return FlagWar.getPlugin().getConfig().getInt("player_limits.max_active_flags_per_player");
+	    return FlagWar.getInstance().getConfig().getInt("player_limits.max_active_flags_per_player");
 	}
 
 	public static Material getFlagBaseMaterial() {
@@ -82,7 +82,7 @@ public class FlagWarConfig {
 	}
 
 	public static int getBeaconRadius() {
-	    return FlagWar.getPlugin().getConfig().getInt("beacon.radius");
+	    return FlagWar.getInstance().getConfig().getInt("beacon.radius");
 	}
 
 	public static int getBeaconSize() {
@@ -90,23 +90,23 @@ public class FlagWarConfig {
 	}
 
 	public static int getBeaconMinHeightAboveFlag() {
-	    return FlagWar.getPlugin().getConfig().getInt("beacon.height_above_flag_min");
+	    return FlagWar.getInstance().getConfig().getInt("beacon.height_above_flag_min");
 	}
 
 	public static long getTimeToWaitAfterFlagged() {
-	    return FlagWar.getPlugin().getConfig().getLong("rules.get_time_to_wait_after_flagged");
+	    return FlagWar.getInstance().getConfig().getLong("rules.get_time_to_wait_after_flagged");
     }
 
     public static boolean isFlaggedInteractionTown() {
-        return FlagWar.getPlugin().getConfig().getBoolean("rules.prevent_interaction_while_flagged");
+        return FlagWar.getInstance().getConfig().getBoolean("rules.prevent_interaction_while_flagged");
     }
 
     public static boolean isFlaggedInteractionNation() {
-        return FlagWar.getPlugin().getConfig().getBoolean("rules.prevent_interaction_while_flagged");
+        return FlagWar.getInstance().getConfig().getBoolean("rules.prevent_interaction_while_flagged");
     }
 
 	public static int getBeaconMaxHeightAboveFlag() {
-        return FlagWar.getPlugin().getConfig().getInt("beacon.height_above_flag_max");
+        return FlagWar.getInstance().getConfig().getInt("beacon.height_above_flag_max");
 	}
 
 	public static void setFlagBaseMaterial(Material flagBaseMaterial) {
@@ -122,35 +122,35 @@ public class FlagWarConfig {
 	}
 
 	public static int getMinPlayersOnlineInTownForWar() {
-	    return FlagWar.getPlugin().getConfig().getInt("player_limits.min_online_in_town");
+	    return FlagWar.getInstance().getConfig().getInt("player_limits.min_online_in_town");
 	}
 
 	public static int getMinPlayersOnlineInNationForWar() {
-        return FlagWar.getPlugin().getConfig().getInt("player_limits.min_online_in_nation");
+        return FlagWar.getInstance().getConfig().getInt("player_limits.min_online_in_nation");
 	}
 
 	public static double getWonTownBlockReward() {
-		return FlagWar.getPlugin().getConfig().getDouble("economy.town_block_captured");
+		return FlagWar.getInstance().getConfig().getDouble("economy.town_block_captured");
 	}
 
 	public static double getWonHomeBlockReward() {
-        return (FlagWar.getPlugin().getConfig().getDouble("economy.home_block_captured"));
+        return (FlagWar.getInstance().getConfig().getDouble("economy.home_block_captured"));
 	}
 
 	public static double getCostToPlaceWarFlag() {
 
-        return FlagWar.getPlugin().getConfig().getDouble("economy.war_flag_cost");
+        return FlagWar.getInstance().getConfig().getDouble("economy.war_flag_cost");
 	}
 
 	public static double getDefendedAttackReward() {
-	    return FlagWar.getPlugin().getConfig().getDouble("economy.attack_defended_reward");
+	    return FlagWar.getInstance().getConfig().getDouble("economy.attack_defended_reward");
 	}
 
     public static boolean isAttackingBordersOnly() {
-        return FlagWar.getPlugin().getConfig().getBoolean("rules.only_attack_borders");
+        return FlagWar.getInstance().getConfig().getBoolean("rules.only_attack_borders");
     }
 
 	public static boolean isFlaggedTownBlockTransferred() {
-        return FlagWar.getPlugin().getConfig().getBoolean("rules.flag_takes_ownership_of_town_blocks");
+        return FlagWar.getInstance().getConfig().getBoolean("rules.flag_takes_ownership_of_town_blocks");
 	}
 }

@@ -33,7 +33,7 @@ import com.palmergames.bukkit.towny.object.Coord;
 
 public class CellUnderAttack extends Cell {
 
-    private static final Logger LOGGER = FlagWar.getPlugin().getLogger();
+    private static final Logger LOGGER = FlagWar.getInstance().getLogger();
     private final Towny towny;
 	private final String nameOfFlagOwner;
 	private final Block flagBaseBlock;
