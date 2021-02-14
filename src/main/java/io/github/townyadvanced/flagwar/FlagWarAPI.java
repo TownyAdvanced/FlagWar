@@ -117,7 +117,7 @@ public class FlagWarAPI {
      * Gets the time between when a flag and it's beacon shifts colors.
      * @return a {@link Long} value of the total time between a flag's color shift.
      */
-    public long getColorShiftTime() {
+    public long getMaterialShiftTime() {
         return FlagWarConfig.getTimeBetweenFlagColorChange();
     }
 
