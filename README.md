@@ -22,17 +22,17 @@ its 10th anniversary.
 
 Sections
 --------
-1) [Licensing :scroll:][licensing]
-2) [Administrator Resources :technologist:][admin-resources]
-   - [Supported Releases :package:][supported-releases]
-   - [Staying up to Date :incoming_envelope:][staying-updated]
-   - [Getting Support :medical_symbol:][get-support]
-3) [Developer Resources :toolbox:][developer-resources]
-   - [Contributing Code :computer:][contrib-code]
-   - [Contributing Documentation :spiral_notepad:][contrib-docs] - WIP
-   - [Localizing FlagWar :world_map:][contrib-localize]	- WIP
-   - [Building FlagWar :building_construction:][building]
-4) [Supporting the Project :superhero:][supporting-flagwar]	
+1) [Licensing 📜][licensing]
+2) [Administrator Resources 👨‍💻][admin-resources]
+   - [Supported Releases 📦][supported-releases]
+   - [Staying up to Date 📨][staying-updated]
+   - [Getting Support ⚕][get-support]
+3) [Developer Resources 🧰][developer-resources]
+   - [Contributing Code 💻][contrib-code]
+   - [Contributing Documentation 🗒][contrib-docs] - WIP
+   - [Localizing FlagWar 🗺][contrib-localize]	- WIP
+   - [Building FlagWar 🏗][building]
+4) [Supporting the Project 🦸][supporting-flagwar]	
 
 Licensing
 ---------
@@ -71,7 +71,7 @@ Administrator Resources
 
 ### Supported Releases
 
-| FlagWar Release | :calendar:   | Minimum Requirements                             |
+| FlagWar Release | 📅           | Minimum Requirements                             |
 |:--------------: | :----------: | :----------------------------------------------: |
 | 0.1.0 (Latest)  | xxxxx        | Towny 0.96.7.1, Spigot 1.14.4                    |
 | _Pre-History_   | _2011_       | _Included in Towny until v0.9x.x.x; no support._ |
@@ -96,7 +96,7 @@ The documentation found on the [FlagWar Wiki][wiki] will be updated every time a
 If you find the documentation insufficient, please open an issue, and we will assess the need.
 
 On the [Issue Tracker][issue-tracker] you can file [bug reports][bug],
-[feature requests][feature], or reveiw / submit a [QA discussion][discuss-towny] on the Towny discussion board.
+[feature requests][feature], or review / submit a [QA discussion][discuss-towny] on the Towny discussion board.
 
 [![Average Issue Resolution Time][iim-time-badge]][iim-time] [![Percentage of Issues 'Open'][iim-percent-badge]][iim-percent]
 
@@ -115,7 +115,7 @@ forking the project.
 
 For anything more involved, you will need to fulfill the following requirements:
 - A [Java Development Kit][jdk], for Java SE 8 or higher
-- A competent dditor or an Integrated Development Environment (IDE)
+- A competent editor or an Integrated Development Environment (IDE)
     - Competent Editors: 
       [Atom][atom], [Notepad++][npp], [Sublime Text][sublime], [Vim][vim], [Visual Studio Code][vscode]
     - Recommendable IDEs: [Apache NetBeans][netbeans], [Eclipse IDE][eclipse], [IntelliJ IDEA][idea]
@@ -157,10 +157,10 @@ Supporting the Project
 If you've found FlagWar to be of use and would like to support the project, then thank you!
 
 You can support the project in multiple ways:
-- Contribute to the project :memo:  
+- Contribute to the project 📝 
   Be it through [adding or expanding a localization][contrib-localize], endorsing the project,
   hunting for bugs, [writing code][contrib-code], or [writing documentation][contrib-docs], any help is appreciated.
-- Sponsor a Developer :heartpulse:  
+- Sponsor a Developer 💗 
   Sponsoring a developer is appreciated and gives back to those who have spent time to keep the project going.  
   See the sidebar for open sponsorships, and learn about GitHub's [Sponsors Program][gh-sponsors].
 

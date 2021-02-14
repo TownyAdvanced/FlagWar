@@ -2,7 +2,7 @@
 
 ## Contributing Code
 
-Code contributions are welcome and are made via GitHub's [Pull Request][pullreq] system. You can ask for any information
+Code contributions are welcome and are made via GitHub's [Pull Request][pull request] system. You can ask for any information
 or help with your idea or contribution in the [TownyAdvanced Discord](https://discord.gg/gnpVs5m).
 
 * FlagWar is licensed under the [Apache License, Version 2.0][apache-v2]. ([Local Copy][license])  
@@ -16,7 +16,7 @@ or help with your idea or contribution in the [TownyAdvanced Discord](https://di
 [notice]: ../NOTICE "FlagWar License Notices"
 [apache-v2]: https://www.apache.org/licenses/LICENSE-2.0.txt "Apache License, Version 2.0"
 [license]: ../LICENSE "FlagWar License (Local Copy)"
-[pullreq]: https://github.com/TownyAdvanced/FlagWar/pulls "FlagWar Pull Requests"
+[pull request]: https://github.com/TownyAdvanced/FlagWar/pulls "FlagWar Pull Requests"
 
 ## Contributing Localizations
 
