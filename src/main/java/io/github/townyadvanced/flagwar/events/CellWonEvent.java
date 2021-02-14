@@ -20,20 +20,21 @@ import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class CellWonEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
 	private boolean cancelled = false;
 
-    @Override @NotNull
+    @Override
     public HandlerList getHandlers() {
         return getHandlerList();
     }
 
     public static HandlerList getHandlerList() {
-        return handlers;
+        return Objects.requireNonNull(handlers);
     }
 
 	private final CellUnderAttack cellAttackData;
