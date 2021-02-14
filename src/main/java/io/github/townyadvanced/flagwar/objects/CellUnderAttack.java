@@ -176,7 +176,7 @@ public class CellUnderAttack extends Cell {
 
 	public boolean hasEnded() {
 
-		return flagColorId >= FlagWarConfig.getWoolColors().length;
+		return flagColorId >= FlagWarConfig.getTimerBlocks().length;
 	}
 
 	public void changeFlag() {
@@ -198,7 +198,7 @@ public class CellUnderAttack extends Cell {
 
 	public void updateFlag() {
 
-		Material[] woolColors = FlagWarConfig.getWoolColors();
+		Material[] woolColors = FlagWarConfig.getTimerBlocks();
 		if (flagColorId < woolColors.length) {
 
             String flagTurned = String.format(

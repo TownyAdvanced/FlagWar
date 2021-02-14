@@ -22,13 +22,15 @@ import io.github.townyadvanced.flagwar.util.TimeTools;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 
+import java.util.Arrays;
+
 public class FlagWarConfig {
 
     private FlagWarConfig() {
         super();
     }
 
-	protected static final Material[] woolColors = new Material[] {
+	static final Material[] woolColors = new Material[] {
 			Material.LIME_WOOL, Material.GREEN_WOOL, Material.BLUE_WOOL, Material.CYAN_WOOL,
 			Material.LIGHT_BLUE_WOOL, Material.GRAY_WOOL, Material.WHITE_WOOL,
 			Material.PINK_WOOL, Material.ORANGE_WOOL, Material.RED_WOOL };
@@ -44,8 +46,12 @@ public class FlagWarConfig {
             || material == getBeaconWireFrameMaterial();
 	}
 
-	public static Material[] getWoolColors() {
-		return woolColors;
+    /**
+     * Returns a copy of the {@link Material} array making up the WarFlag's timer indicators.
+     * @return a clone of the Material array.
+     */
+    public static Material[] getTimerBlocks() {
+		return Arrays.copyOf(woolColors, woolColors.length);
 	}
 
 	public static boolean isAllowingAttacks() {
@@ -58,7 +64,7 @@ public class FlagWarConfig {
 	}
 
 	public static long getTimeBetweenFlagColorChange() {
-		return getFlagWaitingTime() / getWoolColors().length;
+		return getFlagWaitingTime() / getTimerBlocks().length;
 	}
 
 	public static boolean isDrawingBeacon() {
