@@ -301,12 +301,10 @@ public class FlagWarCustomListener implements Listener {
 
     @NotNull
     private String townOrHomeBlock(TownBlock townBlock) {
-        String reasonType;
         if (townBlock.isHomeBlock())
-            reasonType = "Homeblock";
+            return "Homeblock";
         else
-            reasonType = "Townblock";
-        return reasonType;
+            return "Townblock";
     }
 
     private void transferOwnership(Town attackingTown, TownBlock townBlock) {
