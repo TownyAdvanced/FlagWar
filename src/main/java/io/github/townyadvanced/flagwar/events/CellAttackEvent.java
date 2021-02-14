@@ -27,19 +27,19 @@ import org.bukkit.event.HandlerList;
 
 import com.palmergames.bukkit.towny.Towny;
 
+import java.util.Objects;
+
 public class CellAttackEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
 
 	@Override
 	public HandlerList getHandlers() {
-
 		return getHandlerList();
 	}
 
 	public static HandlerList getHandlerList() {
-
-	    return handlers;
+	    return Objects.requireNonNull(handlers);
     }
 
 	private final Towny plugin;

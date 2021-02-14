@@ -33,7 +33,7 @@ import com.palmergames.bukkit.towny.object.Coord;
 
 public class CellUnderAttack extends Cell {
 
-    private static final Logger LOGGER = FlagWar.getPlugin().getLogger();
+    private static final Logger LOGGER = FlagWar.getInstance().getLogger();
     private final Towny towny;
 	private final String nameOfFlagOwner;
 	private final Block flagBaseBlock;
@@ -176,7 +176,7 @@ public class CellUnderAttack extends Cell {
 
 	public boolean hasEnded() {
 
-		return flagColorId >= FlagWarConfig.getWoolColors().length;
+		return flagColorId >= FlagWarConfig.getTimerBlocks().length;
 	}
 
 	public void changeFlag() {
@@ -198,7 +198,7 @@ public class CellUnderAttack extends Cell {
 
 	public void updateFlag() {
 
-		Material[] woolColors = FlagWarConfig.getWoolColors();
+		Material[] woolColors = FlagWarConfig.getTimerBlocks();
 		if (flagColorId < woolColors.length) {
 
             String flagTurned = String.format(
