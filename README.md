@@ -132,7 +132,7 @@ For anything more involved, you will need to fulfill the following requirements:
 ### Building FlagWar
 
 Building FlagWar requires the use of [Apache Maven][maven], [Git][git] (optional), a [Java Development Kit][jdk] for
-Java 8 (or greater), and an internet connection. 
+Java 8 (or greater; [Corretto Recommended][corretto]), and an internet connection. 
 
 > If you run into "command not found" issues, please make sure your JAVA_HOME and PATH environment variables have been
 > set. (Don't bother with your M2_HOME, that's [deprecated][m2home].)
@@ -176,6 +176,7 @@ You can support the project in multiple ways:
 [contrib-docs]: README.md#contributing-documentation "Contributing Documentation"
 [contrib-localize]: README.md#localizing-FlagWar "Localizing FlagWar"
 [contributing]: ./.github/CONTRIBUTING.MD "FlagWar Contributing Guidelines"
+[corretto]: https://docs.aws.amazon.com/corretto/latest/corretto-8-ug/patches.html "Corretto OpenJDK 8 Patches"
 [developer-resources]: README.md#developer-resources "Developer Resources"
 [discord]: https://discord.gg/gnpVs5m "Join the TownyAdvanced Discord server"
 [discuss-towny]: https://github.com/TownyAdvanced/Towny/discussions/categories/q-a "View Towny's Q&A Discussion Board"
