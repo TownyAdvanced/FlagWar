@@ -1,26 +1,23 @@
 # IDEA Specific
 /.idea/*
+*.iml
+# Ensure Copyright information is portable
 !/.idea/copyright/
 !/.idea/scopes/
-*.iml
+# Ensure project is compiled appropriately
+!/.idea/compiler.xml
+!/.idea/encodings.xml
 
 # Eclipse Specific
 .classpath
 .project
 .externalToolBuilders
 
-# Holdovers from the ol' Ant system
-/bin
-/lib
-
-# Prevent Maven Leakage
+# Prevent Contamination with Compiled Classes, Javadocs, and Binaries
 /target
 
 # Javadoc
 /doc
-
-# RedHat Dependency Analytics LSP server
-/lsp
 
 # OS specific
 .DS_Store
