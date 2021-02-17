@@ -16,8 +16,6 @@
 
 package io.github.townyadvanced.flagwar;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
@@ -35,6 +33,7 @@ import com.palmergames.bukkit.towny.object.Translation;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import com.palmergames.bukkit.towny.utils.AreaSelectionUtil;
 import com.palmergames.bukkit.util.Version;
+import io.github.townyadvanced.flagwar.config.ConfigLoader;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.events.CellAttackCanceledEvent;
 import io.github.townyadvanced.flagwar.events.CellAttackEvent;
@@ -46,9 +45,8 @@ import io.github.townyadvanced.flagwar.listeners.FlagWarEntityListener;
 import io.github.townyadvanced.flagwar.listeners.WarzoneListener;
 import io.github.townyadvanced.flagwar.objects.Cell;
 import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
-import java.io.File;
+
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +57,6 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.plugin.PluginManager;
@@ -74,6 +71,7 @@ public class FlagWar extends JavaPlugin {
     private static final FlagWar plugin = FlagWar.getInstance();
     private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.0");
     private final Logger logger;
+    private final ConfigLoader configLoader;
     private final FlagWarBlockListener flagWarBlockListener = new FlagWarBlockListener(this);
 	private final FlagWarCustomListener flagWarCustomListener = new FlagWarCustomListener(this);
 	private final FlagWarEntityListener flagWarEntityListener = new FlagWarEntityListener();
@@ -81,12 +79,13 @@ public class FlagWar extends JavaPlugin {
 
 	public FlagWar(){
 	    logger = this.getLogger();
+	    configLoader = new ConfigLoader(this);
     }
 
 	@Override
     public void onEnable() {
         try {
-            loadConfig();
+            configLoader.loadConfig();
         } catch (IOException e) {
             logger.severe(e.getMessage());
             e.printStackTrace();
@@ -112,45 +111,6 @@ public class FlagWar extends JavaPlugin {
         }
         logger.info("Flag War Disabled.");
     }
-
-    private void loadConfig() throws IOException, InvalidConfigurationException  {
-        double needConfVer = 1.0;
-
-        this.saveDefaultConfig();
-        File configFile = new File("plugins/FlagWar/config.yml");
-        this.getConfig().load(configFile);
-
-        if (this.getConfig().getDouble("config_version") < needConfVer) {
-            File backupFile = new File("plugins/FlagWar/config.old.yml");
-            if (backupFile.createNewFile())
-                logger.warning("Created new backup location: Flagwar/config.old.yml");
-            regenerateConfiguration(configFile, backupFile);
-        }
-        // TODO: Check for an uneven node-count between config and defaultConfig.
-
-        this.getConfig().load(configFile);
-    }
-
-    private void regenerateConfiguration(File configFile, File backupFile) throws IOException {
-        if(!backupConfig(configFile, backupFile))
-            onDisable();
-
-        Files.delete(configFile.toPath());
-        this.saveDefaultConfig();
-    }
-
-    private boolean backupConfig(File sourceFile, File targetFile) throws IOException {
-	    logger.warning("Attempting to back up the configuration.");
-        if (targetFile.exists()){
-            Files.copy(sourceFile.toPath(), targetFile.toPath(), REPLACE_EXISTING);
-            logger.warning("Configuration Backup Successful. Old Backup Replaced.");
-            return true;
-        }
-        else {
-            logger.severe("ABORTING: Unable to back up configuration! Please back up manually.");
-            return false;
-        }
-	}
 
     private void checkTowny() {
 	    logger.info("Checking against Towny...");
