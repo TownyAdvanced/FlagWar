@@ -152,7 +152,7 @@ public class FlagWar extends JavaPlugin {
 
     private void brandingMessage() {
         if (this.getConfig().getBoolean("show-startup-marquee")){
-            String indent = "                  ";
+            String indent = String.format("%-10s", "");
             String marquee = String.format("%n%n"
                 + "%s ▄████  █    ██     ▄▀        ▄ ▄   ██   █▄▄▄▄ %n"
                 + "%s █▀   ▀ █    █ █  ▄▀         █   █  █ █  █  ▄▀ %n"
