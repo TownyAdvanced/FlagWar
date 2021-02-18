@@ -17,7 +17,7 @@
 package io.github.townyadvanced.flagwar.config;
 
 import io.github.townyadvanced.flagwar.FlagWar;
-import io.github.townyadvanced.flagwar.util.TimeTools;
+import com.palmergames.util.TimeTools;
 
 import org.bukkit.Material;
 import org.bukkit.Tag;
