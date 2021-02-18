@@ -56,6 +56,8 @@ import java.util.logging.Logger;
 
 public class FlagWarCustomListener implements Listener {
 
+    public static final String DENY_FLAG_TOWN_UNDER_ATTACK = Translation.of("msg_war_flag_deny_town_under_attack");
+    public static final String DENY_FLAG_RECENTLY_ATTACKED = Translation.of("msg_war_flag_deny_recently_attacked");
     private Towny towny;
     private final Logger logger;
 
@@ -352,12 +354,12 @@ public class FlagWarCustomListener implements Listener {
     public void onTownLeaveNation(NationPreTownLeaveEvent event) {
 		if (FlagWarConfig.isAllowingAttacks()) {
 			if (FlagWarAPI.isUnderAttack(event.getTown()) && TownySettings.isFlaggedInteractionTown()) {
-				event.setCancelMessage(Translation.of("msg_war_flag_deny_town_under_attack"));
+				event.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
 				event.setCancelled(true);
 			}
 
 			if (System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < TownySettings.timeToWaitAfterFlag()) {
-				event.setCancelMessage(Translation.of("msg_war_flag_deny_recently_attacked"));
+				event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
 				event.setCancelled(true);
 			}
 		}
@@ -381,7 +383,7 @@ public class FlagWarCustomListener implements Listener {
     @SuppressWarnings("unused")
     public void onTownWithdraw(TownPreTransactionEvent event) {
 		if (FlagWarConfig.isAllowingAttacks() && System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < TownySettings.timeToWaitAfterFlag()) {
-			event.setCancelMessage(Translation.of("msg_war_flag_deny_recently_attacked"));
+			event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
 			event.setCancelled(true);
 		}
 	}
@@ -391,12 +393,12 @@ public class FlagWarCustomListener implements Listener {
     public void onTownSetHomeBlock(TownPreSetHomeBlockEvent event) {
 		if (FlagWarConfig.isAllowingAttacks()) {
 			if (FlagWarAPI.isUnderAttack(event.getTown()) && TownySettings.isFlaggedInteractionTown()) {
-			    cancelTownPreSetHomeBlockEvent(event, Translation.of("msg_war_flag_deny_town_under_attack"));
+			    cancelTownPreSetHomeBlockEvent(event, DENY_FLAG_TOWN_UNDER_ATTACK);
 				return;
 			}
 
 			if (System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(event.getTown()) < TownySettings.timeToWaitAfterFlag()) {
-				cancelTownPreSetHomeBlockEvent(event, Translation.of("msg_war_flag_deny_recently_attacked"));
+				cancelTownPreSetHomeBlockEvent(event, DENY_FLAG_RECENTLY_ATTACKED);
 			}
 
 		}
@@ -428,13 +430,13 @@ public class FlagWarCustomListener implements Listener {
 		if (FlagWarConfig.isAllowingAttacks()) {
 			if (FlagWarAPI.isUnderAttack(event.getTown()) && TownySettings.isFlaggedInteractionTown()) {
 				event.setCancelled(true);
-				event.setCancelMessage(Translation.of("msg_war_flag_deny_town_under_attack"));
+				event.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
 				return;
 			}
 
 			if (System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(event.getTown()) < TownySettings.timeToWaitAfterFlag()) {
 				event.setCancelled(true);
-				event.setCancelMessage(Translation.of("msg_war_flag_deny_recently_attacked"));
+				event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
             }
 		}
 	}
@@ -443,13 +445,13 @@ public class FlagWarCustomListener implements Listener {
     @SuppressWarnings("unused")
     private void onWarPreUnclaim(TownPreUnclaimCmdEvent event) {
 		if (FlagWarAPI.isUnderAttack(event.getTown()) && TownySettings.isFlaggedInteractionTown()) {
-			event.setCancelMessage(Translation.of("msg_war_flag_deny_town_under_attack"));
+			event.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
 			event.setCancelled(true);
 			return; // Return early, no reason to try sequential checks if a town is under attack.
 		}
 
 		if (System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < TownySettings.timeToWaitAfterFlag()) {
-			event.setCancelMessage(Translation.of("msg_war_flag_deny_recently_attacked"));
+			event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
 			event.setCancelled(true);
 		}
 	}
