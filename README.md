@@ -1,6 +1,23 @@
 [FlagWar for Towny Advanced](https://townyadvanced.github.io/wars)
 ==================================================================
 
+----
+### Notices
+
+```yaml
+Warning: FlagWar is not yet ready to be considered stable. Some features will likely be missing.
+Please consider currently available builds as 'Pre-Alpha' or Development builds.
+
+Admins: It is not yet advised to use it on a server in a production environment.
+If you're using FlagWar in production, consider using the version of FlagWar built into Towny.
+Do not report bugs for the bundled version of FlagWar here.
+
+Developers: Depend at your own risk. We cannot guarantee the API stability at this time,
+even between recent snapshots. Assistance and PRs are always welcome.
+```
+
+----
+
 FlagWar is one of the first official war systems in the Towny Advanced ecosystem, dating back
 around 2011. FlagWar works similar to a strategy game, where players can capture regions of other Nations and
 Towns quickly and with pin-point precision.
@@ -73,7 +90,7 @@ Administrator Resources
 
 | FlagWar Release | 📅           | Minimum Requirements                             |
 |:--------------: | :----------: | :----------------------------------------------: |
-| 0.1.0 (Latest)  | xxxxx        | Towny 0.96.7.1, Spigot 1.14.4                    |
+| 0.1.0 (Latest)  | xxxxx        | Towny 0.96.7.3, Spigot 1.16.5                    |
 | _Pre-History_   | _2011_       | _Included in Towny until v0.9x.x.x; no support._ |
 
 > We recommend administrators look into [PaperMC](https://papermc.io/), or one of its forks.
@@ -121,7 +138,7 @@ For anything more involved, you will need to fulfill the following requirements:
     - Recommendable IDEs: [Apache NetBeans][netbeans], [Eclipse IDE][eclipse], [IntelliJ IDEA][idea]
 - Apache Maven (See [Building FlagWar](#building-flagwar))
 
-> Note that some IDEs bundle a JDK and Apache Maven. And for the love of all that is code, do not use Microsoft Notepad.
+> Note that some IDEs bundle a JDK and Apache Maven. For the love of all that is code, do not use Microsoft Notepad.
 
 ### Contributing Documentation
 > Section Reserved
