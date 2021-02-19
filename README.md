@@ -15,7 +15,10 @@ Do not report bugs for the bundled version of FlagWar here.
 Developers: Depend at your own risk. We cannot guarantee the API stability at this time,
 even between recent snapshots. Assistance and PRs are always welcome.
 ```
+For known deficiencies, please refer to the [issue tracker][issue-tracker] and [Feature Parity Checklist][boards-1].
 
+----
+Summary
 ----
 
 FlagWar is one of the first official war systems in the Towny Advanced ecosystem, dating back
@@ -90,14 +93,14 @@ Administrator Resources
 
 | FlagWar Release | 📅           | Minimum Requirements                             |
 |:--------------: | :----------: | :----------------------------------------------: |
-| 0.1.0 (Latest)  | xxxxx        | Towny 0.96.7.3, Spigot 1.16.5                    |
+| [v0.1.0-devel][0.1.0]    | Feb 18, 2021 | Towny 0.96.7.3, Spigot 1.16.5                    |
 | _Pre-History_   | _2011_       | _Included in Towny until v0.9x.x.x; no support._ |
 
-> We recommend administrators look into [PaperMC](https://papermc.io/), or one of its forks.
-> 
 > While FlagWar does not use the PaperAPI, Towny does make use of the PaperLib library to provide
 > some optimizations. The PaperMC project also offers greater flexibility for a server
-> administrator to take advantage of when compared to CraftBukkit or Spigot.
+> administrator to take advantage of when compared to Spigot.
+
+[0.1.0]: https://github.com/TownyAdvanced/FlagWar/releases/tag/v0.1.0-devel "FlagWar 0.1.0 Development Release"
 
 ### Staying up to Date
 
@@ -185,6 +188,7 @@ You can support the project in multiple ways:
 [admin-resources]: README.md#administrator-resources "Administrator Resources"
 [apache-v2]: LICENSE "Apache License, Version 2.0"
 [atom]: https://atom.io/ "A hackable text editor for the 21st Century (Free, Cross Platform)"
+[boards-1]: https://github.com/TownyAdvanced/FlagWar/projects/1 "FlagWar: Feature Parity Checklist"
 [bug]: https://github.com/TownyAdvanced/FlagWar/issues/new?assignees=&labels=&template=bug_report.md&title= "Report a FlagWar bug"
 [building]: README.md#building-flagwar "Building FlagWar"
 [cc by-nc-nd 3.0]: https://creativecommons.org/licenses/by-nc-nd/3.0/legalcode "Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported"

@@ -24,3 +24,12 @@ To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0
 3rd Party Works
 Notices for libraries and other works not belonging to the contributors of FlagWar
 ----------------------------------------------------------------------------------
+
+// bStats //
+FlagWar makes use of the bStats-Metrics library to gather anonymize telemetry, which is included at
+compilation time via the maven-shade-plugin. Users can opt out of bStats telemetry by changing
+"enabled" to 'false' in the {plugins/bStats/config.yml} file on their server.
+
+bStats is Copyright © 2016-2021 Bastian Oppermann (AKA BtoBastian);
+licensed under the GNU Lesser General Public License v3.0 (LGPL-3.0).
+The full license is available at: https://github.com/Bastian/bStats/blob/master/LICENSE
