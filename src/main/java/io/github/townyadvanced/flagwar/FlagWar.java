@@ -39,6 +39,7 @@ import io.github.townyadvanced.flagwar.events.CellAttackCanceledEvent;
 import io.github.townyadvanced.flagwar.events.CellAttackEvent;
 import io.github.townyadvanced.flagwar.events.CellDefendedEvent;
 import io.github.townyadvanced.flagwar.events.CellWonEvent;
+import io.github.townyadvanced.flagwar.i18n.LocaleUtil;
 import io.github.townyadvanced.flagwar.listeners.FlagWarBlockListener;
 import io.github.townyadvanced.flagwar.listeners.FlagWarCustomListener;
 import io.github.townyadvanced.flagwar.listeners.FlagWarEntityListener;
@@ -78,21 +79,28 @@ public class FlagWar extends JavaPlugin {
 	private final FlagWarEntityListener flagWarEntityListener = new FlagWarEntityListener();
 	private final WarzoneListener warzoneListener = new WarzoneListener();
 
-	public FlagWar(){
+    public FlagWar(){
 	    logger = this.getLogger();
 	    configLoader = new ConfigLoader(this);
     }
 
 	@Override
     public void onEnable() {
+
         try {
             configLoader.loadConfig();
         } catch (IOException e) {
             logger.severe(e.getMessage());
             e.printStackTrace();
+            onDisable();
+            return;
         } catch (Exception e) {
             logger.severe(e.getMessage());
+            onDisable();
+            return;
         }
+
+        setLocale();
 
         brandingMessage();
         checkTowny();
@@ -103,15 +111,28 @@ public class FlagWar extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        logger.info("Stopping Flag War");
-        logger.info("Attempting to cancel all attacks gracefully.");
+	    if (LocaleUtil.getMessages() != null) {
+	        logger.info(LocaleUtil.getMessages().getString("stopping-flagwar"));
+	        logger.info(LocaleUtil.getMessages().getString("cancelling-attacks-gracefully"));
+        } else {
+            logger.info("Stopping FlagWar");
+            logger.info("Attempting to cancel all attacks gracefully.");
+        }
+
         try {
             for (CellUnderAttack cell : new ArrayList<>(cellsUnderAttack.values()))
                 attackCanceled(cell);
         } catch (NullPointerException npe) {
             npe.printStackTrace();
         }
-        logger.info("Flag War Disabled.");
+    }
+
+    private void setLocale() {
+        if (plugin.getConfig().getString("translation") != null) {
+            LocaleUtil.setUpLocale(plugin.getConfig().getString("translation"));
+        } else {
+            LocaleUtil.setUpLocale("en_US");
+        }
     }
 
     @SuppressWarnings("all")
