@@ -13,6 +13,9 @@
 .project
 .externalToolBuilders
 
+# Ignore the generated dependency-reduced-pom.xml
+dependency-reduced-pom.xml
+
 # Prevent Contamination with Compiled Classes, Javadocs, and Binaries
 /target
 
