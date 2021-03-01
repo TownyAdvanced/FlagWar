@@ -35,13 +35,13 @@ public class LocaleUtil {
         Locale locale;
 
         if (!localeString.isEmpty() && localeString.contains("_")) {
-            language = localeString.substring(0,localeString.indexOf("_")-1).toLowerCase();
+            language = localeString.substring(0,localeString.indexOf("_")).toLowerCase();
             country = localeString.substring(localeString.indexOf("_")+1).toUpperCase();
             String logMessage = String.format("Translation read as: %s_%s", language, country);
             logger.info(logMessage);
             if (country.contains("_")) {
                 String variant = country.substring(country.indexOf("_") + 1);
-                country = country.substring(0, country.indexOf("_") - 1);
+                country = country.substring(0, country.indexOf("_"));
                 locale = new Locale(language, country, variant);
             } else {
                 locale = new Locale(language,country);
@@ -51,9 +51,8 @@ public class LocaleUtil {
             logger.warning("Defaulting FlagWar localization to en_US_POSIX.");
         }
 
-        ResourceBundle msg = ResourceBundle.getBundle("Translations", currentLocale);
-
         setLocale(locale);
+        ResourceBundle msg = ResourceBundle.getBundle("Translations", currentLocale);
         setMessages(msg);
 
         logger.info(messages.getString("test-message"));
