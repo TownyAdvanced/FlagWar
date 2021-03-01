@@ -147,7 +147,24 @@ For anything more involved, you will need to fulfill the following requirements:
 > Section Reserved
 
 ### Localizing FlagWar
-> Section Reserved
+FlagWar includes localizations built-in, rather than using a configurable file. To localize FlagWar to your language,
+copy the [Translation_en_US.properties](src/main/resources/Translation_en_US.properties) file from the
+[`resources` directory](src/main/resources) as `Translation_{ID}.properties`, requiring at least the first two parts
+of the id.
+
+The `ID`, or the locale id compatible with the Java [Locale Class](https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html),
+is a 1-to-3 part code representing the _language_, the _region_, and the _variant_ (if desired); delimited by
+underscores. Examples: en, en_US, en_US_POSIX.
+
+See the Locale javadoc linked above for well-formed naming. FlagWar does not support `script` or `extension` fields,
+so `ID`s should stick to the `language(_REGION(_VARIANT))` format.  
+
+Once you have that done, you can go ahead and translate the strings from there.
+
+After translation is complete, save your changes. You will need to [Build FlagWar](README.md#Building-FlagWar) to ensure
+that all strings are accounted for, and that they render properly for end users.
+
+
 
 ### Building FlagWar
 
@@ -163,10 +180,10 @@ Java 8 (or greater; [Corretto Recommended][corretto]), and an internet connectio
 3) Run `mvn clean package` to build FlagWar. This will put generated files into the `FlagWar/target` directory.
    > If you run into "command not found" issues, please make sure you have everything required and that your environment
    > variables have been set.
-   > This includes: JAVA_HOME, MAVEN_HOME, and your PATH which should contain both.
    >
-   > If you use a Debian/Ubuntu-based distribution AND get JAVA_HOME errors, try adding the `-P no-jdoc` flag to your
-   > Maven commands.
+   > If you use a Linux distribution and get JAVA_HOME errors, try adding the `-P alternatives` flag to your
+   > Maven commands. Popular distributions typically use the set-alternatives tool to map programs to the path, and this
+   > profile works around the issue.
 
 Alternatively, you can build it through your IDE, provided that it bundles with Maven, or that
 it can at the very least find it. Check your IDE's documentation regarding Maven support.

@@ -36,13 +36,13 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TransactionType;
-import com.palmergames.bukkit.towny.object.Translation;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.FlagWarAPI;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.events.CellAttackCanceledEvent;
 import io.github.townyadvanced.flagwar.events.CellAttackEvent;
+import io.github.townyadvanced.flagwar.i18n.LocaleUtil;
 import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import io.github.townyadvanced.flagwar.events.CellDefendedEvent;
 import io.github.townyadvanced.flagwar.events.CellWonEvent;
@@ -56,8 +56,8 @@ import java.util.logging.Logger;
 
 public class FlagWarCustomListener implements Listener {
 
-    public static final String DENY_FLAG_TOWN_UNDER_ATTACK = Translation.of("msg_war_flag_deny_town_under_attack");
-    public static final String DENY_FLAG_RECENTLY_ATTACKED = Translation.of("msg_war_flag_deny_recently_attacked");
+    public static final String DENY_FLAG_TOWN_UNDER_ATTACK = LocaleUtil.getMessages().getString("error.town-under-attack");
+    public static final String DENY_FLAG_RECENTLY_ATTACKED = LocaleUtil.getMessages().getString("error.recently-attacked");
     private Towny towny;
     private final Logger logger;
 
@@ -106,7 +106,7 @@ public class FlagWarCustomListener implements Listener {
 
 		String playerName = getPlayerName(player, universe);
 
-        towny.getServer().broadcastMessage(Translation.of("msg_enemy_war_area_defended", playerName, cell.getCellString()));
+        towny.getServer().broadcastMessage(String.format(LocaleUtil.getMessages().getString("broadcast.area.defended"), playerName, cell.getCellString()));
 
 		// Defender Reward
 		// It doesn't entirely matter if the attacker can pay.
@@ -135,7 +135,7 @@ public class FlagWarCustomListener implements Listener {
     private void sendDefendedMessages(Resident attackingPlayer, Resident defendingPlayer, String formattedMoney) throws EconomyException {
         if (defendingPlayer == null) {
             if (attackingPlayer.getAccount().deposit(FlagWarConfig.getDefendedAttackReward(), "War - Attack Was Defended (Greater Forces)")) {
-                messageResident(attackingPlayer, Translation.of("msg_enemy_war_area_defended_greater_forces", formattedMoney));
+                messageResident(attackingPlayer, String.format(LocaleUtil.getMessages().getString("area-defended.attacker.greater-forces"), formattedMoney));
             }
         } else {
             if (attackingPlayer.getAccount().payTo(FlagWarConfig.getDefendedAttackReward(), defendingPlayer, "War - Attack Was Defended")) {
@@ -168,13 +168,13 @@ public class FlagWarCustomListener implements Listener {
 
     private void msgAttackDefended(Resident atkRes, Resident defRes, String formattedMoney) {
         try {
-            TownyMessaging.sendResidentMessage(atkRes, Translation.of("msg_enemy_war_area_defended_attacker", defRes.getFormattedName(), formattedMoney));
+            TownyMessaging.sendResidentMessage(atkRes, String.format(LocaleUtil.getMessages().getString("area-defended.attacker"), defRes.getFormattedName(), formattedMoney));
         } catch (TownyException e) {
             logger.warning("Unable to message an attacker about a defended attack!");
             logger.warning(e.getMessage());
         }
         try {
-            TownyMessaging.sendResidentMessage(defRes, Translation.of("msg_enemy_war_area_defended_defender", atkRes.getFormattedName(), formattedMoney));
+            TownyMessaging.sendResidentMessage(defRes, String.format(LocaleUtil.getMessages().getString("area-defended.defender"), atkRes.getFormattedName(), formattedMoney));
         } catch (TownyException e) {
             logger.warning("Unable to message a defender about a defended attack!");
             logger.warning(e.getMessage());
@@ -201,7 +201,7 @@ public class FlagWarCustomListener implements Listener {
 			Town attackingTown = attackingResident.getTown();
 			Nation attackingNation = attackingTown.getNation();
 
-			WorldCoord worldCoord = FlagWar.cellToWorldCoord(cell);
+			WorldCoord worldCoord = FlagWar.cellToWorldCoordinate(cell);
 			universe.removeWarZone(worldCoord);
 
 			TownBlock townBlock = worldCoord.getTownBlock();
@@ -220,7 +220,7 @@ public class FlagWarCustomListener implements Listener {
                     // Defending Town -> Attacker (Pillage)
                     String reason = String.format("War - Won Enemy %s (Pillage)", townBlockType);
                     amount = townPayAttackerSpoils(attackingResident, defendingTown, amount, reason);
-                    moneyTransferMessage = Translation.of("msg_enemy_war_area_won_pillage",
+                    moneyTransferMessage = String.format(LocaleUtil.getMessages().getString("broadcast.area.pillaged"),
                         attackingResident.getFormattedName(),
                         TownyEconomyHandler.getFormattedBalance(amount),
                         defendingTown.getFormattedName()
@@ -230,7 +230,7 @@ public class FlagWarCustomListener implements Listener {
                     amount = -amount; // Inverse the amount so it's positive.
                     String reason = String.format("War - Won Enemy %s (Rebuild Cost)", townBlockType);
                     attackerPayTownRebuild(cell, attackingResident, attackingNation, defendingTown, amount, reason);
-                    moneyTransferMessage = Translation.of("msg_enemy_war_area_won_rebuilding",
+                    moneyTransferMessage = String.format(LocaleUtil.getMessages().getString("broadcast.area.rebuilding"),
                         attackingResident.getFormattedName(),
                         TownyEconomyHandler.getFormattedBalance(amount),
                         defendingTown.getFormattedName()
@@ -280,16 +280,16 @@ public class FlagWarCustomListener implements Listener {
         if (FlagWarConfig.isFlaggedTownBlockTransferred()) {
             transferOwnership(attackingTown, townBlock);
         } else {
-            TownyMessaging.sendPrefixedTownMessage(attackingTown, Translation.of("msg_war_defender_keeps_claims"));
-            TownyMessaging.sendPrefixedTownMessage(defendingTown, Translation.of("msg_war_defender_keeps_claims"));
+            TownyMessaging.sendPrefixedTownMessage(attackingTown, LocaleUtil.getMessages().getString("error.defender-keeps-claims"));
+            TownyMessaging.sendPrefixedTownMessage(defendingTown, LocaleUtil.getMessages().getString("error.defender-keeps-claims"));
         }
     }
 
     private void messageWon(CellUnderAttack cell, Resident attackingResident, Nation attackingNation) {
         if (attackingNation.hasTag())
-            TownyMessaging.sendGlobalMessage(Translation.of("msg_enemy_war_area_won", attackingResident.getFormattedName(), attackingNation.getTag(), cell.getCellString()));
+            TownyMessaging.sendGlobalMessage(String.format(LocaleUtil.getMessages().getString("broadcast.area.won"), attackingResident.getFormattedName(), attackingNation.getTag(), cell.getCellString()));
         else
-            TownyMessaging.sendGlobalMessage(Translation.of("msg_enemy_war_area_won", attackingResident.getFormattedName(), attackingNation.getFormattedName(), cell.getCellString()));
+            TownyMessaging.sendGlobalMessage(String.format(LocaleUtil.getMessages().getString("broadcast.area.won"), attackingResident.getFormattedName(), attackingNation.getFormattedName(), cell.getCellString()));
     }
 
     private double realEstateValue(String reasonType) {
@@ -342,7 +342,7 @@ public class FlagWarCustomListener implements Listener {
 
     private void tryTownFlagged(CellUnderAttack cell) {
         try {
-            FlagWar.townFlagged(FlagWar.cellToWorldCoord(cell).getTownBlock().getTown());
+            FlagWar.townFlagged(FlagWar.cellToWorldCoordinate(cell).getTownBlock().getTown());
         } catch (NotRegisteredException e) {
             logger.warning(e.getMessage());
         }
@@ -371,7 +371,7 @@ public class FlagWarCustomListener implements Listener {
 		if (FlagWarConfig.isAllowingAttacks() && TownySettings.isFlaggedInteractionNation() && event.getTransaction().getType() == TransactionType.WITHDRAW) {
 			for (Town town : event.getNation().getTowns()) {
 				if (FlagWarAPI.isUnderAttack(town) || System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(town) < TownySettings.timeToWaitAfterFlag()) {
-					event.setCancelMessage(Translation.of("msg_war_flag_deny_nation_under_attack"));
+					event.setCancelMessage(LocaleUtil.getMessages().getString("error.nation-under-attack"));
 					event.setCancelled(true);
 					return;
 				}
@@ -415,7 +415,7 @@ public class FlagWarCustomListener implements Listener {
 		if (FlagWarConfig.isAllowingAttacks()) {
 			if (!TownySettings.isDeclaringNeutral() && event.getFutureState()) {
 				event.setCancelled(true);
-				event.setCancelMessage(Translation.of("msg_err_fight_like_king"));
+				event.setCancelMessage(LocaleUtil.getMessages().getString("error.cannot-toggle-peaceful"));
 			} else {
 				if (event.getFutureState() && !FlagWarAPI.getCellsUnderAttack().isEmpty())
 					for (Resident resident : event.getNation().getResidents())

@@ -8,6 +8,7 @@
     <artifactId>FlagWar</artifactId>
     <packaging>jar</packaging>
     <version>0.1.1-SNAPSHOT</version>
+    <description>An OG war system for TownyAdvanced. Celebrating a decade of Towny Warfare.</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -84,6 +85,12 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>20.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>4.2.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

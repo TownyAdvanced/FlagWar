@@ -26,6 +26,10 @@ public class LocaleUtil {
     private static Locale currentLocale;
     private static ResourceBundle messages;
 
+    private LocaleUtil() {
+        throw new IllegalStateException("Utility Class");
+    }
+
     public static void setUpLocale(String localeString){
 
         Logger logger = FlagWar.getInstance().getLogger();
@@ -35,32 +39,38 @@ public class LocaleUtil {
         Locale locale;
 
         if (!localeString.isEmpty() && localeString.contains("_")) {
-            language = localeString.substring(0,localeString.indexOf("_")).toLowerCase();
-            country = localeString.substring(localeString.indexOf("_")+1).toUpperCase();
-            String logMessage = String.format("Translation read as: %s_%s", language, country);
-            logger.info(logMessage);
+            language = localeString.substring(0, localeString.indexOf("_")).toLowerCase();
+            country = localeString.substring(localeString.indexOf("_") + 1).toUpperCase();
             if (country.contains("_")) {
                 String variant = country.substring(country.indexOf("_") + 1);
                 country = country.substring(0, country.indexOf("_"));
-                locale = new Locale(language, country, variant);
+                if (country.contains("_")) {
+                    logger.severe("Too many underscores for a valid locale! Defaulting.");
+                    locale = new Locale("en","US");
+                } else {
+                    locale = new Locale(language, country, variant);
+                }
             } else {
-                locale = new Locale(language,country);
+                locale = new Locale(language, country);
             }
+        } else if (!localeString.isEmpty()) {
+            //TODO - Implement Custom Language Loading
+            logger.severe("Unsupported locale specified: You can contribute a locale via PR at https://github.com/TownyAdvanced/FlagWar/. Defaulting.");
+            locale = new Locale("en","US");
         } else {
-            locale = new Locale("en","US","POSIX");
-            logger.warning("Defaulting FlagWar localization to en_US_POSIX.");
+            locale = new Locale("en","US");
+            logger.warning("No specified locale! Defaulting.");
         }
 
         setLocale(locale);
-        ResourceBundle msg = ResourceBundle.getBundle("Translations", currentLocale);
+        ResourceBundle msg = ResourceBundle.getBundle("Translation", getLocale());
         setMessages(msg);
 
-        logger.info(messages.getString("test-message"));
+        String usingLocale = String.format("Using locale: %s - %s", getMessages().getString("locale"), getMessages().getString("locale-version"));
+        logger.info(usingLocale);
     }
 
-
-
-    public Locale getLocale() {
+    public static Locale getLocale() {
         return currentLocale;
     }
     private static void setLocale(Locale locale) {
