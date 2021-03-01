@@ -61,6 +61,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -70,14 +71,14 @@ public class FlagWar extends JavaPlugin {
     private static final Map<Cell, CellUnderAttack> cellsUnderAttack = new HashMap<>();
 	private static final Map<String, List<CellUnderAttack>> cellsUnderAttackByPlayer = new HashMap<>();
 	private static final Map<Town, Long> lastFlag = new HashMap<>();
-    private static final FlagWar plugin = FlagWar.getInstance();
+    private static Plugin plugin;
     private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.0");
     private final Logger logger;
     private final ConfigLoader configLoader;
-    private final FlagWarBlockListener flagWarBlockListener = new FlagWarBlockListener(this);
-	private final FlagWarCustomListener flagWarCustomListener = new FlagWarCustomListener(this);
-	private final FlagWarEntityListener flagWarEntityListener = new FlagWarEntityListener();
-	private final WarzoneListener warzoneListener = new WarzoneListener();
+    private FlagWarBlockListener flagWarBlockListener;
+	private FlagWarCustomListener flagWarCustomListener;
+	private FlagWarEntityListener flagWarEntityListener;
+	private WarzoneListener warzoneListener;
 
     public FlagWar(){
 	    logger = this.getLogger();
@@ -86,6 +87,7 @@ public class FlagWar extends JavaPlugin {
 
 	@Override
     public void onEnable() {
+        setInstance();
 
         try {
             configLoader.loadConfig();
@@ -104,6 +106,7 @@ public class FlagWar extends JavaPlugin {
 
         brandingMessage();
         checkTowny();
+        registerListeners();
         loadFlagWarMaterials();
         registerEvents();
         bStatsKickstart();
@@ -174,8 +177,19 @@ public class FlagWar extends JavaPlugin {
         logger.info("Events registered.");
 	}
 
-    public static FlagWar getInstance() {
+	private void registerListeners() {
+        flagWarBlockListener = new FlagWarBlockListener(this);
+        flagWarCustomListener = new FlagWarCustomListener(this);
+        flagWarEntityListener = new FlagWarEntityListener();
+        warzoneListener = new WarzoneListener();
+    }
+
+    public static Plugin getInstance() {
         return plugin;
+    }
+
+    private static void setInstance() {
+        plugin = Bukkit.getServer().getPluginManager().getPlugin("FlagWar");
     }
 
     private void brandingMessage() {
