@@ -144,7 +144,8 @@ For anything more involved, you will need to fulfill the following requirements:
 > Note that some IDEs bundle a JDK and Apache Maven. For the love of all that is code, do not use Microsoft Notepad.
 
 ### Contributing Documentation
-> Section Reserved
+Help with the documentation is much appreciated. If you are interested in writing for the wiki, please create a ticket
+detailing as much, or chime in on the Towny discussion board. 
 
 ### Localizing FlagWar
 FlagWar includes localizations built-in, rather than using a configurable file. To localize FlagWar to your language,
@@ -163,8 +164,6 @@ Once you have that done, you can go ahead and translate the strings from there.
 
 After translation is complete, save your changes. You will need to [Build FlagWar](README.md#Building-FlagWar) to ensure
 that all strings are accounted for, and that they render properly for end users.
-
-
 
 ### Building FlagWar
 

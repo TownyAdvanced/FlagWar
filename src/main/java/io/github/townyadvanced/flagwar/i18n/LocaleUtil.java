@@ -18,6 +18,7 @@ package io.github.townyadvanced.flagwar.i18n;
 
 import io.github.townyadvanced.flagwar.FlagWar;
 
+import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -33,33 +34,48 @@ public class LocaleUtil {
     public static void setUpLocale(String localeString){
 
         Logger logger = FlagWar.getInstance().getLogger();
-
-        String country;
+        Locale defaultLocale = new Locale("en","US");
+        String lRegex = "[a-zA-Z]{2,8}";
+        String cRegexA = lRegex + "_[a-zA-Z]{2}";
+        String cRegexB = lRegex + "_[0-9]{3}";
+        String vRegexA = "[_-][0-9][0-9a-zA-Z]{3}";
+        String vRegexB = "[_-][0-9a-zA-Z]{5,8}";
         String language;
+        String country;
+        String variant;
         Locale locale;
 
-        if (!localeString.isEmpty() && localeString.contains("_")) {
-            language = localeString.substring(0, localeString.indexOf("_")).toLowerCase();
-            country = localeString.substring(localeString.indexOf("_") + 1).toUpperCase();
-            if (country.contains("_")) {
-                String variant = country.substring(country.indexOf("_") + 1);
-                country = country.substring(0, country.indexOf("_"));
-                if (country.contains("_")) {
-                    logger.severe("Too many underscores for a valid locale! Defaulting.");
-                    locale = new Locale("en","US");
-                } else {
-                    locale = new Locale(language, country, variant);
-                }
-            } else {
-                locale = new Locale(language, country);
-            }
-        } else if (!localeString.isEmpty()) {
-            //TODO - Implement Custom Language Loading
-            logger.severe("Unsupported locale specified: You can contribute a locale via PR at https://github.com/TownyAdvanced/FlagWar/. Defaulting.");
-            locale = new Locale("en","US");
+        if (localeString.isEmpty() || !fileInJar(localeString)){
+            locale = defaultLocale;
+            logger.severe("Locale is undefined or is not in FlagWar. Defaulting!");
         } else {
-            locale = new Locale("en","US");
-            logger.warning("No specified locale! Defaulting.");
+            if (localeString.matches(cRegexA+vRegexA) || localeString.matches(cRegexA+vRegexB)
+                || localeString.matches(cRegexB+vRegexA) || localeString.matches(cRegexB+vRegexB)) {
+
+                //Locale w/Variant
+                language = localeString.substring(0, localeString.indexOf("_"));
+                country = localeString.substring(localeString.indexOf("_"));
+                if (country.contains("_")) {
+                    variant = country.substring(country.indexOf("_"));
+                    country = country.substring(0, country.indexOf("_"));
+                } else if (country.contains("-")) {
+                    variant = country.substring(country.indexOf("-"));
+                    country = country.substring(0, country.indexOf("-"));
+                } else {
+                    variant = "";
+                }
+                locale = new Locale(language, country, variant);
+            }else if (localeString.matches(cRegexA) || localeString.matches(cRegexB)) {
+                // Locale w/Region
+                language = localeString.substring(0, localeString.indexOf("_"));
+                country = localeString.substring(localeString.indexOf("_"));
+                locale = new Locale(language, country);
+            }else if (localeString.matches(lRegex)) {
+                locale = new Locale (localeString);
+            } else {
+                logger.severe("Defaulting because something went wrong while assigning the locale!");
+                locale = defaultLocale;
+            }
         }
 
         setLocale(locale);
@@ -68,6 +84,12 @@ public class LocaleUtil {
 
         String usingLocale = String.format("Using locale: %s - %s", getMessages().getString("locale"), getMessages().getString("locale-version"));
         logger.info(usingLocale);
+    }
+
+    private static boolean fileInJar(String localeString) {
+        String localeFile = String.format("/Translation_%s.properties", localeString);
+        URL u = FlagWar.class.getResource(localeFile);
+        return u != null;
     }
 
     public static Locale getLocale() {
