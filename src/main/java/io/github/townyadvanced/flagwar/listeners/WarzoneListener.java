@@ -25,7 +25,7 @@ import com.palmergames.bukkit.towny.event.actions.TownySwitchEvent;
 import com.palmergames.bukkit.towny.object.PlayerCache.TownBlockStatus;
 import com.palmergames.bukkit.towny.war.common.WarZoneConfig;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
-import io.github.townyadvanced.flagwar.i18n.LocaleUtil;
+import io.github.townyadvanced.flagwar.i18n.Translate;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -50,7 +50,7 @@ public class WarzoneListener implements Listener {
         if (status == TownBlockStatus.WARZONE && FlagWarConfig.isAllowingAttacks()) {
             if (!WarZoneConfig.isEditableMaterialInWarZone(material)) {
                 townyDestroyEvent.setCancelled(true);
-                townyDestroyEvent.setMessage(String.format(LocaleUtil.getMessages().getString("error.warzone.cannot-edit"), "destroy", material.toString().toLowerCase()));
+                townyDestroyEvent.setMessage(Translate.from("error.warzone.cannot-edit", "destroy", material.toString().toLowerCase()));
             }
             townyDestroyEvent.setCancelled(false);
         }
@@ -69,7 +69,7 @@ public class WarzoneListener implements Listener {
         if (status == TownBlockStatus.WARZONE && FlagWarConfig.isAllowingAttacks()) {
             if (!WarZoneConfig.isEditableMaterialInWarZone(mat)) {
                 townyBuildEvent.setCancelled(true);
-                townyBuildEvent.setMessage(String.format(LocaleUtil.getMessages().getString("error.warzone.cannot-edit"), "build", mat.toString().toLowerCase()));
+                townyBuildEvent.setMessage(Translate.from("error.warzone.cannot-edit", "build", mat.toString().toLowerCase()));
                 return;
             }
             townyBuildEvent.setCancelled(false);
@@ -88,7 +88,7 @@ public class WarzoneListener implements Listener {
         if (status == TownBlockStatus.WARZONE && FlagWarConfig.isAllowingAttacks()) {
             if (!WarZoneConfig.isAllowingItemUseInWarZone()) {
                 townyItemuseEvent.setCancelled(true);
-                townyItemuseEvent.setMessage(LocaleUtil.getMessages().getString("error.warzone.cannot-use-item"));
+                townyItemuseEvent.setMessage(Translate.from("error.warzone.cannot-use-item"));
                 return;
             }
             townyItemuseEvent.setCancelled(false);
@@ -107,7 +107,7 @@ public class WarzoneListener implements Listener {
         if (status == TownBlockStatus.WARZONE && FlagWarConfig.isAllowingAttacks()) {
             if (!WarZoneConfig.isAllowingSwitchesInWarZone()) {
                 townySwitchEvent.setCancelled(true);
-                townySwitchEvent.setMessage(LocaleUtil.getMessages().getString("error.warzone.cannot-use-switch"));
+                townySwitchEvent.setMessage(Translate.from("error.warzone.cannot-use-switch"));
                 return;
             }
             townySwitchEvent.setCancelled(false);
