@@ -1,35 +1,46 @@
-FlagWar
-Copyright © 2011 Chris Holland
-Copyright © 2021 The Towny Advanced Group
+==================================================
+ FlagWar
 
-This plugin is licensed under the Apache License, Version 2.0. The full legal text is available to
-read in the LICENSE.TXT file.
+ Copyright © 2011 Chris Holland (Aka. Shade [Bukkit], Zren [GitHub])
+ Copyright © 2012-2021 TownyAdvanced
+ Copyright © 2021 FlagWar Contributors
+--------------------------------------------------
 
-Copies of the Flag War source code, if not provided to you, are available on GitHub at no charge.
-Source Code: https://github.com/TownyAdvanced/FlagWar
+FlagWar is licensed under the Apache License, Version 2.0. The full legal text is available to
+read in the LICENSE file.
+Copies of the Flag War source code, if not provided to you, are available on GitHub.
+Source Code: https://github.com/TownyAdvanced/FlagWar/blob/main/LICENSE
 
-This plugin was originally developed by the Towny Advanced Group as part of the Towny plugin.
-(https://github.com/TownyAdvanced/Towny)
-Towny originally developed by Chris Holland (aka Shade, Zren) between 2010-2012.
-(https://github.com/Zren/Towny)
+FlagWar, originally developed under the title CellWar then later as part of Towny, by Chris Holland.
+(https://github.com/Zren/CellWar | https://github.com/Zren/Towny)
+Towny developed and maintained by TownyAdvanced since 2011. (https://github.com/TownyAdvanced/Towny)
 
-Any prior code not belonging to the FlagWar project (anything on the com.palmergames.* class path)
-remains under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+Any prior code found on the com.palmergames.* classpath remains under previous copyrights, and
+Towny's Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
 [CC BY-ND-NC 3.0] (https://creativecommons.org/licenses/by-nc-nd/3.0/).
 
-Official FlagWar documentation, as found on the FlagWar Wiki, is licensed under CC BY 4.0.
-To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/
+==================================================
+3rd Party Libraries and Works
+Notices for libraries and other works not belonging to the contributors of FlagWar or TownyAdvanced
+--------------------------------------------------
 
-==================================================================================
-3rd Party Works
-Notices for libraries and other works not belonging to the contributors of FlagWar
-----------------------------------------------------------------------------------
+// Annotations //
+/ JetBrains Java Annotations (compile-only) /
+JetBrains annotations are provided under version 2 of the Apache License. (Apache-2)
+Full License: https://github.com/JetBrains/java-annotations/blob/master/LICENSE.txt
+Source Code: https://github.com/JetBrains/java-annotations
+Copyright © 2000-2020 JetBrains s.r.o. (as part of FindBugs / Bytecode Analysis Framework)
 
-// bStats //
-FlagWar makes use of the bStats-Metrics library to gather anonymize telemetry, which is included at
-compilation time via the maven-shade-plugin. Users can opt out of bStats telemetry by changing
-"enabled" to 'false' in the {plugins/bStats/config.yml} file on their server.
+/ SpotBugs Annotations (compile-only) /
+Annotations for SpotBugs (or FindBugs) are licensed under the GNU Lesser General Public License,
+version 2.1 or later. (LGPL-2.1 [or later]).
+Full License: https://github.com/spotbugs/spotbugs/blob/master/LICENSE
+Source Code: https://github.com/spotbugs/spotbugs/tree/master/spotbugs-annotations
+Copyright © 2005, University of Maryland (as part of FindBugs)
 
-bStats is Copyright © 2016-2021 Bastian Oppermann (AKA BtoBastian);
-licensed under the GNU Lesser General Public License v3.0 (LGPL-3.0).
-The full license is available at: https://github.com/Bastian/bStats/blob/master/LICENSE
+// Metrics //
+/ bStats /
+bStats is licensed under the GNU Lesser General Public License v3.0 (LGPL-3.0).
+Full License: https://github.com/Bastian/bStats/blob/master/LICENSE
+Source Code: https://github.com/Bastian/bStats-Metrics
+Copyright © 2016-2021 Bastian Oppermann (AKA BtoBastian)
