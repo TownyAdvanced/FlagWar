@@ -100,7 +100,7 @@ Administrator Resources
 > some optimizations. The PaperMC project also offers greater flexibility for a server
 > administrator to take advantage of when compared to Spigot.
 
-[0.1.0]: https://github.com/TownyAdvanced/FlagWar/releases/tag/v0.1.0-devel "FlagWar 0.1.0 Development Release"
+[0.1.1]: https://github.com/TownyAdvanced/FlagWar/releases/tag/v0.1.1-devel "FlagWar 0.1.1 Development Release"
 
 ### Staying up to Date
 
