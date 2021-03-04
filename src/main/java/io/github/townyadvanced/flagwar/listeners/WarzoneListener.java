@@ -50,7 +50,7 @@ public class WarzoneListener implements Listener {
         if (status == TownBlockStatus.WARZONE && FlagWarConfig.isAllowingAttacks()) {
             if (!WarZoneConfig.isEditableMaterialInWarZone(material)) {
                 townyDestroyEvent.setCancelled(true);
-                townyDestroyEvent.setMessage(Translate.from("error.warzone.cannot-edit", "destroy", material.toString().toLowerCase()));
+                townyDestroyEvent.setMessage(Translate.fromPrefixed("error.warzone.cannot-edit", "destroy", material.toString().toLowerCase()));
             }
             townyDestroyEvent.setCancelled(false);
         }
@@ -69,7 +69,7 @@ public class WarzoneListener implements Listener {
         if (status == TownBlockStatus.WARZONE && FlagWarConfig.isAllowingAttacks()) {
             if (!WarZoneConfig.isEditableMaterialInWarZone(mat)) {
                 townyBuildEvent.setCancelled(true);
-                townyBuildEvent.setMessage(Translate.from("error.warzone.cannot-edit", "build", mat.toString().toLowerCase()));
+                townyBuildEvent.setMessage(Translate.fromPrefixed("error.warzone.cannot-edit", "build", mat.toString().toLowerCase()));
                 return;
             }
             townyBuildEvent.setCancelled(false);

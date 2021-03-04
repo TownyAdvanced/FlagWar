@@ -23,7 +23,10 @@ import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import io.github.townyadvanced.flagwar.i18n.Translate;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -103,7 +106,6 @@ public class CellUnderAttack extends Cell {
 					if (block.isEmpty()) {
                         shouldAddBeaconFlagBlock(outerEdge, y, z, x, block);
                         shouldAddBeaconWireframeBlock(outerEdge, y, z, x, block);
-
                     }
 				}
 			}
@@ -201,9 +203,8 @@ public class CellUnderAttack extends Cell {
 		Material[] woolColors = FlagWarConfig.getTimerBlocks();
 		if (flagColorId < woolColors.length) {
 
-            String flagTurned = String.format(
-                "Flag at %s turned %s.%n", getCellString(), woolColors[flagColorId].toString());
-            LOGGER.info(flagTurned);
+            LOGGER.log(Level.INFO, () ->
+                Translate.from("log.warflag-updated-color", getCellString(), woolColors[flagColorId].toString()));
 
 			flagBlock.setType(woolColors[flagColorId]);
 
@@ -239,32 +240,26 @@ public class CellUnderAttack extends Cell {
 	}
 
 	public String getCellString() {
-
 		return String.format("%s (%d, %d)", getWorldName(), getX(), getZ());
 	}
 
 	public boolean isFlagLight(Block block) {
-
 		return this.flagLightBlock.equals(block);
 	}
 
 	public boolean isFlag(Block block) {
-
 		return this.flagBlock.equals(block);
 	}
 
 	public boolean isFlagBase(Block block) {
-
 		return this.flagBaseBlock.equals(block);
 	}
 
 	public boolean isPartOfBeacon(Block block) {
-
 		return beaconFlagBlocks.contains(block) || beaconWireframeBlocks.contains(block);
 	}
 
 	public boolean isImmutableBlock(Block block) {
-
 		return isPartOfBeacon(block) || isFlagBase(block) || isFlagLight(block);
 	}
 }

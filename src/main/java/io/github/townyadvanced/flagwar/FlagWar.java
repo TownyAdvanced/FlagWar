@@ -203,14 +203,14 @@ public class FlagWar extends JavaPlugin {
 		CellUnderAttack attackCell = cellsUnderAttack.get(cell);
 
 		if (attackCell != null)
-			throw new AlreadyRegisteredException(Translate.from("error.cell-already-under-attack", attackCell.getNameOfFlagOwner()));
+			throw new AlreadyRegisteredException(Translate.fromPrefixed("error.cell-already-under-attack", attackCell.getNameOfFlagOwner()));
 
 		String playerName = cell.getNameOfFlagOwner();
 
 		// Check that the user is under his limit of active war flags.
 		int futureActiveFlagCount = getNumActiveFlags(playerName) + 1;
 		if (futureActiveFlagCount > FlagWarConfig.getMaxActiveFlagsPerPerson())
-		    throw new TownyException(Translate.from("error.flag.max-flags-placed", FlagWarConfig.getMaxActiveFlagsPerPerson()));
+		    throw new TownyException(Translate.fromPrefixed("error.flag.max-flags-placed", FlagWarConfig.getMaxActiveFlagsPerPerson()));
 
 		addFlagToPlayerCount(playerName, cell);
 		cellsUnderAttack.put(cell, cell);
@@ -392,7 +392,7 @@ public class FlagWar extends JavaPlugin {
 		TownBlock townBlock;
 
 		if (attackingResident == null || !attackingResident.hasNation())
-			throw new TownyException(Translate.from("error.player-not-in-nation"));
+			throw new TownyException(Translate.fromPrefixed("error.player-not-in-nation"));
 
         if (attackingResident.hasTown())
             attackingTown = attackingResident.getTown();
@@ -404,14 +404,14 @@ public class FlagWar extends JavaPlugin {
             return false;
 
 		if (attackingTown.getTownBlocks().isEmpty())
-			throw new TownyException(Translate.from("error.need-at-least-1-claim"));
+			throw new TownyException(Translate.fromPrefixed("error.need-at-least-1-claim"));
 
 		try {
 			landOwnerTown = worldCoord.getTownBlock().getTown();
 			townBlock = worldCoord.getTownBlock();
 			landOwnerNation = landOwnerTown.getNation();
 		} catch (NotRegisteredException e) {
-			throw new TownyException(Translate.from("error.area-not-in-nation"));
+			throw new TownyException(Translate.fromPrefixed("error.area-not-in-nation"));
 		}
 
 		checkTargetPeaceful(player, townyUniverse, landOwnerNation, attackingNation);
@@ -420,7 +420,7 @@ public class FlagWar extends JavaPlugin {
 
         // Check that attack takes place on the edge of a town
 		if (FlagWarConfig.isAttackingBordersOnly() && !AreaSelectionUtil.isOnEdgeOfOwnership(landOwnerTown, worldCoord))
-			throw new TownyException(Translate.from("error.border-attack-only"));
+			throw new TownyException(Translate.fromPrefixed("error.border-attack-only"));
 
 		double costToPlaceWarFlag = FlagWarConfig.getCostToPlaceWarFlag();
 		if (TownyEconomyHandler.isActive()) {
@@ -441,14 +441,14 @@ public class FlagWar extends JavaPlugin {
         // Update Cache
         updateTownyCache(plugin, worldCoord, townyUniverse);
 
-        TownyMessaging.sendGlobalMessage(Translate.from("broadcast.area.under_attack", landOwnerTown.getFormattedName(), worldCoord.toString(), attackingResident.getFormattedName()));
+        TownyMessaging.sendGlobalMessage(Translate.fromPrefixed("broadcast.area.under_attack", landOwnerTown.getFormattedName(), worldCoord.toString(), attackingResident.getFormattedName()));
 		return true;
 	}
 
     private static void checkFlagHeight(Block block) throws TownyException {
         int topY = block.getWorld().getHighestBlockYAt(block.getX(), block.getZ()) - 1;
         if (block.getY() < topY)
-            throw new TownyException(Translate.from("error.flag.need-above-ground"));
+            throw new TownyException(Translate.fromPrefixed("error.flag.need-above-ground"));
     }
 
     private static void setAttackerAsEnemy(Nation defendingNation, Nation attackingNation)
@@ -477,7 +477,7 @@ public class FlagWar extends JavaPlugin {
         throws TownyException {
         try {
             attackRes.getAccount().withdraw(cost, "War - WarFlag Cost");
-            TownyMessaging.sendResidentMessage(attackRes, Translate.from("warflag-purchased",
+            TownyMessaging.sendResidentMessage(attackRes, Translate.fromPrefixed("warflag-purchased",
                     TownyEconomyHandler.getFormattedBalance(cost)));
         } catch (EconomyException e) {
             e.printStackTrace();
@@ -505,7 +505,7 @@ public class FlagWar extends JavaPlugin {
 
             // Check that the user can pay for the war flag.
             if (balance < costToPlaceWarFlag)
-                throw new TownyException(Translate.from("error.flag.insufficient-funds",
+                throw new TownyException(Translate.fromPrefixed("error.flag.insufficient-funds",
                     TownyEconomyHandler.getFormattedBalance(costToPlaceWarFlag)));
 
             // Check that the user can pay the fines from losing/winning all future war flags.
@@ -538,7 +538,7 @@ public class FlagWar extends JavaPlugin {
 
                 // Check if player can pay in worst case scenario.
                 if (balance < requiredAmount)
-                    throw new TownyException(Translate.from("error.insufficient-future-funds",
+                    throw new TownyException(Translate.fromPrefixed("error.insufficient-future-funds",
                         TownyEconomyHandler.getFormattedBalance(cost), activeFlagCount + 1, reason));
             }
         } catch (EconomyException e) {
@@ -558,10 +558,10 @@ public class FlagWar extends JavaPlugin {
     private static void checkTargetPeaceful(Player player, TownyUniverse townyUniverse,
         Nation landOwnerNation, Nation attackingNation) throws TownyException {
         if (landOwnerNation.isNeutral())
-            throw new TownyException(Translate.from("error.target-is-peaceful", landOwnerNation
+            throw new TownyException(Translate.fromPrefixed("error.target-is-peaceful", landOwnerNation
                 .getFormattedName()));
         if (!townyUniverse.getPermissionSource().isTownyAdmin(player) && attackingNation.isNeutral())
-            throw new TownyException(Translate.from("error.target-is-peaceful", attackingNation
+            throw new TownyException(Translate.fromPrefixed("error.target-is-peaceful", attackingNation
                 .getFormattedName()));
     }
 
@@ -569,14 +569,14 @@ public class FlagWar extends JavaPlugin {
 		int requiredOnline = FlagWarConfig.getMinPlayersOnlineInTownForWar();
 		int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(town).size();
 		if (onlinePlayerCount < requiredOnline)
-			throw new TownyException(Translate.from("error.not-enough-online-players", requiredOnline, town.getFormattedName()));
+			throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players", requiredOnline, town.getFormattedName()));
 	}
 
 	public static void checkIfNationHasMinOnlineForWar(Nation nation) throws TownyException {
 		int requiredOnline = FlagWarConfig.getMinPlayersOnlineInNationForWar();
 		int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(nation).size();
 		if (onlinePlayerCount < requiredOnline)
-			throw new TownyException(Translate.from("error.not-enough-online-players", requiredOnline, nation.getFormattedName()));
+			throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players", requiredOnline, nation.getFormattedName()));
 	}
 
 	public static WorldCoord cellToWorldCoordinate(Cell cell) {

@@ -29,7 +29,7 @@ public class Translate {
      * Takes a Translation key and variable arguments (Varargs), and returns the formatted String.
      * The key is ran through {@link LocaleUtil#getMessages()} and {@link java.util.ResourceBundle#getString(String)}.
      * @param translationKey The translation key, as it appears in a Translation_locale.properties ResourceBundle.
-     * @param args The arguments to pass to the String.formatter
+     * @param args The {@link String#format(String, Object...)} arguments to use, in place of {@link Object}s.
      * @return A translated String, with parsed arguments.
      */
     public static String from(String translationKey, Object... args) {
@@ -40,9 +40,28 @@ public class Translate {
      * Takes a Translation key and runs it through {@link LocaleUtil#getMessages()} and
      * {@link java.util.ResourceBundle#getString(String)}.
      * @param translationKey The translation key, as it appears in a Translation_locale.properties ResourceBundle.
-     * @return A translated String, with formatting applied (if necessary)
+     * @return A translated String, with formatting applied (necessary for some strings with line-breaks)
      */
     public static String from(String translationKey){
         return String.format(LocaleUtil.getMessages().getString(translationKey));
+    }
+
+    /**
+     * Runs {@link #from(String, Object...)}, then prefixes the message.
+     * @param translationKey A translation key, as it appears in a Translation_locale.properties ResourceBundle.
+     * @param args The {@link String#format(String, Object...)} arguments to use, in place of {@link Object}s.
+     * @return A prefixed message.
+     */
+    public static String fromPrefixed(String translationKey, Object... args) {
+        return from("message-prefix", from(translationKey, args));
+    }
+
+    /**
+     * Runs {@link #from(String)}, then prefixes the message.
+     * @param translationKey A translation key, as it appears in a Translation_locale.properties ResourceBundle.
+     * @return A prefixed message.
+     */
+    public static String fromPrefixed(String translationKey) {
+        return from("message-prefix", from(translationKey));
     }
 }
