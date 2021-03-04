@@ -353,12 +353,12 @@ public class FlagWarCustomListener implements Listener {
     @SuppressWarnings("unused")
     public void onTownLeaveNation(NationPreTownLeaveEvent event) {
 		if (FlagWarConfig.isAllowingAttacks()) {
-			if (FlagWarAPI.isUnderAttack(event.getTown()) && TownySettings.isFlaggedInteractionTown()) {
+			if (FlagWarAPI.isUnderAttack(event.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
 				event.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
 				event.setCancelled(true);
 			}
 
-			if (System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < TownySettings.timeToWaitAfterFlag()) {
+			if (System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
 				event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
 				event.setCancelled(true);
 			}
@@ -368,9 +368,9 @@ public class FlagWarCustomListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     @SuppressWarnings("unused")
     public void onNationWithdraw(NationPreTransactionEvent event) {
-		if (FlagWarConfig.isAllowingAttacks() && TownySettings.isFlaggedInteractionNation() && event.getTransaction().getType() == TransactionType.WITHDRAW) {
+		if (FlagWarConfig.isAllowingAttacks() && FlagWarConfig.isFlaggedInteractionNation() && event.getTransaction().getType() == TransactionType.WITHDRAW) {
 			for (Town town : event.getNation().getTowns()) {
-				if (FlagWarAPI.isUnderAttack(town) || System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(town) < TownySettings.timeToWaitAfterFlag()) {
+				if (FlagWarAPI.isUnderAttack(town) || System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(town) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
 					event.setCancelMessage(Translate.fromPrefixed("error.nation-under-attack"));
 					event.setCancelled(true);
 					return;
@@ -382,7 +382,7 @@ public class FlagWarCustomListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     @SuppressWarnings("unused")
     public void onTownWithdraw(TownPreTransactionEvent event) {
-		if (FlagWarConfig.isAllowingAttacks() && System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < TownySettings.timeToWaitAfterFlag()) {
+		if (FlagWarConfig.isAllowingAttacks() && System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
 			event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
 			event.setCancelled(true);
 		}
@@ -392,12 +392,12 @@ public class FlagWarCustomListener implements Listener {
     @SuppressWarnings("unused")
     public void onTownSetHomeBlock(TownPreSetHomeBlockEvent event) {
 		if (FlagWarConfig.isAllowingAttacks()) {
-			if (FlagWarAPI.isUnderAttack(event.getTown()) && TownySettings.isFlaggedInteractionTown()) {
+			if (FlagWarAPI.isUnderAttack(event.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
 			    cancelTownPreSetHomeBlockEvent(event, DENY_FLAG_TOWN_UNDER_ATTACK);
 				return;
 			}
 
-			if (System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(event.getTown()) < TownySettings.timeToWaitAfterFlag()) {
+			if (System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(event.getTown()) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
 				cancelTownPreSetHomeBlockEvent(event, DENY_FLAG_RECENTLY_ATTACKED);
 			}
 
@@ -428,13 +428,13 @@ public class FlagWarCustomListener implements Listener {
     @SuppressWarnings("unused")
     public void onTownLeave(TownLeaveEvent event) {
 		if (FlagWarConfig.isAllowingAttacks()) {
-			if (FlagWarAPI.isUnderAttack(event.getTown()) && TownySettings.isFlaggedInteractionTown()) {
+			if (FlagWarAPI.isUnderAttack(event.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
 				event.setCancelled(true);
 				event.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
 				return;
 			}
 
-			if (System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(event.getTown()) < TownySettings.timeToWaitAfterFlag()) {
+			if (System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(event.getTown()) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
 				event.setCancelled(true);
 				event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
             }
@@ -444,13 +444,13 @@ public class FlagWarCustomListener implements Listener {
 	@EventHandler (priority= EventPriority.HIGH)
     @SuppressWarnings("unused")
     private void onWarPreUnclaim(TownPreUnclaimCmdEvent event) {
-		if (FlagWarAPI.isUnderAttack(event.getTown()) && TownySettings.isFlaggedInteractionTown()) {
+		if (FlagWarAPI.isUnderAttack(event.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
 			event.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
 			event.setCancelled(true);
 			return; // Return early, no reason to try sequential checks if a town is under attack.
 		}
 
-		if (System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < TownySettings.timeToWaitAfterFlag()) {
+		if (System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
 			event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
 			event.setCancelled(true);
 		}
