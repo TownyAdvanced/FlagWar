@@ -49,7 +49,6 @@ public class ConfigLoader {
                 logger.warning("Created new backup location: Flagwar/config.old.yml");
             regenerateConfiguration(configFile, backupFile);
         }
-        // TODO: Check for an uneven node-count between config and defaultConfig.
 
         plugin.getConfig().load(configFile);
     }

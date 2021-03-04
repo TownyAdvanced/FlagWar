@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -115,7 +116,7 @@ public class FlagWar extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        logger.info(Translate.from("shutdown.cancel-all"));
+        logger.log(Level.INFO, () -> Translate.from("shutdown.cancel-all"));
 
         try {
             for (CellUnderAttack cell : new ArrayList<>(cellsUnderAttack.values()))
@@ -140,14 +141,14 @@ public class FlagWar extends JavaPlugin {
     }
 
     private void checkTowny() {
-	    logger.info(Translate.from("startup.check-towny.notify"));
+        logger.log(Level.INFO, () -> Translate.from("startup.check-towny.notify"));
         Towny towny = Towny.getPlugin();
         if (towny == null) {
-            logger.severe(Translate.from("startup.check-towny.not-running"));
+            logger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.not-running"));
             onDisable();
         }
         else if (towny.isError()) {
-            logger.severe(Translate.from("startup.check-towny.isError"));
+            logger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.isError"));
             onDisable();
         } else {
             checkTownyVersionCompatibility(towny);
@@ -157,29 +158,29 @@ public class FlagWar extends JavaPlugin {
     private void checkTownyVersionCompatibility(Towny towny) {
         Version townyVersion = Version.fromString(towny.getVersion());
         if (townyVersion.compareTo(MIN_TOWNY_VER) < 0) {
-            logger.severe(Translate.from("startup.check-towny.outdated", MIN_TOWNY_VER.toString()));
+            logger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.outdated", MIN_TOWNY_VER.toString()));
             onDisable();
         } else {
-            logger.info(Translate.from("startup.check-towny.good-to-go"));
+            logger.log(Level.INFO, () -> Translate.from("startup.check-towny.good-to-go"));
         }
     }
 
 	public void registerEvents() {
-        logger.info(Translate.from("startup.events.register"));
+        logger.log(Level.INFO, () -> Translate.from("startup.events.register"));
         pluginManager.registerEvents(flagWarBlockListener, this);
         pluginManager.registerEvents(flagWarCustomListener, this);
         pluginManager.registerEvents(flagWarEntityListener, this);
         pluginManager.registerEvents(warzoneListener, this);
-        logger.info(Translate.from("startup.events.registered"));
+        logger.log(Level.INFO, () -> Translate.from("startup.events.registered"));
 	}
 
 	private void registerListeners() {
-        logger.info(Translate.from("startup.listeners.register"));
+        logger.log(Level.INFO, () -> Translate.from("startup.listeners.register"));
         flagWarBlockListener = new FlagWarBlockListener(this);
         flagWarCustomListener = new FlagWarCustomListener(this);
         flagWarEntityListener = new FlagWarEntityListener();
         warzoneListener = new WarzoneListener();
-        logger.info(Translate.from("startup.listeners.registered"));
+        logger.log(Level.INFO, () -> Translate.from("startup.listeners.registered"));
     }
 
     public static Plugin getInstance() {
@@ -192,7 +193,7 @@ public class FlagWar extends JavaPlugin {
 
     void brandingMessage() {
         if (this.getConfig().getBoolean("show-startup-marquee")){
-            logger.info(Translate.from("startup.marquee-art"));
+            logger.log(Level.INFO, () -> Translate.from("startup.marquee-art"));
         }
         logger.info(FW_COPYRIGHT);
     }
@@ -217,7 +218,7 @@ public class FlagWar extends JavaPlugin {
 	}
 
 	private void loadFlagWarMaterials() {
-        logger.info(Translate.from("startup.load-materials.notify"));
+        logger.log(Level.INFO, () -> Translate.from("startup.load-materials.notify"));
         String flagLight = Objects.requireNonNull(this.getConfig().getString("flag.light_block"));
         String flagBase = Objects.requireNonNull(this.getConfig().getString("flag.base_block"));
         String beaconWireframe = Objects.requireNonNull(this.getConfig().getString("beacon.wireframe_block"));
@@ -228,7 +229,7 @@ public class FlagWar extends JavaPlugin {
             FlagWarConfig.setFlagLightMaterial(lightBlock);
         else {
             FlagWarConfig.setFlagLightMaterial(Material.TORCH);
-            logger.warning(Translate.from("startup.load-materials.invalid-light-block"));
+            logger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-light-block"));
         }
 
         Material baseBlock = Material.matchMaterial(flagBase);
@@ -236,7 +237,7 @@ public class FlagWar extends JavaPlugin {
             FlagWarConfig.setFlagBaseMaterial(baseBlock);
         else {
             FlagWarConfig.setFlagBaseMaterial(Material.OAK_FENCE);
-            logger.warning(Translate.from("startup.load-materials.invalid-base-block"));
+            logger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-base-block"));
         }
 
         Material beaconFrame = Material.matchMaterial(beaconWireframe);
@@ -244,7 +245,7 @@ public class FlagWar extends JavaPlugin {
             FlagWarConfig.setBeaconWireFrameMaterial(beaconFrame);
         else {
             FlagWarConfig.setBeaconWireFrameMaterial(Material.GLOWSTONE);
-            logger.warning(Translate.from("startup.load-materials.invalid-beacon-wireframe"));
+            logger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-beacon-wireframe"));
         }
     }
 
