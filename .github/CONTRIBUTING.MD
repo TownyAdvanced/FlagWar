@@ -20,18 +20,19 @@ or help with your idea or contribution in the [TownyAdvanced Discord](https://di
 
 ## Contributing Localizations
 
-> ⚠ **IMPLEMENTATION NOTICE**  
-> Localization features have not yet been implemented within FlagWar, and localization is currently dependent
-> on Towny. Some strings are currently hard-coded into English.
-
 Community submitted localizations are greatly appreciated, and allow FlagWar to be used by many others that may not
 speak the language(s) used by the developers.
 
 A few ground rules for translations:
 - No machine-generated text translations. You cannot simply trust some files spat out by some bot running on Amazon,
-  Google, or Microsoft servers.
-- Adhere to the [Java Locale][java-locales] language tag when naming your localization, unless it's a fantasy locale
-  emulating a work of fiction. (e.g. Languages by J.R.R. Tolkien, _Pirate Speak_, or _Klingon_)
+  Google, or Microsoft servers to be accurate.
+- Adhere to the [Java Locale][java-locales] language tag when naming your localization. That's `language_REGION(_VARIANT)`, generally. 
+  If you are submitting a fake locale, such as upsidedown or piratespeak, use a common language and region, and set the
+  fake locale as the variant. Ex: en_GB_PIRATE, en_US_INVERTED, es_MX_INVERTED.
+- Make sure your language works - play test it. Building with Maven is super easy, and FlagWar will warn when the
+  language cannot load, so there's no excuse. 
+- All translation files need to be prefixed with `Translation_` and end with `.properties`. Without them, your locale will
+  not load.
     
 [java-locales]: https://www.oracle.com/java/technologies/javase/jdk8-jre8-suported-locales.html
     "JDK8: JRE8 Supported Locales | Oracle"
@@ -105,7 +106,7 @@ A few ground rules for translations:
     - Use Platform-Neutral new-line characters when manipulating Strings.
         - `%n` is *always* a newline, regardless of the platform or JDK vendor, whereas `\n` is not guaranteed to be so.
     
-5. **Use of Server-specific Code**
+5. **Use of Minecraft Server-specific Code**
     - Do not use NMS (`net.minecraft.server`) or server implementation-specific code.
     - If you wish to incorporate Paper features, consider using PaperLib. We will continue to target the SpigotAPI as a
       base target for compatibility reason.

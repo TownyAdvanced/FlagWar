@@ -16,12 +16,13 @@
 ################################################################################
 
 # Note: Do not modify config_version, unless you want to regenerate your config
-config_version: 1.0
+config_version: 1.1
 
-# Not Yet Implemented! Everything currently hard-coded in American English.
+# Please see https://github.com/TownyAdvanced/FlagWar/tree/main/src/main/resources/
+# for available translations. Custom translations are only supported if they are merged.
 translation: "en_US"
 
-# (Cosmetic) Show the ASCII banner on startup.
+# (Cosmetic) Show the ASCII banner on startup. Disable for cleaner/smaller server logs.
 show-startup-marquee: true
 
 # General Gameplay Rules

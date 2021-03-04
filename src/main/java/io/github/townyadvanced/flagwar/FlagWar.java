@@ -29,16 +29,18 @@ import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
-import com.palmergames.bukkit.towny.object.Translation;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import com.palmergames.bukkit.towny.utils.AreaSelectionUtil;
 import com.palmergames.bukkit.util.Version;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.github.townyadvanced.flagwar.config.ConfigLoader;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.events.CellAttackCanceledEvent;
 import io.github.townyadvanced.flagwar.events.CellAttackEvent;
 import io.github.townyadvanced.flagwar.events.CellDefendedEvent;
 import io.github.townyadvanced.flagwar.events.CellWonEvent;
+import io.github.townyadvanced.flagwar.i18n.LocaleUtil;
+import io.github.townyadvanced.flagwar.i18n.Translate;
 import io.github.townyadvanced.flagwar.listeners.FlagWarBlockListener;
 import io.github.townyadvanced.flagwar.listeners.FlagWarCustomListener;
 import io.github.townyadvanced.flagwar.listeners.FlagWarEntityListener;
@@ -47,12 +49,13 @@ import io.github.townyadvanced.flagwar.objects.Cell;
 import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -60,6 +63,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -69,33 +73,42 @@ public class FlagWar extends JavaPlugin {
     private static final Map<Cell, CellUnderAttack> cellsUnderAttack = new HashMap<>();
 	private static final Map<String, List<CellUnderAttack>> cellsUnderAttackByPlayer = new HashMap<>();
 	private static final Map<Town, Long> lastFlag = new HashMap<>();
-    private static final FlagWar plugin = FlagWar.getInstance();
+	private static final String FW_COPYRIGHT = "Copyright \u00a9 2021 TownyAdvanced";
     private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.0");
+    private static Plugin plugin;
     private final Logger logger;
     private final ConfigLoader configLoader;
-    private final FlagWarBlockListener flagWarBlockListener = new FlagWarBlockListener(this);
-	private final FlagWarCustomListener flagWarCustomListener = new FlagWarCustomListener(this);
-	private final FlagWarEntityListener flagWarEntityListener = new FlagWarEntityListener();
-	private final WarzoneListener warzoneListener = new WarzoneListener();
+    private FlagWarBlockListener flagWarBlockListener;
+	private FlagWarCustomListener flagWarCustomListener;
+	private FlagWarEntityListener flagWarEntityListener;
+	private WarzoneListener warzoneListener;
 
-	public FlagWar(){
+    public FlagWar(){
 	    logger = this.getLogger();
 	    configLoader = new ConfigLoader(this);
     }
 
 	@Override
     public void onEnable() {
+        setInstance();
+
         try {
             configLoader.loadConfig();
         } catch (IOException e) {
             logger.severe(e.getMessage());
             e.printStackTrace();
+            onDisable();
+            return;
         } catch (Exception e) {
             logger.severe(e.getMessage());
+            onDisable();
+            return;
         }
+        setLocale();
 
         brandingMessage();
         checkTowny();
+        registerListeners();
         loadFlagWarMaterials();
         registerEvents();
         bStatsKickstart();
@@ -103,31 +116,39 @@ public class FlagWar extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        logger.info("Stopping Flag War");
-        logger.info("Attempting to cancel all attacks gracefully.");
+        logger.log(Level.INFO, () -> Translate.from("shutdown.cancel-all"));
+
         try {
             for (CellUnderAttack cell : new ArrayList<>(cellsUnderAttack.values()))
                 attackCanceled(cell);
         } catch (NullPointerException npe) {
             npe.printStackTrace();
         }
-        logger.info("Flag War Disabled.");
     }
 
-    @SuppressWarnings("all")
+    private void setLocale() {
+        if (plugin.getConfig().getString("translation") != null) {
+            LocaleUtil.setUpLocale(plugin.getConfig().getString("translation"));
+        } else {
+            LocaleUtil.setUpLocale("en_US");
+        }
+    }
+
+    @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
+    @SuppressWarnings({"unused", "java:S1854", "java:S1481"})
     private void bStatsKickstart() {
         Metrics metrics = new Metrics(this, 10325);
     }
 
     private void checkTowny() {
-	    logger.info("Checking against Towny...");
+        logger.log(Level.INFO, () -> Translate.from("startup.check-towny.notify"));
         Towny towny = Towny.getPlugin();
         if (towny == null) {
-            logger.severe("Towny is not running, or was simply not found. Disabling Flag War!");
+            logger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.not-running"));
             onDisable();
         }
         else if (towny.isError()) {
-            logger.severe("Towny is in Safe Mode! Disabling Flag War!");
+            logger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.isError"));
             onDisable();
         } else {
             checkTownyVersionCompatibility(towny);
@@ -137,47 +158,44 @@ public class FlagWar extends JavaPlugin {
     private void checkTownyVersionCompatibility(Towny towny) {
         Version townyVersion = Version.fromString(towny.getVersion());
         if (townyVersion.compareTo(MIN_TOWNY_VER) < 0) {
-            String message = "The running copy of Towny is too old! You need at least Towny v"
-                + MIN_TOWNY_VER.toString() + " to use FlagWar with Towny.";
-            logger.severe(message);
+            logger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.outdated", MIN_TOWNY_VER.toString()));
             onDisable();
+        } else {
+            logger.log(Level.INFO, () -> Translate.from("startup.check-towny.good-to-go"));
         }
     }
 
 	public void registerEvents() {
-        logger.info("Registering Events...");
+        logger.log(Level.INFO, () -> Translate.from("startup.events.register"));
         pluginManager.registerEvents(flagWarBlockListener, this);
         pluginManager.registerEvents(flagWarCustomListener, this);
         pluginManager.registerEvents(flagWarEntityListener, this);
         pluginManager.registerEvents(warzoneListener, this);
-        logger.info("Events registered.");
+        logger.log(Level.INFO, () -> Translate.from("startup.events.registered"));
 	}
 
-    public static FlagWar getInstance() {
+	private void registerListeners() {
+        logger.log(Level.INFO, () -> Translate.from("startup.listeners.register"));
+        flagWarBlockListener = new FlagWarBlockListener(this);
+        flagWarCustomListener = new FlagWarCustomListener(this);
+        flagWarEntityListener = new FlagWarEntityListener();
+        warzoneListener = new WarzoneListener();
+        logger.log(Level.INFO, () -> Translate.from("startup.listeners.registered"));
+    }
+
+    public static Plugin getInstance() {
         return plugin;
     }
 
-    private void brandingMessage() {
+    private static void setInstance() {
+        plugin = Bukkit.getServer().getPluginManager().getPlugin("FlagWar");
+    }
+
+    void brandingMessage() {
         if (this.getConfig().getBoolean("show-startup-marquee")){
-            String indent = String.format("%-10s", "");
-            String marquee = String.format("%n%n"
-                + "%s ▄████  █    ██     ▄▀        ▄ ▄   ██   █▄▄▄▄ %n"
-                + "%s █▀   ▀ █    █ █  ▄▀         █   █  █ █  █  ▄▀ %n"
-                + "%s █▀▀    █    █▄▄█ █ ▀▄      █ ▄   █ █▄▄█ █▀▀▌  %n"
-                + "%s █      ███▄ █  █ █   █     █  █  █ █  █ █  █  %n"
-                + "%s  █         ▀   █  ███       █ █ █     █   █   %n"
-                + "%s   ▀           █              ▀ ▀     █   ▀    %n"
-                + "%s              ▀                      ▀         %n"
-                + "%s                 Version %s                    %n"
-                + "%s        Copyright \u00a9 2021 TownyAdvanced    %n",
-                indent, indent, indent, indent, indent, indent, indent,
-                indent, this.getDescription().getVersion(), indent);
-            logger.info(marquee);
-        } else {
-            String flagWarTM = String.format("Flag War, v%s - Copyright \u00a9 2021 TownyAdvanced",
-                this.getDescription().getVersion());
-            logger.info(flagWarTM);
+            logger.log(Level.INFO, () -> Translate.from("startup.marquee-art"));
         }
+        logger.info(FW_COPYRIGHT);
     }
 
 	public static void registerAttack(CellUnderAttack cell) throws TownyException {
@@ -185,15 +203,14 @@ public class FlagWar extends JavaPlugin {
 		CellUnderAttack attackCell = cellsUnderAttack.get(cell);
 
 		if (attackCell != null)
-			throw new AlreadyRegisteredException(Translation.of("msg_err_enemy_war_cell_already_under_attack", attackCell.getNameOfFlagOwner()));
+			throw new AlreadyRegisteredException(Translate.fromPrefixed("error.cell-already-under-attack", attackCell.getNameOfFlagOwner()));
 
 		String playerName = cell.getNameOfFlagOwner();
 
 		// Check that the user is under his limit of active war flags.
 		int futureActiveFlagCount = getNumActiveFlags(playerName) + 1;
 		if (futureActiveFlagCount > FlagWarConfig.getMaxActiveFlagsPerPerson())
-			throw new TownyException(Translation.of("msg_err_enemy_war_reached_max_active_flags", FlagWarConfig
-                .getMaxActiveFlagsPerPerson()));
+		    throw new TownyException(Translate.fromPrefixed("error.flag.max-flags-placed", FlagWarConfig.getMaxActiveFlagsPerPerson()));
 
 		addFlagToPlayerCount(playerName, cell);
 		cellsUnderAttack.put(cell, cell);
@@ -201,7 +218,7 @@ public class FlagWar extends JavaPlugin {
 	}
 
 	private void loadFlagWarMaterials() {
-        logger.info("Loading Material Lists...");
+        logger.log(Level.INFO, () -> Translate.from("startup.load-materials.notify"));
         String flagLight = Objects.requireNonNull(this.getConfig().getString("flag.light_block"));
         String flagBase = Objects.requireNonNull(this.getConfig().getString("flag.base_block"));
         String beaconWireframe = Objects.requireNonNull(this.getConfig().getString("beacon.wireframe_block"));
@@ -212,7 +229,7 @@ public class FlagWar extends JavaPlugin {
             FlagWarConfig.setFlagLightMaterial(lightBlock);
         else {
             FlagWarConfig.setFlagLightMaterial(Material.TORCH);
-            logger.warning("Flag light not defined properly. Defaulting to TORCH.");
+            logger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-light-block"));
         }
 
         Material baseBlock = Material.matchMaterial(flagBase);
@@ -220,7 +237,7 @@ public class FlagWar extends JavaPlugin {
             FlagWarConfig.setFlagBaseMaterial(baseBlock);
         else {
             FlagWarConfig.setFlagBaseMaterial(Material.OAK_FENCE);
-            logger.warning("Flag block not defined properly. Defaulting to OAK_FENCE.");
+            logger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-base-block"));
         }
 
         Material beaconFrame = Material.matchMaterial(beaconWireframe);
@@ -228,7 +245,7 @@ public class FlagWar extends JavaPlugin {
             FlagWarConfig.setBeaconWireFrameMaterial(beaconFrame);
         else {
             FlagWarConfig.setBeaconWireFrameMaterial(Material.GLOWSTONE);
-            logger.warning("Beacon wireframe not defined properly. Defaulting to GLOWSTONE");
+            logger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-beacon-wireframe"));
         }
     }
 
@@ -331,11 +348,12 @@ public class FlagWar extends JavaPlugin {
 
 	private static void removeFlagFromPlayerCount(String playerName, Cell cell) {
 		List<CellUnderAttack> activeFlags = cellsUnderAttackByPlayer.get(playerName);
+		CellUnderAttack cellUnderAttack = (CellUnderAttack) cell;
 		if (activeFlags != null) {
 			if (activeFlags.size() <= 1)
 				cellsUnderAttackByPlayer.remove(playerName);
 			else {
-				activeFlags.remove(cell);
+				activeFlags.remove(cellUnderAttack);
 				cellsUnderAttackByPlayer.put(playerName, activeFlags);
 			}
 		}
@@ -374,7 +392,7 @@ public class FlagWar extends JavaPlugin {
 		TownBlock townBlock;
 
 		if (attackingResident == null || !attackingResident.hasNation())
-			throw new TownyException(Translation.of("msg_err_dont_belong_nation"));
+			throw new TownyException(Translate.fromPrefixed("error.player-not-in-nation"));
 
         if (attackingResident.hasTown())
             attackingTown = attackingResident.getTown();
@@ -386,14 +404,14 @@ public class FlagWar extends JavaPlugin {
             return false;
 
 		if (attackingTown.getTownBlocks().isEmpty())
-			throw new TownyException(Translation.of("msg_err_enemy_war_your_town_has_no_claims"));
+			throw new TownyException(Translate.fromPrefixed("error.need-at-least-1-claim"));
 
 		try {
 			landOwnerTown = worldCoord.getTownBlock().getTown();
 			townBlock = worldCoord.getTownBlock();
 			landOwnerNation = landOwnerTown.getNation();
 		} catch (NotRegisteredException e) {
-			throw new TownyException(Translation.of("msg_err_enemy_war_not_part_of_nation"));
+			throw new TownyException(Translate.fromPrefixed("error.area-not-in-nation"));
 		}
 
 		checkTargetPeaceful(player, townyUniverse, landOwnerNation, attackingNation);
@@ -402,7 +420,7 @@ public class FlagWar extends JavaPlugin {
 
         // Check that attack takes place on the edge of a town
 		if (FlagWarConfig.isAttackingBordersOnly() && !AreaSelectionUtil.isOnEdgeOfOwnership(landOwnerTown, worldCoord))
-			throw new TownyException(Translation.of("msg_err_enemy_war_not_on_edge_of_town"));
+			throw new TownyException(Translate.fromPrefixed("error.border-attack-only"));
 
 		double costToPlaceWarFlag = FlagWarConfig.getCostToPlaceWarFlag();
 		if (TownyEconomyHandler.isActive()) {
@@ -423,14 +441,14 @@ public class FlagWar extends JavaPlugin {
         // Update Cache
         updateTownyCache(plugin, worldCoord, townyUniverse);
 
-        TownyMessaging.sendGlobalMessage(Translation.of("msg_enemy_war_area_under_attack", landOwnerTown.getFormattedName(), worldCoord.toString(), attackingResident.getFormattedName()));
+        TownyMessaging.sendGlobalMessage(Translate.fromPrefixed("broadcast.area.under_attack", landOwnerTown.getFormattedName(), worldCoord.toString(), attackingResident.getFormattedName()));
 		return true;
 	}
 
     private static void checkFlagHeight(Block block) throws TownyException {
         int topY = block.getWorld().getHighestBlockYAt(block.getX(), block.getZ()) - 1;
         if (block.getY() < topY)
-            throw new TownyException(Translation.of("msg_err_enemy_war_must_be_placed_above_ground"));
+            throw new TownyException(Translate.fromPrefixed("error.flag.need-above-ground"));
     }
 
     private static void setAttackerAsEnemy(Nation defendingNation, Nation attackingNation)
@@ -459,8 +477,7 @@ public class FlagWar extends JavaPlugin {
         throws TownyException {
         try {
             attackRes.getAccount().withdraw(cost, "War - WarFlag Cost");
-            TownyMessaging.sendResidentMessage(attackRes, Translation
-                .of("msg_enemy_war_purchased_warflag",
+            TownyMessaging.sendResidentMessage(attackRes, Translate.fromPrefixed("warflag-purchased",
                     TownyEconomyHandler.getFormattedBalance(cost)));
         } catch (EconomyException e) {
             e.printStackTrace();
@@ -488,7 +505,8 @@ public class FlagWar extends JavaPlugin {
 
             // Check that the user can pay for the war flag.
             if (balance < costToPlaceWarFlag)
-                throw new TownyException(Translation.of("msg_err_insuficient_funds_warflag", TownyEconomyHandler.getFormattedBalance(costToPlaceWarFlag)));
+                throw new TownyException(Translate.fromPrefixed("error.flag.insufficient-funds",
+                    TownyEconomyHandler.getFormattedBalance(costToPlaceWarFlag)));
 
             // Check that the user can pay the fines from losing/winning all future war flags.
             int activeFlagCount = getNumActiveFlags(attackRes.getName());
@@ -510,17 +528,18 @@ public class FlagWar extends JavaPlugin {
                     // Worst case scenario that all attacks are defended.
                     requiredAmount += defendedAttackCost;
                     cost = defendedAttackCost;
-                    reason = Translation.of("name_defended_attack");
+                    reason = Translate.from("name_defended_attack");
                 } else {
                     // Worst case scenario that all attacks go through, but is forced to pay a rebuilding fine.
                     requiredAmount += attackWinCost;
                     cost = attackWinCost;
-                    reason = Translation.of("name_rebuilding");
+                    reason = Translate.from("name_rebuilding");
                 }
 
                 // Check if player can pay in worst case scenario.
                 if (balance < requiredAmount)
-                    throw new TownyException(Translation.of("msg_err_insuficient_funds_future", TownyEconomyHandler.getFormattedBalance(cost), String.format("%d %s", activeFlagCount + 1, reason + "(s)")));
+                    throw new TownyException(Translate.fromPrefixed("error.insufficient-future-funds",
+                        TownyEconomyHandler.getFormattedBalance(cost), activeFlagCount + 1, reason));
             }
         } catch (EconomyException e) {
             throw new TownyException(e.getError());
@@ -539,10 +558,10 @@ public class FlagWar extends JavaPlugin {
     private static void checkTargetPeaceful(Player player, TownyUniverse townyUniverse,
         Nation landOwnerNation, Nation attackingNation) throws TownyException {
         if (landOwnerNation.isNeutral())
-            throw new TownyException(Translation.of("msg_err_enemy_war_is_peaceful", landOwnerNation
+            throw new TownyException(Translate.fromPrefixed("error.target-is-peaceful", landOwnerNation
                 .getFormattedName()));
         if (!townyUniverse.getPermissionSource().isTownyAdmin(player) && attackingNation.isNeutral())
-            throw new TownyException(Translation.of("msg_err_enemy_war_is_peaceful", attackingNation
+            throw new TownyException(Translate.fromPrefixed("error.target-is-peaceful", attackingNation
                 .getFormattedName()));
     }
 
@@ -550,17 +569,17 @@ public class FlagWar extends JavaPlugin {
 		int requiredOnline = FlagWarConfig.getMinPlayersOnlineInTownForWar();
 		int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(town).size();
 		if (onlinePlayerCount < requiredOnline)
-			throw new TownyException(Translation.of("msg_err_enemy_war_require_online", requiredOnline, town.getFormattedName()));
+			throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players", requiredOnline, town.getFormattedName()));
 	}
 
 	public static void checkIfNationHasMinOnlineForWar(Nation nation) throws TownyException {
 		int requiredOnline = FlagWarConfig.getMinPlayersOnlineInNationForWar();
 		int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(nation).size();
 		if (onlinePlayerCount < requiredOnline)
-			throw new TownyException(Translation.of("msg_err_enemy_war_require_online", requiredOnline, nation.getFormattedName()));
+			throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players", requiredOnline, nation.getFormattedName()));
 	}
 
-	public static WorldCoord cellToWorldCoord(Cell cell) {
+	public static WorldCoord cellToWorldCoordinate(Cell cell) {
 		return new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
 	}
 
