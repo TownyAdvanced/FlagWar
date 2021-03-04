@@ -1,9 +1,9 @@
 ==================================================
  FlagWar
 
- Copyright © 2011 Chris Holland (Aka. Shade [Bukkit], Zren [GitHub])
+ Copyright © 2011-2012 Chris Holland (Aka. Shade [Bukkit], Zren [GitHub])
  Copyright © 2012-2021 TownyAdvanced
- Copyright © 2021 FlagWar Contributors
+ Copyright © 2020-2021 FlagWar Contributors
 --------------------------------------------------
 
 FlagWar is licensed under the Apache License, Version 2.0. The full legal text is available to
@@ -18,6 +18,9 @@ Towny developed and maintained by TownyAdvanced since 2011. (https://github.com/
 Any prior code found on the com.palmergames.* classpath remains under previous copyrights, and
 Towny's Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
 [CC BY-ND-NC 3.0] (https://creativecommons.org/licenses/by-nc-nd/3.0/).
+
+Portions of code submitted under Towny's Contributor License Agreement remain copyright TownyAdvanced.
+Contributors to the FlagWar repository retain their copyright, subject to the terms of the Apache License.
 
 ==================================================
 3rd Party Libraries and Works

@@ -91,9 +91,9 @@ Administrator Resources
 
 ### Supported Releases
 
-| FlagWar Release | 📅           | Minimum Requirements                             |
+| FlagWar Release | 📅           | Requirements                                     |
 |:--------------: | :----------: | :----------------------------------------------: |
-| [v0.1.0-devel][0.1.0]    | Feb 18, 2021 | Towny 0.96.7.3, Spigot 1.16.5                    |
+| [v0.1.1-devel][0.1.1]    | Feb 18, 2021 | Towny 0.96.7.4, Spigot 1.14.4           |
 | _Pre-History_   | _2011_       | _Included in Towny until v0.9x.x.x; no support._ |
 
 > While FlagWar does not use the PaperAPI, Towny does make use of the PaperLib library to provide
