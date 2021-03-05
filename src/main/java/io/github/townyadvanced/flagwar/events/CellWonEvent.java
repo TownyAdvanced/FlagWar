@@ -25,8 +25,8 @@ import java.util.Objects;
 
 public class CellWonEvent extends Event implements Cancellable {
 
-	private static final HandlerList handlers = new HandlerList();
-	private boolean cancelled = false;
+    private static final HandlerList handlers = new HandlerList();
+    private boolean cancelled = false;
 
     @Override
     public HandlerList getHandlers() {
@@ -37,29 +37,29 @@ public class CellWonEvent extends Event implements Cancellable {
         return Objects.requireNonNull(handlers);
     }
 
-	private final CellUnderAttack cellAttackData;
+    private final CellUnderAttack cellAttackData;
 
     /**
      * Associates a {@link CellUnderAttack} with the CellWonEvent to be later parsed for information.
      * @param cellAttackData the CellUnderAttack to associate to the event.
      */
     public CellWonEvent(CellUnderAttack cellAttackData) {
-		this.cellAttackData = cellAttackData;
-	}
+        this.cellAttackData = cellAttackData;
+    }
 
     /**
      * Returns the {@link CellUnderAttack} from the event to be further parsed for data.
      * @return The CellUnderAttack from the event.
      */
-	public CellUnderAttack getCellAttackData() {
-		return cellAttackData;
-	}
+    public CellUnderAttack getCellAttackData() {
+        return cellAttackData;
+    }
 
     /**
      * Check if the CellWonEvent was cancelled.
      * @return true if the event was cancelled.
      */
-	@Override
+    @Override
     public boolean isCancelled() {
         return cancelled;
     }

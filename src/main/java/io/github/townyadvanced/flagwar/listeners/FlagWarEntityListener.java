@@ -27,11 +27,11 @@ import io.github.townyadvanced.flagwar.FlagWar;
 
 public class FlagWarEntityListener implements Listener {
 
-	@EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
     public void onEntityExplode(EntityExplodeEvent event) {
 
-		for (Block block : event.blockList())
-			FlagWar.checkBlock(null, block, event);
-	}
+        for (Block block : event.blockList())
+            FlagWar.checkBlock(null, block, event);
+    }
 }

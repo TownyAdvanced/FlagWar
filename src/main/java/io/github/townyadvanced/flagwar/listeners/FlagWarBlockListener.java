@@ -38,63 +38,63 @@ import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 
 public class FlagWarBlockListener implements Listener {
 
-	private Towny towny;
+    private Towny towny;
 
-	public FlagWarBlockListener(FlagWar flagWar) {
+    public FlagWarBlockListener(FlagWar flagWar) {
 
-	    if (flagWar.getServer().getPluginManager().getPlugin("Towny") != null)
-	        this.towny = Towny.getPlugin();
-	}
+        if (flagWar.getServer().getPluginManager().getPlugin("Towny") != null)
+            this.towny = Towny.getPlugin();
+    }
 
-	@EventHandler (priority=EventPriority.HIGH)
+    @EventHandler (priority=EventPriority.HIGH)
     @SuppressWarnings("unused")
-	public void onFlagWarFlagPlace(TownyBuildEvent event) {
-		if (event.getTownBlock() == null)
-			return;
+    public void onFlagWarFlagPlace(TownyBuildEvent event) {
+        if (event.getTownBlock() == null)
+            return;
 
-		if (!(FlagWarConfig.isAllowingAttacks() && event.getMaterial() == FlagWarConfig.getFlagBaseMaterial()))
-			return;
-		Player player = event.getPlayer();
-		Block block = player.getWorld().getBlockAt(event.getLocation());
-		WorldCoord worldCoord = new WorldCoord(block.getWorld().getName(), Coord.parseCoord(block));
+        if (!(FlagWarConfig.isAllowingAttacks() && event.getMaterial() == FlagWarConfig.getFlagBaseMaterial()))
+            return;
+        Player player = event.getPlayer();
+        Block block = player.getWorld().getBlockAt(event.getLocation());
+        WorldCoord worldCoord = new WorldCoord(block.getWorld().getName(), Coord.parseCoord(block));
 
-		if (towny.getCache(player).getStatus() == TownBlockStatus.ENEMY)
-			try {
-				if (FlagWar.callAttackCellEvent(towny, player, block, worldCoord))
-					event.setCancelled(false);
-			} catch (TownyException e) {
-				event.setMessage(e.getMessage());
-			}
-	}
+        if (towny.getCache(player).getStatus() == TownBlockStatus.ENEMY)
+            try {
+                if (FlagWar.callAttackCellEvent(towny, player, block, worldCoord))
+                    event.setCancelled(false);
+            } catch (TownyException e) {
+                event.setMessage(e.getMessage());
+            }
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
     public void onBlockBreak(BlockBreakEvent event) {
 
-		FlagWar.checkBlock(event.getPlayer(), event.getBlock(), event);
-	}
+        FlagWar.checkBlock(event.getPlayer(), event.getBlock(), event);
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
     public void onBlockBurn(BlockBurnEvent event) {
 
-		FlagWar.checkBlock(null, event.getBlock(), event);
-	}
+        FlagWar.checkBlock(null, event.getBlock(), event);
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
-	public void onBlockPistonExtend(BlockPistonExtendEvent event) {
+    public void onBlockPistonExtend(BlockPistonExtendEvent event) {
 
-	    for (Block block : event.getBlocks())
-	        FlagWar.checkBlock(null, block, event);
-	}
+        for (Block block : event.getBlocks())
+            FlagWar.checkBlock(null, block, event);
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
-	public void onBlockPistonRetract(BlockPistonRetractEvent event) {
+    public void onBlockPistonRetract(BlockPistonRetractEvent event) {
 
-		if (event.isSticky())
-			for (Block block : event.getBlocks())
-				FlagWar.checkBlock(null, block, event);
-	}
+        if (event.isSticky())
+            for (Block block : event.getBlocks())
+                FlagWar.checkBlock(null, block, event);
+    }
 }

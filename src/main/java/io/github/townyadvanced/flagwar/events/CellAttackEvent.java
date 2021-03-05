@@ -31,75 +31,75 @@ import java.util.Objects;
 
 public class CellAttackEvent extends Event implements Cancellable {
 
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	@Override
-	public HandlerList getHandlers() {
-		return getHandlerList();
-	}
-
-	public static HandlerList getHandlerList() {
-	    return Objects.requireNonNull(handlers);
+    @Override
+    public HandlerList getHandlers() {
+        return getHandlerList();
     }
 
-	private final Towny plugin;
-	private final Player player;
-	private final Block flagBaseBlock;
-	private boolean cancelled = false;
-	private String reason = null;
-	private long time;
+    public static HandlerList getHandlerList() {
+        return Objects.requireNonNull(handlers);
+    }
 
-	public CellAttackEvent(Towny plugin, Player player, Block flagBaseBlock) {
-		super();
-		this.plugin = plugin;
-		this.player = player;
-		this.flagBaseBlock = flagBaseBlock;
-		this.time = FlagWarConfig.getFlagWaitingTime();
-	}
+    private final Towny plugin;
+    private final Player player;
+    private final Block flagBaseBlock;
+    private boolean cancelled = false;
+    private String reason = null;
+    private long time;
+
+    public CellAttackEvent(Towny plugin, Player player, Block flagBaseBlock) {
+        super();
+        this.plugin = plugin;
+        this.player = player;
+        this.flagBaseBlock = flagBaseBlock;
+        this.time = FlagWarConfig.getFlagWaitingTime();
+    }
 
     @SuppressWarnings("unused")
     public Player getPlayer() {
-		return player;
-	}
+        return player;
+    }
 
     @SuppressWarnings("unused")
     public Block getFlagBaseBlock() {
-		return flagBaseBlock;
-	}
+        return flagBaseBlock;
+    }
 
-	public CellUnderAttack getData() {
-		return new CellUnderAttack(plugin, player.getName(), flagBaseBlock, time);
-	}
+    public CellUnderAttack getData() {
+        return new CellUnderAttack(plugin, player.getName(), flagBaseBlock, time);
+    }
 
     @SuppressWarnings("unused")
     public long getTime() {
-		return time;
-	}
+        return time;
+    }
 
     @SuppressWarnings("unused")
     public void setTime(long time) {
-		this.time = time;
-	}
+        this.time = time;
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
 
-	@Override
-	public void setCancelled(boolean cancelled) {
-		this.cancelled = cancelled;
-	}
+    @Override
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
 
-	public String getReason() {
-		return reason;
-	}
+    public String getReason() {
+        return reason;
+    }
 
-	public void setReason(String reason) {
-		this.reason = reason;
-	}
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
-	public boolean hasReason() {
-		return reason != null;
-	}
+    public boolean hasReason() {
+        return reason != null;
+    }
 }

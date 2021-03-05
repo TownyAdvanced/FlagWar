@@ -134,8 +134,8 @@ A few ground rules for translations:
          */
         @Deprecated
         public static FlagWar getPlugin() {
-	        return getInstance();
-	    }
+            return getInstance();
+        }
    }
    ```
    

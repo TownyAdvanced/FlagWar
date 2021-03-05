@@ -27,8 +27,8 @@ import java.util.Objects;
 
 public class CellDefendedEvent extends Event implements Cancellable {
 
-	private static final HandlerList handlers = new HandlerList();
-	private boolean cancelled = false;
+    private static final HandlerList HANDLERS = new HandlerList();
+    private boolean cancelled = false;
 
     @Override
     public HandlerList getHandlers() {
@@ -36,33 +36,33 @@ public class CellDefendedEvent extends Event implements Cancellable {
     }
 
     public static HandlerList getHandlerList() {
-        return Objects.requireNonNull(handlers);
+        return Objects.requireNonNull(HANDLERS);
     }
 
-	private final Player player;
-	private final Cell cell;
+    private final Player player;
+    private final Cell cell;
 
-	public CellDefendedEvent(Player player, Cell cell) {
-		super();
-		this.player = player;
-		this.cell = cell;
-	}
+    public CellDefendedEvent(final Player player, final Cell cell) {
+        super();
+        this.player = player;
+        this.cell = cell;
+    }
 
-	public Player getPlayer() {
-		return player;
-	}
+    public Player getPlayer() {
+        return player;
+    }
 
-	public Cell getCell() {
-		return cell;
-	}
+    public Cell getCell() {
+        return cell;
+    }
 
-	@Override
+    @Override
     public boolean isCancelled() {
         return cancelled;
     }
 
-	@Override
-    public void setCancelled(boolean cancel) {
+    @Override
+    public void setCancelled(final boolean cancel) {
         this.cancelled = cancel;
     }
 }

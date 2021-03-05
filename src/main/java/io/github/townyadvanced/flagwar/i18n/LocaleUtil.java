@@ -31,7 +31,7 @@ public class LocaleUtil {
         throw new IllegalStateException("Utility Class");
     }
 
-    public static void setUpLocale(String localeString){
+    public static void setUpLocale(String localeString) {
 
         Logger logger = FlagWar.getInstance().getLogger();
         Locale defaultLocale = new Locale("en","US");
@@ -45,12 +45,12 @@ public class LocaleUtil {
         String variant;
         Locale locale;
 
-        if (localeString.isEmpty() || !fileInJar(localeString)){
+        if (localeString.isEmpty() || !fileInJar(localeString)) {
             locale = defaultLocale;
             logger.severe("Locale is undefined or is not in FlagWar. Defaulting!");
         } else {
-            if (localeString.matches(cRegexA+vRegexA) || localeString.matches(cRegexA+vRegexB)
-                || localeString.matches(cRegexB+vRegexA) || localeString.matches(cRegexB+vRegexB)) {
+            if (localeString.matches(cRegexA + vRegexA) || localeString.matches(cRegexA + vRegexB)
+                || localeString.matches(cRegexB + vRegexA) || localeString.matches(cRegexB + vRegexB)) {
 
                 //Locale w/Variant
                 language = localeString.substring(0, localeString.indexOf("_"));

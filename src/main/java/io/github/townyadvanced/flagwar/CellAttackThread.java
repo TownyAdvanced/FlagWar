@@ -25,26 +25,26 @@ import java.util.TimerTask;
  */
 public class CellAttackThread extends TimerTask {
 
-	final CellUnderAttack cell;
+    final CellUnderAttack cell;
 
     /**
      * Constructs the {@link CellAttackThread} for a given {@link CellUnderAttack}
      * @param cellUnderAttack to assign the CellAttackThread to.
      */
-	public CellAttackThread(CellUnderAttack cellUnderAttack) {
+    public CellAttackThread(CellUnderAttack cellUnderAttack) {
 
-		this.cell = cellUnderAttack;
-	}
+        this.cell = cellUnderAttack;
+    }
 
     /**
      * Updates the war flag within the {@link CellUnderAttack}, and if {@link CellUnderAttack#hasEnded()} becomes true,
      * runs {@link FlagWar#attackWon(CellUnderAttack)}
      */
-	@Override
-	public void run() {
+    @Override
+    public void run() {
 
-		cell.changeFlag();
-		if (cell.hasEnded())
-			FlagWar.attackWon(cell);
-	}
+        cell.changeFlag();
+        if (cell.hasEnded())
+            FlagWar.attackWon(cell);
+    }
 }

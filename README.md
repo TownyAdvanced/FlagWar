@@ -50,9 +50,9 @@ Sections
 3) [Developer Resources 🧰][developer-resources]
    - [Contributing Code 💻][contrib-code]
    - [Contributing Documentation 🗒][contrib-docs] - WIP
-   - [Localizing FlagWar 🗺][contrib-localize]	- WIP
+   - [Localizing FlagWar 🗺][contrib-localize]    - WIP
    - [Building FlagWar 🏗][building]
-4) [Supporting the Project 🦸][supporting-flagwar]	
+4) [Supporting the Project 🦸][supporting-flagwar]    
 
 Licensing
 ---------

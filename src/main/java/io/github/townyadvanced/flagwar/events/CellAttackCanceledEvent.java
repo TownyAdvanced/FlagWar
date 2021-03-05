@@ -26,36 +26,36 @@ import java.util.Objects;
 
 public class CellAttackCanceledEvent extends Event implements Cancellable{
 
-	private static final HandlerList handlers = new HandlerList();
-	private boolean cancelled = false;
+    private static final HandlerList handlers = new HandlerList();
+    private boolean cancelled = false;
 
-	@Override
-	public HandlerList getHandlers() {
-		return getHandlerList();
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return getHandlerList();
+    }
 
     public static HandlerList getHandlerList() {
-		return Objects.requireNonNull(handlers);
-	}
+        return Objects.requireNonNull(handlers);
+    }
 
-	private final CellUnderAttack cell;
+    private final CellUnderAttack cell;
 
-	public CellAttackCanceledEvent(CellUnderAttack cell) {
-		super();
-		this.cell = cell;
-	}
+    public CellAttackCanceledEvent(CellUnderAttack cell) {
+        super();
+        this.cell = cell;
+    }
 
-	public CellUnderAttack getCell() {
-		return cell;
-	}
+    public CellUnderAttack getCell() {
+        return cell;
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
 
-	@Override
-	public void setCancelled(boolean cancel) {
-		this.cancelled = cancel;
-	}
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.cancelled = cancel;
+    }
 }

@@ -70,24 +70,24 @@ public class FlagWar extends JavaPlugin {
 
     private static final PluginManager pluginManager = Bukkit.getPluginManager();
     private static final Map<Cell, CellUnderAttack> cellsUnderAttack = new HashMap<>();
-	private static final Map<String, List<CellUnderAttack>> cellsUnderAttackByPlayer = new HashMap<>();
-	private static final Map<Town, Long> lastFlag = new HashMap<>();
-	private static final String FW_COPYRIGHT = "Copyright \u00a9 2021 TownyAdvanced";
+    private static final Map<String, List<CellUnderAttack>> cellsUnderAttackByPlayer = new HashMap<>();
+    private static final Map<Town, Long> lastFlag = new HashMap<>();
+    private static final String FW_COPYRIGHT = "Copyright \u00a9 2021 TownyAdvanced";
     private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.0");
     private static Plugin plugin;
     private final Logger logger;
     private final ConfigLoader configLoader;
     private FlagWarBlockListener flagWarBlockListener;
-	private FlagWarCustomListener flagWarCustomListener;
-	private FlagWarEntityListener flagWarEntityListener;
-	private WarzoneListener warzoneListener;
+    private FlagWarCustomListener flagWarCustomListener;
+    private FlagWarEntityListener flagWarEntityListener;
+    private WarzoneListener warzoneListener;
 
     public FlagWar(){
-	    logger = this.getLogger();
-	    configLoader = new ConfigLoader(this);
+        logger = this.getLogger();
+        configLoader = new ConfigLoader(this);
     }
 
-	@Override
+    @Override
     public void onEnable() {
         setInstance();
 
@@ -164,16 +164,16 @@ public class FlagWar extends JavaPlugin {
         }
     }
 
-	public void registerEvents() {
+    public void registerEvents() {
         logger.log(Level.INFO, () -> Translate.from("startup.events.register"));
         pluginManager.registerEvents(flagWarBlockListener, this);
         pluginManager.registerEvents(flagWarCustomListener, this);
         pluginManager.registerEvents(flagWarEntityListener, this);
         pluginManager.registerEvents(warzoneListener, this);
         logger.log(Level.INFO, () -> Translate.from("startup.events.registered"));
-	}
+    }
 
-	private void registerListeners() {
+    private void registerListeners() {
         logger.log(Level.INFO, () -> Translate.from("startup.listeners.register"));
         flagWarBlockListener = new FlagWarBlockListener(this);
         flagWarCustomListener = new FlagWarCustomListener(this);
@@ -197,26 +197,26 @@ public class FlagWar extends JavaPlugin {
         logger.info(FW_COPYRIGHT);
     }
 
-	public static void registerAttack(CellUnderAttack cell) throws TownyException {
+    public static void registerAttack(CellUnderAttack cell) throws TownyException {
 
-		CellUnderAttack attackCell = cellsUnderAttack.get(cell);
+        CellUnderAttack attackCell = cellsUnderAttack.get(cell);
 
-		if (attackCell != null)
-			throw new AlreadyRegisteredException(Translate.fromPrefixed("error.cell-already-under-attack", attackCell.getNameOfFlagOwner()));
+        if (attackCell != null)
+            throw new AlreadyRegisteredException(Translate.fromPrefixed("error.cell-already-under-attack", attackCell.getNameOfFlagOwner()));
 
-		String playerName = cell.getNameOfFlagOwner();
+        String playerName = cell.getNameOfFlagOwner();
 
-		// Check that the user is under his limit of active war flags.
-		int futureActiveFlagCount = getNumActiveFlags(playerName) + 1;
-		if (futureActiveFlagCount > FlagWarConfig.getMaxActiveFlagsPerPerson())
-		    throw new TownyException(Translate.fromPrefixed("error.flag.max-flags-placed", FlagWarConfig.getMaxActiveFlagsPerPerson()));
+        // Check that the user is under his limit of active war flags.
+        int futureActiveFlagCount = getNumActiveFlags(playerName) + 1;
+        if (futureActiveFlagCount > FlagWarConfig.getMaxActiveFlagsPerPerson())
+            throw new TownyException(Translate.fromPrefixed("error.flag.max-flags-placed", FlagWarConfig.getMaxActiveFlagsPerPerson()));
 
-		addFlagToPlayerCount(playerName, cell);
-		cellsUnderAttack.put(cell, cell);
-		cell.begin();
-	}
+        addFlagToPlayerCount(playerName, cell);
+        cellsUnderAttack.put(cell, cell);
+        cell.begin();
+    }
 
-	private void loadFlagWarMaterials() {
+    private void loadFlagWarMaterials() {
         logger.log(Level.INFO, () -> Translate.from("startup.load-materials.notify"));
         String flagLight = Objects.requireNonNull(this.getConfig().getString("flag.light_block"));
         String flagBase = Objects.requireNonNull(this.getConfig().getString("flag.base_block"));
@@ -248,120 +248,120 @@ public class FlagWar extends JavaPlugin {
         }
     }
 
-	static int getNumActiveFlags(String playerName) {
-		List<CellUnderAttack> activeFlags = cellsUnderAttackByPlayer.get(playerName);
-		return activeFlags == null ? 0 : activeFlags.size();
-	}
+    static int getNumActiveFlags(String playerName) {
+        List<CellUnderAttack> activeFlags = cellsUnderAttackByPlayer.get(playerName);
+        return activeFlags == null ? 0 : activeFlags.size();
+    }
 
-	static List<CellUnderAttack> getCellsUnderAttack() {
-		return new ArrayList<>(cellsUnderAttack.values());
-	}
+    static List<CellUnderAttack> getCellsUnderAttack() {
+        return new ArrayList<>(cellsUnderAttack.values());
+    }
 
-	static List<CellUnderAttack> getCellsUnderAttack(Town town) {
-		List<CellUnderAttack> cells = new ArrayList<>();
-		for(CellUnderAttack cua : cellsUnderAttack.values()) {
-			try {
-				Town townUnderAttack = TownyAPI.getInstance().getTownBlock(cua.getFlagBaseBlock().getLocation()).getTown();
-				if (townUnderAttack == null)
-					continue;
-				if(townUnderAttack == town)
-				    cells.add(cua);
-			}
-			catch(NotRegisteredException nre) {
-			    nre.printStackTrace();
+    static List<CellUnderAttack> getCellsUnderAttack(Town town) {
+        List<CellUnderAttack> cells = new ArrayList<>();
+        for(CellUnderAttack cua : cellsUnderAttack.values()) {
+            try {
+                Town townUnderAttack = TownyAPI.getInstance().getTownBlock(cua.getFlagBaseBlock().getLocation()).getTown();
+                if (townUnderAttack == null)
+                    continue;
+                if(townUnderAttack == town)
+                    cells.add(cua);
             }
-		}
-		return cells;
-	}
-
-	static boolean isUnderAttack(Town town) {
-		for(CellUnderAttack cua : cellsUnderAttack.values()) {
-			try {
-				Town townUnderAttack = TownyAPI.getInstance().getTownBlock(cua.getFlagBaseBlock().getLocation()).getTown();
-				if (townUnderAttack == null)
-					continue;
-				if(townUnderAttack == town)
-					return true;
-			}
-			catch(NotRegisteredException nre) {
-			    nre.printStackTrace();
+            catch(NotRegisteredException nre) {
+                nre.printStackTrace();
             }
-		}
-		return false;
-	}
+        }
+        return cells;
+    }
 
-	static boolean isUnderAttack(Cell cell) {
-		return cellsUnderAttack.containsKey(cell);
-	}
+    static boolean isUnderAttack(Town town) {
+        for(CellUnderAttack cua : cellsUnderAttack.values()) {
+            try {
+                Town townUnderAttack = TownyAPI.getInstance().getTownBlock(cua.getFlagBaseBlock().getLocation()).getTown();
+                if (townUnderAttack == null)
+                    continue;
+                if(townUnderAttack == town)
+                    return true;
+            }
+            catch(NotRegisteredException nre) {
+                nre.printStackTrace();
+            }
+        }
+        return false;
+    }
 
-	static CellUnderAttack getAttackData(Cell cell) {
-		return cellsUnderAttack.get(cell);
-	}
+    static boolean isUnderAttack(Cell cell) {
+        return cellsUnderAttack.containsKey(cell);
+    }
 
-	static void removeCellUnderAttack(CellUnderAttack cell) {
-		removeFlagFromPlayerCount(cell.getNameOfFlagOwner(), cell);
-		cellsUnderAttack.remove(cell);
-	}
+    static CellUnderAttack getAttackData(Cell cell) {
+        return cellsUnderAttack.get(cell);
+    }
 
-	static void attackWon(CellUnderAttack cell) {
-		CellWonEvent cellWonEvent = new CellWonEvent(cell);
-		pluginManager.callEvent(cellWonEvent);
-		cell.cancel();
-		removeCellUnderAttack(cell);
-	}
+    static void removeCellUnderAttack(CellUnderAttack cell) {
+        removeFlagFromPlayerCount(cell.getNameOfFlagOwner(), cell);
+        cellsUnderAttack.remove(cell);
+    }
 
-	static void attackDefended(Player player, CellUnderAttack cell) {
-		CellDefendedEvent cellDefendedEvent = new CellDefendedEvent(player, cell);
-		pluginManager.callEvent(cellDefendedEvent);
-		cell.cancel();
-		removeCellUnderAttack(cell);
-	}
+    static void attackWon(CellUnderAttack cell) {
+        CellWonEvent cellWonEvent = new CellWonEvent(cell);
+        pluginManager.callEvent(cellWonEvent);
+        cell.cancel();
+        removeCellUnderAttack(cell);
+    }
 
-	static void attackCanceled(CellUnderAttack cell) {
-		CellAttackCanceledEvent cellAttackCanceledEvent = new CellAttackCanceledEvent(cell);
-		pluginManager.callEvent(cellAttackCanceledEvent);
-		cell.cancel();
-		removeCellUnderAttack(cell);
-	}
+    static void attackDefended(Player player, CellUnderAttack cell) {
+        CellDefendedEvent cellDefendedEvent = new CellDefendedEvent(player, cell);
+        pluginManager.callEvent(cellDefendedEvent);
+        cell.cancel();
+        removeCellUnderAttack(cell);
+    }
 
-	public static void removeAttackerFlags(String playerName) {
-		List<CellUnderAttack> cells = cellsUnderAttackByPlayer.get(playerName);
-		if (cells != null)
-			for (CellUnderAttack cell : cells)
-				attackCanceled(cell);
-	}
+    static void attackCanceled(CellUnderAttack cell) {
+        CellAttackCanceledEvent cellAttackCanceledEvent = new CellAttackCanceledEvent(cell);
+        pluginManager.callEvent(cellAttackCanceledEvent);
+        cell.cancel();
+        removeCellUnderAttack(cell);
+    }
 
-	static List<CellUnderAttack> getCellsUnderAttackByPlayer(String playerName) {
-		List<CellUnderAttack> cells = cellsUnderAttackByPlayer.get(playerName);
-		if (cells == null) {
+    public static void removeAttackerFlags(String playerName) {
+        List<CellUnderAttack> cells = cellsUnderAttackByPlayer.get(playerName);
+        if (cells != null)
+            for (CellUnderAttack cell : cells)
+                attackCanceled(cell);
+    }
+
+    static List<CellUnderAttack> getCellsUnderAttackByPlayer(String playerName) {
+        List<CellUnderAttack> cells = cellsUnderAttackByPlayer.get(playerName);
+        if (cells == null) {
             return new ArrayList<>(0);
         } else
             return new ArrayList<>(cells);
-	}
+    }
 
-	private static void addFlagToPlayerCount(String playerName, CellUnderAttack cell) {
-		List<CellUnderAttack> activeFlags = getCellsUnderAttackByPlayer(playerName);
-		activeFlags.add(cell);
-		cellsUnderAttackByPlayer.put(playerName, activeFlags);
-	}
+    private static void addFlagToPlayerCount(String playerName, CellUnderAttack cell) {
+        List<CellUnderAttack> activeFlags = getCellsUnderAttackByPlayer(playerName);
+        activeFlags.add(cell);
+        cellsUnderAttackByPlayer.put(playerName, activeFlags);
+    }
 
-	private static void removeFlagFromPlayerCount(String playerName, Cell cell) {
-		List<CellUnderAttack> activeFlags = cellsUnderAttackByPlayer.get(playerName);
-		CellUnderAttack cellUnderAttack = (CellUnderAttack) cell;
-		if (activeFlags != null) {
-			if (activeFlags.size() <= 1)
-				cellsUnderAttackByPlayer.remove(playerName);
-			else {
-				activeFlags.remove(cellUnderAttack);
-				cellsUnderAttackByPlayer.put(playerName, activeFlags);
-			}
-		}
-	}
+    private static void removeFlagFromPlayerCount(String playerName, Cell cell) {
+        List<CellUnderAttack> activeFlags = cellsUnderAttackByPlayer.get(playerName);
+        CellUnderAttack cellUnderAttack = (CellUnderAttack) cell;
+        if (activeFlags != null) {
+            if (activeFlags.size() <= 1)
+                cellsUnderAttackByPlayer.remove(playerName);
+            else {
+                activeFlags.remove(cellUnderAttack);
+                cellsUnderAttackByPlayer.put(playerName, activeFlags);
+            }
+        }
+    }
 
-	public static void checkBlock(Player player, Block block, Cancellable event) {
-		if (FlagWarConfig.isAffectedMaterial(block.getType()))
+    public static void checkBlock(Player player, Block block, Cancellable event) {
+        if (FlagWarConfig.isAffectedMaterial(block.getType()))
             checkedBlockAffected(player, block, event);
-	}
+    }
 
     private static void checkedBlockAffected(Player player, Block block, Cancellable event) {
         Cell cell = Cell.parse(block.getLocation());
@@ -382,16 +382,16 @@ public class FlagWar extends JavaPlugin {
         checkFlagHeight(block);
 
         TownyUniverse townyUniverse = TownyUniverse.getInstance();
-		Resident attackingResident = townyUniverse.getResident(player.getUniqueId());
-		Town landOwnerTown;
-		Town attackingTown = null;
+        Resident attackingResident = townyUniverse.getResident(player.getUniqueId());
+        Town landOwnerTown;
+        Town attackingTown = null;
 
-		Nation landOwnerNation;
-		Nation attackingNation = null;
-		TownBlock townBlock;
+        Nation landOwnerNation;
+        Nation attackingNation = null;
+        TownBlock townBlock;
 
-		if (attackingResident == null || !attackingResident.hasNation())
-			throw new TownyException(Translate.fromPrefixed("error.player-not-in-nation"));
+        if (attackingResident == null || !attackingResident.hasNation())
+            throw new TownyException(Translate.fromPrefixed("error.player-not-in-nation"));
 
         if (attackingResident.hasTown())
             attackingTown = attackingResident.getTown();
@@ -402,31 +402,31 @@ public class FlagWar extends JavaPlugin {
         if (attackingTown == null || attackingNation == null)
             return false;
 
-		if (attackingTown.getTownBlocks().isEmpty())
-			throw new TownyException(Translate.fromPrefixed("error.need-at-least-1-claim"));
+        if (attackingTown.getTownBlocks().isEmpty())
+            throw new TownyException(Translate.fromPrefixed("error.need-at-least-1-claim"));
 
-		try {
-			landOwnerTown = worldCoord.getTownBlock().getTown();
-			townBlock = worldCoord.getTownBlock();
-			landOwnerNation = landOwnerTown.getNation();
-		} catch (NotRegisteredException e) {
-			throw new TownyException(Translate.fromPrefixed("error.area-not-in-nation"));
-		}
+        try {
+            landOwnerTown = worldCoord.getTownBlock().getTown();
+            townBlock = worldCoord.getTownBlock();
+            landOwnerNation = landOwnerTown.getNation();
+        } catch (NotRegisteredException e) {
+            throw new TownyException(Translate.fromPrefixed("error.area-not-in-nation"));
+        }
 
-		checkTargetPeaceful(player, townyUniverse, landOwnerNation, attackingNation);
+        checkTargetPeaceful(player, townyUniverse, landOwnerNation, attackingNation);
 
         checkPlayerLimits(landOwnerTown, attackingTown, landOwnerNation, attackingNation);
 
         // Check that attack takes place on the edge of a town
-		if (FlagWarConfig.isAttackingBordersOnly() && !AreaSelectionUtil.isOnEdgeOfOwnership(landOwnerTown, worldCoord))
-			throw new TownyException(Translate.fromPrefixed("error.border-attack-only"));
+        if (FlagWarConfig.isAttackingBordersOnly() && !AreaSelectionUtil.isOnEdgeOfOwnership(landOwnerTown, worldCoord))
+            throw new TownyException(Translate.fromPrefixed("error.border-attack-only"));
 
-		double costToPlaceWarFlag = FlagWarConfig.getCostToPlaceWarFlag();
-		if (TownyEconomyHandler.isActive()) {
+        double costToPlaceWarFlag = FlagWarConfig.getCostToPlaceWarFlag();
+        if (TownyEconomyHandler.isActive()) {
             calculateFeesAndFines(attackingResident, townBlock, costToPlaceWarFlag);
         }
 
-		if (kickstartCellUnderAttack(plugin, player, block)) {
+        if (kickstartCellUnderAttack(plugin, player, block)) {
             return false;
         }
 
@@ -441,8 +441,8 @@ public class FlagWar extends JavaPlugin {
         updateTownyCache(plugin, worldCoord, townyUniverse);
 
         TownyMessaging.sendGlobalMessage(Translate.fromPrefixed("broadcast.area.under_attack", landOwnerTown.getFormattedName(), worldCoord.toString(), attackingResident.getFormattedName()));
-		return true;
-	}
+        return true;
+    }
 
     private static void checkFlagHeight(Block block) throws TownyException {
         int topY = block.getWorld().getHighestBlockYAt(block.getX(), block.getZ()) - 1;
@@ -555,34 +555,34 @@ public class FlagWar extends JavaPlugin {
     }
 
     public static void checkIfTownHasMinOnlineForWar(Town town) throws TownyException {
-		int requiredOnline = FlagWarConfig.getMinPlayersOnlineInTownForWar();
-		int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(town).size();
-		if (onlinePlayerCount < requiredOnline)
-			throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players", requiredOnline, town.getFormattedName()));
-	}
+        int requiredOnline = FlagWarConfig.getMinPlayersOnlineInTownForWar();
+        int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(town).size();
+        if (onlinePlayerCount < requiredOnline)
+            throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players", requiredOnline, town.getFormattedName()));
+    }
 
-	public static void checkIfNationHasMinOnlineForWar(Nation nation) throws TownyException {
-		int requiredOnline = FlagWarConfig.getMinPlayersOnlineInNationForWar();
-		int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(nation).size();
-		if (onlinePlayerCount < requiredOnline)
-			throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players", requiredOnline, nation.getFormattedName()));
-	}
+    public static void checkIfNationHasMinOnlineForWar(Nation nation) throws TownyException {
+        int requiredOnline = FlagWarConfig.getMinPlayersOnlineInNationForWar();
+        int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(nation).size();
+        if (onlinePlayerCount < requiredOnline)
+            throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players", requiredOnline, nation.getFormattedName()));
+    }
 
-	public static WorldCoord cellToWorldCoordinate(Cell cell) {
-		return new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
-	}
+    public static WorldCoord cellToWorldCoordinate(Cell cell) {
+        return new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
+    }
 
-	static long lastFlagged(Town town) {
-		if (lastFlag.containsKey(town))
-			return lastFlag.get(town);
-		else
-			return 0;
-	}
+    static long lastFlagged(Town town) {
+        if (lastFlag.containsKey(town))
+            return lastFlag.get(town);
+        else
+            return 0;
+    }
 
-	public static void townFlagged(Town town) {
-		if (lastFlag.containsKey(town))
-			lastFlag.replace(town, System.currentTimeMillis());
-		else
-			lastFlag.put(town, System.currentTimeMillis());
-	}
+    public static void townFlagged(Town town) {
+        if (lastFlag.containsKey(town))
+            lastFlag.replace(town, System.currentTimeMillis());
+        else
+            lastFlag.put(town, System.currentTimeMillis());
+    }
 }
