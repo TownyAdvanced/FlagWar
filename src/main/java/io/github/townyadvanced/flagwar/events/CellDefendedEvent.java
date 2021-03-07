@@ -23,44 +23,63 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import java.util.Objects;
-
 public class CellDefendedEvent extends Event implements Cancellable {
 
+    /** Holds the event's {@link HandlerList}. */
     private static final HandlerList HANDLERS = new HandlerList();
+    /** Holds if the event state has been canceled, or not. */
     private boolean cancelled = false;
-
-    @Override
-    public HandlerList getHandlers() {
-        return getHandlerList();
-    }
-
-    public static HandlerList getHandlerList() {
-        return Objects.requireNonNull(HANDLERS);
-    }
-
+    /** Holds the event's {@link Player}. */
     private final Player player;
+    /** Holds the event's {@link Cell}. */
     private final Cell cell;
 
-    public CellDefendedEvent(final Player player, final Cell cell) {
-        super();
-        this.player = player;
-        this.cell = cell;
+    /** Return the event's {@link HandlerList}. */
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLERS;
     }
 
+    /**
+     * Constructs the {@link CellDefendedEvent} when a cell is defended.
+     * @param defender The {@link Player} who defended the cell. (Could also be an attacker who broke the flag.)
+     * @param defendedCell The defended cell.
+     */
+    public CellDefendedEvent(final Player defender, final Cell defendedCell) {
+        super();
+        this.player = defender;
+        this.cell = defendedCell;
+    }
+
+    /**
+     * Retrieve the player who defended the cell.
+     * @return the defending player.
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Retrieve the cell related to the CellDefendedEvent.
+     * @return The defended cell.
+     */
     public Cell getCell() {
         return cell;
     }
 
+    /**
+     * Gets the cancellation state of this event.
+     * @return true if this event is cancelled.
+     */
     @Override
     public boolean isCancelled() {
         return cancelled;
     }
 
+    /**
+     * Sets the cancellation state of this event.
+     * @param cancel true if you wish to cancel this event.
+     */
     @Override
     public void setCancelled(final boolean cancel) {
         this.cancelled = cancel;

@@ -22,40 +22,50 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import java.util.Objects;
+public class CellAttackCanceledEvent extends Event implements Cancellable {
 
-public class CellAttackCanceledEvent extends Event implements Cancellable{
-
-    private static final HandlerList handlers = new HandlerList();
+    /** Holds the event's {@link HandlerList}. */
+    private static final HandlerList HANDLERS = new HandlerList();
+    /** Holds if the event state has been canceled, or not. */
     private boolean cancelled = false;
-
-    @Override
-    public HandlerList getHandlers() {
-        return getHandlerList();
-    }
-
-    public static HandlerList getHandlerList() {
-        return Objects.requireNonNull(handlers);
-    }
-
+    /** Holds the {@link CellUnderAttack} being canceled. */
     private final CellUnderAttack cell;
 
-    public CellAttackCanceledEvent(CellUnderAttack cell) {
-        super();
-        this.cell = cell;
+    /** Return the event's {@link HandlerList}. */
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLERS;
     }
 
+    /**
+     * Constructs the {@link CellAttackCanceledEvent}.
+     * @param cellUnderAttack the {@link CellUnderAttack} to be canceled.
+     */
+    public CellAttackCanceledEvent(final CellUnderAttack cellUnderAttack) {
+        super();
+        this.cell = cellUnderAttack;
+    }
+
+    /** @return the {@link CellUnderAttack} being processed for cancellation. */
     public CellUnderAttack getCell() {
         return cell;
     }
 
+    /**
+     * Gets the cancellation state of this event.
+     * @return true if this event is cancelled.
+     */
     @Override
     public boolean isCancelled() {
         return cancelled;
     }
 
+    /**
+     * Sets the cancellation state of this event.
+     * @param cancel true if you wish to cancel this event.
+     */
     @Override
-    public void setCancelled(boolean cancel) {
+    public void setCancelled(final boolean cancel) {
         this.cancelled = cancel;
     }
 }
