@@ -27,79 +27,104 @@ import org.bukkit.event.HandlerList;
 
 import com.palmergames.bukkit.towny.Towny;
 
-import java.util.Objects;
-
 public class CellAttackEvent extends Event implements Cancellable {
 
-    private static final HandlerList handlers = new HandlerList();
-
-    @Override
-    public HandlerList getHandlers() {
-        return getHandlerList();
-    }
-
-    public static HandlerList getHandlerList() {
-        return Objects.requireNonNull(handlers);
-    }
-
+    /** Holds the {@link HandlerList} for the {@link CellAttackEvent}. */
+    private static final HandlerList HANDLERS = new HandlerList();
+    /** Holds the {@link Towny} instance. */
     private final Towny plugin;
+    /** Holds the attacking {@link Player}. */
     private final Player player;
-    private final Block flagBaseBlock;
-    private boolean cancelled = false;
-    private String reason = null;
+    /** Holds the base {@link Block} for the War Flag. */
+    private final Block flagBlock;
+    /** Stores the cancellation State of the {@link CellAttackEvent}. */
+    private boolean cancelState = false;
+    /** Holds the reason for the cancellation, if the cancellation state is set. Defaults to "None". */
+    private String reason = "None";
+    /** Holds the time of the attack, as a {@link Long} value. */
     private long time;
 
-    public CellAttackEvent(Towny plugin, Player player, Block flagBaseBlock) {
+    /** @return the {@link HandlerList} for the {@link CellAttackEvent}. */
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLERS;
+    }
+
+    /**
+     * Constructs the {@link CellAttackEvent}.
+     * @param townyInstance the instance of {@link Towny} at runtime. (Use {@link Towny#getPlugin()}.)
+     * @param attacker the attacking {@link Player}.
+     * @param flagBaseBlock the {@link Block} representing the War Flag base/pole.
+     */
+    public CellAttackEvent(final Towny townyInstance, final Player attacker, final Block flagBaseBlock) {
         super();
-        this.plugin = plugin;
-        this.player = player;
-        this.flagBaseBlock = flagBaseBlock;
+        this.plugin = townyInstance;
+        this.player = attacker;
+        this.flagBlock = flagBaseBlock;
         this.time = FlagWarConfig.getFlagWaitingTime();
     }
 
-    @SuppressWarnings("unused")
+    /** @return the attacking {@link Player}. */
     public Player getPlayer() {
         return player;
     }
 
-    @SuppressWarnings("unused")
-    public Block getFlagBaseBlock() {
-        return flagBaseBlock;
+    /** @return the base {@link Block} of the War Flag. */
+    public Block getFlagBlock() {
+        return flagBlock;
     }
 
+    /** @return a new {@link CellUnderAttack} with the Towny instance, attacker, flag base, and attack time stored.  */
     public CellUnderAttack getData() {
-        return new CellUnderAttack(plugin, player.getName(), flagBaseBlock, time);
+        return new CellUnderAttack(plugin, player.getName(), flagBlock, time);
     }
 
-    @SuppressWarnings("unused")
+    /** @return the time of the attack (when the event was constructed.) */
     public long getTime() {
         return time;
     }
 
-    @SuppressWarnings("unused")
-    public void setTime(long time) {
-        this.time = time;
+    /**
+     * Sets the time of the attack.
+     * @param timeOfAttack the time for when the attack started.
+     */
+    public void setTime(final long timeOfAttack) {
+        this.time = timeOfAttack;
     }
 
+    /**
+     * Gets the cancellation state of this event.
+     * @return true if this event is cancelled.
+     */
     @Override
     public boolean isCancelled() {
-        return cancelled;
+        return cancelState;
     }
 
+    /**
+     * Sets the cancellation state of this event.
+     * @param cancelled true if you wish to cancel this event.
+     */
     @Override
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
+    public void setCancelled(final boolean cancelled) {
+        this.cancelState = cancelled;
     }
 
+    /** @return the reason for the cancellation. */
     public String getReason() {
         return reason;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    /**
+     * Sets the cancellation reason.
+     * @param cancelReason the cancellation reason.
+     */
+    public void setReason(final String cancelReason) {
+        this.reason = cancelReason;
     }
 
+    /** @return true if the event has a cancel reason, besides "None" (default reason). */
     public boolean hasReason() {
-        return reason != null;
+        return !reason.equals("None");
     }
 }
