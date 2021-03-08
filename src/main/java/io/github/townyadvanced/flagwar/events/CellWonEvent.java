@@ -21,38 +21,35 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import java.util.Objects;
-
 public class CellWonEvent extends Event implements Cancellable {
 
-    private static final HandlerList handlers = new HandlerList();
+    /** Stores the {@link HandlerList} for the {@link CellWonEvent}. */
+    private static final HandlerList HANDLERS = new HandlerList();
+    /** Stores the cancellation state of the event. */
     private boolean cancelled = false;
+    /** Stores the CellUnderAttack being won. */
+    private final CellUnderAttack cellUnderAttack;
 
+    /** @return the {@link HandlerList} for the {@link CellWonEvent}. */
     @Override
     public HandlerList getHandlers() {
-        return getHandlerList();
+        return HANDLERS;
     }
-
-    public static HandlerList getHandlerList() {
-        return Objects.requireNonNull(handlers);
-    }
-
-    private final CellUnderAttack cellAttackData;
 
     /**
-     * Associates a {@link CellUnderAttack} with the CellWonEvent to be later parsed for information.
+     * Associates a {@link CellUnderAttack} with the {@link CellWonEvent} to be later parsed for information.
      * @param cellAttackData the CellUnderAttack to associate to the event.
      */
-    public CellWonEvent(CellUnderAttack cellAttackData) {
-        this.cellAttackData = cellAttackData;
+    public CellWonEvent(final CellUnderAttack cellAttackData) {
+        this.cellUnderAttack = cellAttackData;
     }
 
     /**
      * Returns the {@link CellUnderAttack} from the event to be further parsed for data.
      * @return The CellUnderAttack from the event.
      */
-    public CellUnderAttack getCellAttackData() {
-        return cellAttackData;
+    public CellUnderAttack getCellUnderAttack() {
+        return cellUnderAttack;
     }
 
     /**
@@ -69,7 +66,7 @@ public class CellWonEvent extends Event implements Cancellable {
      * @param cancel if event should cancel.
      */
     @Override
-    public void setCancelled(boolean cancel) {
+    public void setCancelled(final boolean cancel) {
         this.cancelled = cancel;
     }
 }

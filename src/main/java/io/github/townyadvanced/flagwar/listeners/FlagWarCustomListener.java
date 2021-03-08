@@ -188,7 +188,7 @@ public class FlagWarCustomListener implements Listener {
         if (event.isCancelled())
             return;
 
-        CellUnderAttack cell = event.getCellAttackData();
+        CellUnderAttack cell = event.getCellUnderAttack();
 
         TownyUniverse universe = TownyUniverse.getInstance();
         try {

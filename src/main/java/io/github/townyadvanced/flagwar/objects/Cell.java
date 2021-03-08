@@ -29,6 +29,15 @@ public class Cell {
     private final int x;
     private final int z;
 
+    /**
+     * Constructs the {@link Cell} for a given WorldName, and x/z coordinates.
+     * <p>
+     * See {@link Cell#parse(String, int, int)} for an example at implementation.
+     *
+     * @param worldName Name of the world to which the cell should be associated with.
+     * @param x The 'longitudinal' (x) value, in terms of the Towny coordinates.
+     * @param z The 'latitudinal' (z) value, in terms of the Towny coordinates.
+     */
     public Cell(String worldName, int x, int z) {
 
         this.worldName = worldName;
@@ -83,25 +92,33 @@ public class Cell {
     @Override
     public int hashCode() {
 
+        int multiplier = 27;
+
         int hash = 17;
-        hash = hash * 27 + (worldName == null ? 0 : worldName.hashCode());
-        hash = hash * 27 + x;
-        hash = hash * 27 + z;
+        hash = hash * multiplier + (worldName == null ? 0 : worldName.hashCode());
+        hash = hash * multiplier + x;
+        hash = hash * multiplier + z;
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        if (obj == this)
+        if (obj == this) {
             return true;
-        if (!(obj instanceof Cell))
+        }
+        if (!(obj instanceof Cell)) {
             return false;
+        }
 
         Cell that = (Cell) obj;
         return this.x == that.x && this.z == that.z && (Objects.equals(this.worldName, that.worldName));
     }
 
+    /**
+     * Checks if the {@link Cell} is currently also a {@link CellUnderAttack}
+     * @return if the Cell is in the CellsUnderAttack map
+     */
     public boolean isUnderAttack() {
         return FlagWarAPI.isUnderAttack(this);
     }

@@ -15,6 +15,6 @@
  */
 
 /**
- * Holds Bukkit Events related to FlagWar
+ * Holds Bukkit {@link org.bukkit.event.Event} classes for FlagWar.
  */
 package io.github.townyadvanced.flagwar.events;
