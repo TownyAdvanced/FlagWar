@@ -473,19 +473,13 @@ public class FlagWar extends JavaPlugin {
         plugin.updateCache(worldCoord);
     }
 
-    private static void payForWarFlag(Resident attackRes, double cost)
-        throws TownyException {
-        try {
-            attackRes.getAccount().withdraw(cost, "War - WarFlag Cost");
-            TownyMessaging.sendResidentMessage(attackRes, Translate.fromPrefixed("warflag-purchased",
-                    TownyEconomyHandler.getFormattedBalance(cost)));
-        } catch (EconomyException e) {
-            e.printStackTrace();
-        }
+    private static void payForWarFlag(Resident attackRes, double cost) throws TownyException {
+        attackRes.getAccount().withdraw(cost, "War - WarFlag Cost");
+        TownyMessaging.sendResidentMessage(attackRes, Translate.fromPrefixed("warflag-purchased",
+                TownyEconomyHandler.getFormattedBalance(cost)));
     }
 
-    private static boolean kickstartCellUnderAttack(Towny towny, Player player, Block block)
-        throws TownyException {
+    private static boolean kickstartCellUnderAttack(Towny towny, Player player, Block block) throws TownyException {
         CellAttackEvent cellAttackEvent = new CellAttackEvent(towny, player, block);
         plugin.getServer().getPluginManager().callEvent(cellAttackEvent);
         if (cellAttackEvent.isCancelled()) {
@@ -497,8 +491,7 @@ public class FlagWar extends JavaPlugin {
         return false;
     }
 
-    private static void calculateFeesAndFines(Resident attackRes, TownBlock townBlock,
-        double costToPlaceWarFlag) throws TownyException {
+    private static void calculateFeesAndFines(Resident attackRes, TownBlock townBlock, double costToPlaceWarFlag) throws TownyException {
         try {
             double requiredAmount = costToPlaceWarFlag;
             double balance = attackRes.getAccount().getHoldingBalance();
