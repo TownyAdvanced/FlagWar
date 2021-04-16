@@ -15,6 +15,6 @@
  */
 
 /**
- * Holds Bukkit Event Listeners
+ * Holds FlagWar's Bukkit Event Listeners. New listeners should be added here.
  */
 package io.github.townyadvanced.flagwar.listeners;
