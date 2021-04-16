@@ -92,7 +92,7 @@ public class FlagWar extends JavaPlugin {
         setInstance();
 
         try {
-            configLoader.loadConfig();
+            configLoader.loadConfig(1.0);
         } catch (IOException e) {
             logger.severe(e.getMessage());
             e.printStackTrace();
