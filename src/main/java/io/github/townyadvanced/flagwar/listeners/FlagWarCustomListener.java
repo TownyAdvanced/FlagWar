@@ -55,154 +55,106 @@ import org.jetbrains.annotations.NotNull;
 import java.util.logging.Logger;
 
 public class FlagWarCustomListener implements Listener {
+    /** Holds localized string for key: error.player-town-under-attack. */
+    public static final String DENY_FLAG_TOWN_UNDER_ATTACK
+        = Translate.fromPrefixed("error.player-town-under-attack");
+    /** Holds localized string for key: error.player-was-recently-attacked. */
+    public static final String DENY_FLAG_RECENTLY_ATTACKED
+        = Translate.fromPrefixed("error.player-was-recently-attacked");
 
-    public static final String DENY_FLAG_TOWN_UNDER_ATTACK = Translate.fromPrefixed("error.player-town-under-attack");
-    public static final String DENY_FLAG_RECENTLY_ATTACKED = Translate.fromPrefixed("error.player-was-recently-attacked");
+    /** Holds instance of {@link Towny}; defined by {@link #FlagWarCustomListener(FlagWar)}. */
     private Towny towny;
+    /** Holds the instance of the TownyUniverse; set in {@link #FlagWarCustomListener(FlagWar)}. */
+    private TownyUniverse universe;
+    /** Holds the Bukkit logger; set in {@link #FlagWarCustomListener(FlagWar)}. */
     private final Logger logger;
 
-    public FlagWarCustomListener(FlagWar flagWar) {
-
-        if (flagWar.getServer().getPluginManager().getPlugin("Towny") != null)
+    /**
+     * Constructor: Sets the Towny instance, and passes on the logger from Bukkit.
+     * @param flagWar The FlagWar instance.
+     */
+    public FlagWarCustomListener(final FlagWar flagWar) {
+        if (flagWar.getServer().getPluginManager().getPlugin("Towny") != null) {
             towny = Towny.getPlugin();
-
+            universe = TownyUniverse.getInstance();
+        }
         logger = flagWar.getLogger();
 
     }
 
+    /**
+     * If the {@link CellAttackEvent} fires, and has not been canceled, this method tries running
+     * {@link FlagWar#registerAttack(CellUnderAttack)} using the cell from the CellAttackEvent.
+     * @param cellAttackEvent the associated CellAttackEvent.
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
-    public void onCellAttackEvent(CellAttackEvent event) {
-        if (event.isCancelled())
+    public void onCellAttackEvent(final CellAttackEvent cellAttackEvent) {
+        if (cellAttackEvent.isCancelled()) {
             return;
+        }
 
         try {
-            CellUnderAttack cell = event.getData();
-            FlagWar.registerAttack(cell);
+            FlagWar.registerAttack(cellAttackEvent.getData());
         } catch (Exception e) {
-            event.setCancelled(true);
-            event.setReason(e.getMessage());
+            cellAttackEvent.setCancelled(true);
+            cellAttackEvent.setReason(e.getMessage());
         }
     }
 
+    /**
+     * If the {@link CellDefendedEvent} has not been canceled, update the town's lastFlagged timestamp, remove the
+     * associated warzone, broadcast the area was defended, then calculate any defender rewards.
+     *
+     * @param cellDefendedEvent the CellDefendedEvent.
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
-    public void onCellDefendedEvent(CellDefendedEvent event) {
-
-        if (event.isCancelled())
+    public void onCellDefendedEvent(final CellDefendedEvent cellDefendedEvent) {
+        if (cellDefendedEvent.isCancelled()) {
             return;
-
-        Player player = event.getPlayer();
-        CellUnderAttack cell = event.getCell().getAttackData();
+        }
+        Player player = cellDefendedEvent.getPlayer();
+        CellUnderAttack cell = cellDefendedEvent.getCell().getAttackData();
+        String broadcast =
+            Translate.fromPrefixed("broadcast.area.defended", getPlayerOrGF(player), cell.getCellString());
 
         tryTownFlagged(cell);
+        removeWarZone(cell);
+        towny.getServer().broadcastMessage(broadcast);
 
-        TownyUniverse universe = TownyUniverse.getInstance();
-
-        WorldCoord worldCoord = new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
-        universe.removeWarZone(worldCoord);
-
-        towny.updateCache(worldCoord);
-
-        String playerName = getPlayerName(player, universe);
-
-        towny.getServer().broadcastMessage(Translate.fromPrefixed("broadcast.area.defended", playerName, cell.getCellString()));
-
-        // Defender Reward
-        // It doesn't entirely matter if the attacker can pay.
-        // Also doesn't take into account of paying as much as the attacker can afford (Eg: cost=10 and balance=9).
-        if (TownyEconomyHandler.isActive()) {
-            try {
-                Resident attackingPlayer = universe.getResident(cell.getNameOfFlagOwner());
-                Resident defendingPlayer = null;
-
-                // Should never happen
-                if (attackingPlayer == null)
-                    return;
-
-                if (player != null) {
-                    defendingPlayer = universe.getResident(player.getUniqueId());
-                }
-
-                String formattedMoney = TownyEconomyHandler.getFormattedBalance(FlagWarConfig.getDefendedAttackReward());
-                sendDefendedMessages(attackingPlayer, defendingPlayer, formattedMoney);
-            } catch (EconomyException e) {
-                e.printStackTrace();
-            }
-        }
+        calculateDefenderReward(player, cell);
     }
 
-    private void sendDefendedMessages(Resident attackingPlayer, Resident defendingPlayer, String formattedMoney) throws EconomyException {
-        if (defendingPlayer == null) {
-            if (attackingPlayer.getAccount().deposit(FlagWarConfig.getDefendedAttackReward(), "War - Attack Was Defended (Greater Forces)")) {
-                messageResident(attackingPlayer, Translate.fromPrefixed("area.defended.attacker.greater-forces", formattedMoney));
-            }
-        } else {
-            if (attackingPlayer.getAccount().payTo(FlagWarConfig.getDefendedAttackReward(), defendingPlayer, "War - Attack Was Defended")) {
-                msgAttackDefended(attackingPlayer, defendingPlayer, formattedMoney);
-            }
-        }
-    }
-
-    private String getPlayerName(Player player, TownyUniverse universe) {
-        String playerName;
-        if (player == null) {
-            playerName = "Greater Forces";
-        } else {
-            playerName = player.getName();
-            Resident playerRes = universe.getResident(player.getUniqueId());
-            if (playerRes != null)
-                playerName = playerRes.getFormattedName();
-        }
-        return playerName;
-    }
-
-    private void messageResident(Resident resident, String message) {
-        try {
-            TownyMessaging.sendResidentMessage(resident, message);
-        } catch (TownyException e) {
-            logger.warning("Unable to send resident a message.");
-            logger.warning(e.getMessage());
-        }
-    }
-
-    private void msgAttackDefended(Resident atkRes, Resident defRes, String formattedMoney) {
-        try {
-            TownyMessaging.sendResidentMessage(atkRes, Translate.fromPrefixed("area.defended.attacker", defRes.getFormattedName(), formattedMoney));
-        } catch (TownyException e) {
-            logger.warning("Unable to message an attacker about a defended attack!");
-            logger.warning(e.getMessage());
-        }
-        try {
-            TownyMessaging.sendResidentMessage(defRes, Translate.fromPrefixed("area.defended.defender", atkRes.getFormattedName(), formattedMoney));
-        } catch (TownyException e) {
-            logger.warning("Unable to message a defender about a defended attack!");
-            logger.warning(e.getMessage());
-        }
-    }
-
+    /**
+     * When a {@link CellUnderAttack} has been won, and the {@link CellWonEvent} has not been canceled, remove the
+     * related WarZone, update the defending town's lastFlagged timestamp, handle payments, transfer ownership of the
+     * plot (or not), update Towny cache, and finally send messages for who won and messages regarding payouts.
+     *
+     * @param cellWonEvent The event declaring the cell attack successfully completed, and triggers the processing.
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
-    public void onCellWonEvent(CellWonEvent event) {
-
-        if (event.isCancelled())
+    public void onCellWonEvent(final CellWonEvent cellWonEvent) {
+        if (cellWonEvent.isCancelled()) {
             return;
+        }
 
-        CellUnderAttack cell = event.getCellUnderAttack();
+        CellUnderAttack cell = cellWonEvent.getCellUnderAttack();
 
-        TownyUniverse universe = TownyUniverse.getInstance();
         try {
             Resident attackingResident = universe.getResident(cell.getNameOfFlagOwner());
 
             // Shouldn't happen
-            if (attackingResident == null)
+            if (attackingResident == null) {
                 return;
+            }
 
             Town attackingTown = attackingResident.getTown();
             Nation attackingNation = attackingTown.getNation();
 
             WorldCoord worldCoord = FlagWar.cellToWorldCoordinate(cell);
-            universe.removeWarZone(worldCoord);
+            removeWarZone(cell);
 
             TownBlock townBlock = worldCoord.getTownBlock();
             Town defendingTown = townBlock.getTown();
@@ -257,59 +209,272 @@ public class FlagWarCustomListener implements Listener {
         }
     }
 
-    private void attackerPayTownRebuild(CellUnderAttack cell, Resident attackingResident, Nation attackingNation, Town defendingTown, double amount, String reason) {
+    /**
+     * If a {@link CellAttackCanceledEvent} is fired, and is not itself canceled, set the associated cell's lastFlagged
+     * timestamp, remove any associated WarZone, then log the cell info ({@link CellUnderAttack#getCellString()}).
+     *
+     * @param cellAttackCanceledEvent the CellAttackCanceledEvent
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    @SuppressWarnings("unused")
+    public void onCellAttackCanceledEvent(final CellAttackCanceledEvent cellAttackCanceledEvent) {
+        if (cellAttackCanceledEvent.isCancelled()) {
+            return;
+        }
+        CellUnderAttack cell = cellAttackCanceledEvent.getCell();
+        tryTownFlagged(cell);
+        removeWarZone(cell);
+        logger.info(cell.getCellString());
+    }
+
+    /**
+     * When a {@link Town} atempts to leave a {@link Nation}, check that there are no active or recent attacks. If there
+     * are, cancel the {@link NationPreTownLeaveEvent} with the appropriate reason.
+     *
+     * @param nationPreTownLeaveEvent the NationPreTownLeaveEvent.
+     */
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @SuppressWarnings("unused")
+    public void onTownLeaveNation(final NationPreTownLeaveEvent nationPreTownLeaveEvent) {
+        if (FlagWarConfig.isAllowingAttacks()) {
+            if (FlagWarAPI.isUnderAttack(nationPreTownLeaveEvent.getTown())
+                && FlagWarConfig.isFlaggedInteractionTown()) {
+
+                nationPreTownLeaveEvent.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
+                nationPreTownLeaveEvent.setCancelled(true);
+            }
+
+            if (isAfterFlaggedCooldownActive(nationPreTownLeaveEvent.getTown())) {
+                nationPreTownLeaveEvent.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
+                nationPreTownLeaveEvent.setCancelled(true);
+            }
+        }
+    }
+
+    /**
+     * Listens for attempts to interact with a {@link Nation}'s
+     * {@link com.palmergames.bukkit.towny.object.EconomyAccount}.
+     * <p>
+     * If enabled, and an attempt to withdraw from the Nation's account while a {@link Town} in the Nation is under
+     * attack occurs, check if the Town itself is under attack or if it is still in a post-flag cooldown period, and
+     * cancel the transaction if either is true.
+     * <p>
+     * Intended to prevent players from taking the Nation's money and running whilst in the middle of a war.
+     *
+     * @param nationPreTransactionEvent Event fired by {@link Towny} prior to a Nation's EconomyAccount transaction
+     *                                  being processed.
+     */
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @SuppressWarnings("unused")
+    public void onNationWithdraw(final NationPreTransactionEvent nationPreTransactionEvent) {
+        if (FlagWarConfig.isAllowingAttacks()
+            && FlagWarConfig.isFlaggedInteractionNation()
+            && nationPreTransactionEvent.getTransaction().getType().equals(TransactionType.WITHDRAW)) {
+
+            for (Town town : nationPreTransactionEvent.getNation().getTowns()) {
+                if (FlagWarAPI.isUnderAttack(town) || isAfterFlaggedCooldownActive(town)) {
+                    nationPreTransactionEvent.setCancelMessage(Translate.fromPrefixed("error.nation-under-attack"));
+                    nationPreTransactionEvent.setCancelled(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * Similar to {@link #onNationWithdraw}, prevents a {@link Town}'s
+     * {@link com.palmergames.bukkit.towny.object.EconomyAccount} from being looted by it's own players if the post-flag
+     * cooldown is still active.
+     *
+     * @param townPreTransactionEvent Event fired by {@link Towny} prior to a Town's EconomyAccount transaction being
+     *                                processed.
+     */
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @SuppressWarnings("unused")
+    public void onTownWithdraw(final TownPreTransactionEvent townPreTransactionEvent) {
+        if (FlagWarConfig.isAllowingAttacks() && isAfterFlaggedCooldownActive(townPreTransactionEvent.getTown())) {
+            townPreTransactionEvent.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
+            townPreTransactionEvent.setCancelled(true);
+        }
+    }
+
+    /**
+     * Listens for when a {@link Town}'s HomeBlock would be (re)set.
+     * <p>
+     * If a Town is under attack and Flagged Interaction is prevented, or, if the Town is still in a post-flagged
+     * cooldown phase; cancel the event.
+     *
+     * @param townPreSetHomeBlockEvent Event fired by {@link Towny} prior to setting a Town's HomeBlock.
+     */
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @SuppressWarnings("unused")
+    public void onTownSetHomeBlock(final TownPreSetHomeBlockEvent townPreSetHomeBlockEvent) {
+        if (FlagWarConfig.isAllowingAttacks()) {
+            if (FlagWarAPI.isUnderAttack(townPreSetHomeBlockEvent.getTown())
+                && FlagWarConfig.isFlaggedInteractionTown()) {
+
+                cancelTownPreSetHomeBlockEvent(townPreSetHomeBlockEvent, DENY_FLAG_TOWN_UNDER_ATTACK);
+            } else if (isAfterFlaggedCooldownActive(townPreSetHomeBlockEvent.getTown())) {
+                cancelTownPreSetHomeBlockEvent(townPreSetHomeBlockEvent, DENY_FLAG_RECENTLY_ATTACKED);
+            }
+
+        }
+    }
+
+    /**
+     * Listens for if a {@link Nation} attempts to declare neutrality.
+     * <p>
+     * If a wartime nation cannot be neutral (according to {@link Towny}), cancel the neutrality declaration.
+     * <p>
+     * If the wartime states can be neutral and the future state of the NationToggleNeutralEvent would be true, then for
+     * each {@link Resident} in the given Nation, cycle through and remove any active war flags from play.
+     * <p>
+     * Does not stop already neutral nations from going hostile.
+     *
+     * @param nationToggleNeutralEvent Event fired by Towny when a Nation attempts to toggle neutrality.
+     */
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @SuppressWarnings("unused")
+    public void onNationToggleNeutral(final NationToggleNeutralEvent nationToggleNeutralEvent) {
+        if (FlagWarConfig.isAllowingAttacks()) {
+            if (!TownySettings.isDeclaringNeutral() && nationToggleNeutralEvent.getFutureState()) {
+                nationToggleNeutralEvent.setCancelled(true);
+                nationToggleNeutralEvent.setCancelMessage(Translate.fromPrefixed("error.cannot-toggle-peaceful"));
+            } else if (nationToggleNeutralEvent.getFutureState() && !FlagWarAPI.getCellsUnderAttack().isEmpty()) {
+                for (Resident resident : nationToggleNeutralEvent.getNation().getResidents()) {
+                    FlagWar.removeAttackerFlags(resident.getName());
+                }
+            }
+        }
+    }
+
+    /**
+     * Listen for if a {@link Town} attempts to leave a {@link Nation}.
+     * <p>
+     * If the Town is under attack and Flagged Interaction is prohibited, or if it was recently attacked and on
+     * cooldown, prevent it from leaving the Nation.
+     *
+     * @param townLeaveEvent Event fired by {@link Towny} when a Town attempts to leave a Nation.
+     */
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @SuppressWarnings("unused")
+    public void onTownLeave(final TownLeaveEvent townLeaveEvent) {
+        if (FlagWarConfig.isAllowingAttacks()) {
+            if (FlagWarAPI.isUnderAttack(townLeaveEvent.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
+                townLeaveEvent.setCancelled(true);
+                townLeaveEvent.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
+            } else if (isAfterFlaggedCooldownActive(townLeaveEvent.getTown())) {
+                townLeaveEvent.setCancelled(true);
+                townLeaveEvent.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
+            }
+        }
+    }
+
+    /**
+     * Listens for if a Town attempts to unclaim land via commands.
+     * <p>
+     * If under attack and interaction prohibited, or if in an active cooldown phase, cancel and prevent the area from
+     * being unclaimed.
+     *
+     * @param townPreUnclaimCmdEvent Event fired by {@link Towny} when the /unclaim command is ran, prior to any major
+     *                               processing.
+     */
+    @EventHandler (priority = EventPriority.HIGH)
+    @SuppressWarnings("unused")
+    private void onWarPreUnclaimed(final TownPreUnclaimCmdEvent townPreUnclaimCmdEvent) {
+        if (FlagWarAPI.isUnderAttack(townPreUnclaimCmdEvent.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
+            townPreUnclaimCmdEvent.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
+            townPreUnclaimCmdEvent.setCancelled(true);
+        } else if (isAfterFlaggedCooldownActive(townPreUnclaimCmdEvent.getTown())) {
+            townPreUnclaimCmdEvent.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
+            townPreUnclaimCmdEvent.setCancelled(true);
+        }
+    }
+
+    /**
+     * Try getting the {@link Town} from the {@link CellUnderAttack}, and set the clock for when it was last flagged.
+     *
+     * @param cellUnderAttack the {@link CellUnderAttack} to extract the {@link Town} from.
+     */
+    private void tryTownFlagged(final CellUnderAttack cellUnderAttack) {
         try {
-            if (!attackingResident.getAccount().payTo(amount, defendingTown, reason))
-                messageWon(cell, attackingResident, attackingNation);
+            FlagWar.townFlagged(FlagWar.cellToWorldCoordinate(cellUnderAttack).getTownBlock().getTown());
+        } catch (NotRegisteredException e) {
+            logger.warning(e.getMessage());
+        }
+    }
+
+    private void attackerPayTownRebuild(final CellUnderAttack cell,
+                                        final Resident atkRes,
+                                        final Nation atkNat,
+                                        final Town defTown,
+                                        final double amount,
+                                        final String reason) {
+        try {
+            if (!atkRes.getAccount().payTo(amount, defTown, reason)) {
+                messageWon(cell, atkRes, atkNat);
+            }
         } catch (EconomyException e) {
             e.printStackTrace();
         }
     }
 
-    private double townPayAttackerSpoils(Resident attackingResident, Town defendingTown, double amount, String reason) {
+    private double townPayAttackerSpoils(final Resident attackingResident,
+                                         final Town defendingTown,
+                                         final double amount,
+                                         final String reason) {
         try {
-            amount = Math.min(amount, defendingTown.getAccount().getHoldingBalance());
+            double total = Math.min(amount, defendingTown.getAccount().getHoldingBalance());
             defendingTown.getAccount().payTo(amount, attackingResident, reason);
+            return total;
         } catch (EconomyException e) {
             e.printStackTrace();
+            return amount;
         }
-        return amount;
     }
 
-    private void transferOrKeepTownblock(Town attackingTown, TownBlock townBlock, Town defendingTown) {
+    private void transferOrKeepTownblock(final Town atkTown, final TownBlock townBlock, final Town defTown) {
         if (FlagWarConfig.isFlaggedTownBlockTransferred()) {
-            transferOwnership(attackingTown, townBlock);
+            transferOwnership(atkTown, townBlock);
         } else {
-            TownyMessaging.sendPrefixedTownMessage(attackingTown, Translate.fromPrefixed("area.won.defender-keeps-claims"));
-            TownyMessaging.sendPrefixedTownMessage(defendingTown, Translate.fromPrefixed("area.won.defender-keeps-claims"));
+            String message = Translate.fromPrefixed("area.won.defender-keeps-claims");
+            TownyMessaging.sendPrefixedTownMessage(atkTown, message);
+            TownyMessaging.sendPrefixedTownMessage(defTown, message);
         }
     }
 
-    private void messageWon(CellUnderAttack cell, Resident attackingResident, Nation attackingNation) {
-        if (attackingNation.hasTag())
-            TownyMessaging.sendGlobalMessage(Translate.fromPrefixed("broadcast.area.won", attackingResident.getFormattedName(), attackingNation.getTag(), cell.getCellString()));
-        else
-            TownyMessaging.sendGlobalMessage(Translate.fromPrefixed("broadcast.area.won", attackingResident.getFormattedName(), attackingNation.getFormattedName(), cell.getCellString()));
+    private void messageWon(final CellUnderAttack cell, final Resident atkRes, final Nation atkNat) {
+        String resName = atkRes.getFormattedName();
+        String natName = atkNat.getFormattedName();
+        String msg;
+        if (atkNat.hasTag()) {
+            msg = Translate.fromPrefixed("broadcast.area.won", resName, atkNat.getTag(), cell.getCellString());
+        } else {
+            msg = Translate.fromPrefixed("broadcast.area.won", resName, natName, cell.getCellString());
+        }
+        TownyMessaging.sendGlobalMessage(msg);
     }
 
-    private double realEstateValue(String reasonType) {
+    private double realEstateValue(final String reasonType) {
         double amount;
-        if (reasonType.equals("Homeblock"))
+        if (reasonType.equals("Homeblock")) {
             amount = FlagWarConfig.getWonHomeBlockReward();
-        else
+        } else {
             amount = FlagWarConfig.getWonTownBlockReward();
+        }
         return amount;
     }
 
     @NotNull
-    private String townOrHomeBlock(TownBlock townBlock) {
-        if (townBlock.isHomeBlock())
+    private String townOrHomeBlock(final TownBlock townBlock) {
+        if (townBlock.isHomeBlock()) {
             return "Homeblock";
-        else
+        } else {
             return "Townblock";
+        }
     }
 
-    private void transferOwnership(Town attackingTown, TownBlock townBlock) {
+    private void transferOwnership(final Town attackingTown, final TownBlock townBlock) {
         try {
             townBlock.setTown(attackingTown);
             townBlock.save();
@@ -320,139 +485,130 @@ public class FlagWarCustomListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
-    @SuppressWarnings("unused")
-    public void onCellAttackCanceledEvent(CellAttackCanceledEvent event) {
+    private void cancelTownPreSetHomeBlockEvent(final TownPreSetHomeBlockEvent townPreSetHomeBlockEvent,
+                                                final String cancelMessage) {
+        townPreSetHomeBlockEvent.setCancelMessage(cancelMessage);
+        townPreSetHomeBlockEvent.setCancelled(true);
+    }
 
-        if (event.isCancelled())
-            return;
+    /**
+     * Determines if the given {@link Town} is still in the cooldown period defined by
+     * {@link FlagWarConfig#getTimeToWaitAfterFlagged()}.
+     *
+     * @param town the Town to inspect for cooldown.
+     * @return TRUE if the cooldown is still active.
+     */
+    private boolean isAfterFlaggedCooldownActive(final Town town) {
+        long timeToWait = FlagWarConfig.getTimeToWaitAfterFlagged();
+        return System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(town) < timeToWait;
+    }
 
-        CellUnderAttack cell = event.getCell();
-
-        tryTownFlagged(cell);
-
-        TownyUniverse universe = TownyUniverse.getInstance();
-
+    /**
+     * Removes a WarZone associated with a given {@link CellUnderAttack}, then updates the Towny cache.
+     *
+     * @param cell the given CellUnderAttack related to the WarZone.
+     */
+    private void removeWarZone(final CellUnderAttack cell) {
         WorldCoord worldCoord = new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
         universe.removeWarZone(worldCoord);
         towny.updateCache(worldCoord);
-
-        logger.info(cell.getCellString());
     }
 
-    private void tryTownFlagged(CellUnderAttack cell) {
+    /**
+     * If {@link TownyEconomyHandler#isActive()}, attempt to reward the defender and run
+     * {@link #notifyDefAndPayOrRefund(Resident, Resident, String)}.
+     * Does not take into account if the attacker an pay, or even if they can cover the whole reward.
+     *
+     * @param dP the Defending {@link Player}.
+     * @param cell the {@link CellUnderAttack} that was defended.
+     */
+    private void calculateDefenderReward(final Player dP, final CellUnderAttack cell) {
+        if (TownyEconomyHandler.isActive()) {
+            try {
+                Resident attackingPlayer = universe.getResident(cell.getNameOfFlagOwner());
+                Resident defendingPlayer = null;
+
+                if (dP != null) {
+                    defendingPlayer = universe.getResident(dP.getUniqueId());
+                }
+
+                String styledMoney = TownyEconomyHandler.getFormattedBalance(FlagWarConfig.getDefendedAttackReward());
+                notifyDefAndPayOrRefund(attackingPlayer, defendingPlayer, styledMoney);
+            } catch (EconomyException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Send messages to the attacking and defending {@link Resident}s that the attack was defended and attempts to pay
+     * the defender or refund the attacker if defender is null.
+     * @param atkRes the attacking Resident.
+     * @param defRes the defending Resident.
+     * @param styledMoney the formatted string for the money balance.
+     * @throws EconomyException if there is an issue with the attacker paying the defender.
+     */
+    private void notifyDefAndPayOrRefund(final Resident atkRes, final Resident defRes, final String styledMoney)
+        throws EconomyException {
+        if (defRes == null
+            && atkRes.getAccount().deposit(
+            FlagWarConfig.getDefendedAttackReward(), "FlagWar Attack Defended (GF)")) {
+
+            messageResident(atkRes, Translate.fromPrefixed("area.defended.attacker.greater-forces", styledMoney));
+        } else if (atkRes.getAccount().payTo(
+            FlagWarConfig.getDefendedAttackReward(), defRes, "FlagWar Attack Defended")
+            && defRes != null) {
+
+            msgAttackDefended(atkRes, defRes, styledMoney);
+        }
+    }
+
+    /**
+     * Takes a {@link Player} object, and gets the associated name. If the player is a valid {@link Resident}, get the
+     * formatted name from it's Resident. If Null, "Greater&nbsp;Forces" is used instead.
+     *
+     * @param player the Player object to parse
+     * @return a name for the associated Player, which may or not be formatted from an associated Resident, or "Greater
+     * &nbsp;Forces" if the player was null.
+     */
+    private String getPlayerOrGF(final Player player) {
+        String playerName;
+        if (player == null) {
+            playerName = "Greater Forces";
+        } else {
+            playerName = player.getName();
+            Resident playerRes = universe.getResident(player.getUniqueId());
+            if (playerRes != null) {
+                playerName = playerRes.getFormattedName();
+            }
+        }
+        return playerName;
+    }
+
+    private void messageResident(final Resident resident, final String message) {
         try {
-            FlagWar.townFlagged(FlagWar.cellToWorldCoordinate(cell).getTownBlock().getTown());
-        } catch (NotRegisteredException e) {
+            TownyMessaging.sendResidentMessage(resident, message);
+        } catch (TownyException e) {
+            logger.warning("Unable to send resident a message.");
             logger.warning(e.getMessage());
         }
     }
 
-
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    @SuppressWarnings("unused")
-    public void onTownLeaveNation(NationPreTownLeaveEvent event) {
-        if (FlagWarConfig.isAllowingAttacks()) {
-            if (FlagWarAPI.isUnderAttack(event.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
-                event.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
-                event.setCancelled(true);
-            }
-
-            if (System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
-                event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
-                event.setCancelled(true);
-            }
+    private void msgAttackDefended(final Resident atkRes, final Resident defRes, final String formattedMoney) {
+        String message;
+        try {
+            message = Translate.fromPrefixed("area.defended.attacker", defRes.getFormattedName(), formattedMoney);
+            TownyMessaging.sendResidentMessage(atkRes, message);
+        } catch (TownyException e) {
+            logger.warning("Unable to message an attacker about a defended attack!");
+            logger.warning(e.getMessage());
         }
-    }
-
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    @SuppressWarnings("unused")
-    public void onNationWithdraw(NationPreTransactionEvent event) {
-        if (FlagWarConfig.isAllowingAttacks() && FlagWarConfig.isFlaggedInteractionNation() && event.getTransaction().getType() == TransactionType.WITHDRAW) {
-            for (Town town : event.getNation().getTowns()) {
-                if (FlagWarAPI.isUnderAttack(town) || System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(town) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
-                    event.setCancelMessage(Translate.fromPrefixed("error.nation-under-attack"));
-                    event.setCancelled(true);
-                    return;
-                }
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    @SuppressWarnings("unused")
-    public void onTownWithdraw(TownPreTransactionEvent event) {
-        if (FlagWarConfig.isAllowingAttacks() && System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
-            event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    @SuppressWarnings("unused")
-    public void onTownSetHomeBlock(TownPreSetHomeBlockEvent event) {
-        if (FlagWarConfig.isAllowingAttacks()) {
-            if (FlagWarAPI.isUnderAttack(event.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
-                cancelTownPreSetHomeBlockEvent(event, DENY_FLAG_TOWN_UNDER_ATTACK);
-                return;
-            }
-
-            if (System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(event.getTown()) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
-                cancelTownPreSetHomeBlockEvent(event, DENY_FLAG_RECENTLY_ATTACKED);
-            }
-
-        }
-    }
-
-    private void cancelTownPreSetHomeBlockEvent(TownPreSetHomeBlockEvent event, String cancelMessage) {
-        event.setCancelMessage(cancelMessage);
-        event.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    @SuppressWarnings("unused")
-    public void onNationToggleNeutral(NationToggleNeutralEvent event) {
-        if (FlagWarConfig.isAllowingAttacks()) {
-            if (!TownySettings.isDeclaringNeutral() && event.getFutureState()) {
-                event.setCancelled(true);
-                event.setCancelMessage(Translate.fromPrefixed("error.cannot-toggle-peaceful"));
-            } else {
-                if (event.getFutureState() && !FlagWarAPI.getCellsUnderAttack().isEmpty())
-                    for (Resident resident : event.getNation().getResidents())
-                        FlagWar.removeAttackerFlags(resident.getName());
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    @SuppressWarnings("unused")
-    public void onTownLeave(TownLeaveEvent event) {
-        if (FlagWarConfig.isAllowingAttacks()) {
-            if (FlagWarAPI.isUnderAttack(event.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
-                event.setCancelled(true);
-                event.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
-                return;
-            }
-
-            if (System.currentTimeMillis()- FlagWarAPI.getFlaggedTimestamp(event.getTown()) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
-                event.setCancelled(true);
-                event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
-            }
-        }
-    }
-
-    @EventHandler (priority= EventPriority.HIGH)
-    @SuppressWarnings("unused")
-    private void onWarPreUnclaim(TownPreUnclaimCmdEvent event) {
-        if (FlagWarAPI.isUnderAttack(event.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
-            event.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
-            event.setCancelled(true);
-            return; // Return early, no reason to try sequential checks if a town is under attack.
-        }
-
-        if (System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(event.getTown()) < FlagWarConfig.getTimeToWaitAfterFlagged()) {
-            event.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
-            event.setCancelled(true);
+        try {
+            message = Translate.fromPrefixed("area.defended.defender", atkRes.getFormattedName(), formattedMoney);
+            TownyMessaging.sendResidentMessage(defRes, message);
+        } catch (TownyException e) {
+            logger.warning("Unable to message a defender about a defended attack!");
+            logger.warning(e.getMessage());
         }
     }
 }
