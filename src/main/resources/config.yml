@@ -16,7 +16,7 @@
 ################################################################################
 
 # Note: Do not modify config_version, unless you want to regenerate your config
-config_version: 1.1
+config_version: 1.2
 
 # Please see https://github.com/TownyAdvanced/FlagWar/tree/main/src/main/resources/
 # for available translations. Custom translations are only supported if they are merged.
@@ -37,7 +37,9 @@ rules:
     flag_takes_ownership_of_town_blocks: true
 
     # Not yet implemented - Supplies fell off the wagon during the move.
-    prevent_interaction_while_flagged: true
+    prevent_interaction_while_flagged:
+        town: true
+        nation: true
 
     # Not yet implemented - Supplies fell off the wagon during the move.
     time_to_wait_after_flagged: 600000

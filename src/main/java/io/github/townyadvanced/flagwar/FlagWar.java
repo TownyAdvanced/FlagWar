@@ -73,7 +73,8 @@ public class FlagWar extends JavaPlugin {
     private static final Map<String, List<CellUnderAttack>> cellsUnderAttackByPlayer = new HashMap<>();
     private static final Map<Town, Long> lastFlag = new HashMap<>();
     private static final String FW_COPYRIGHT = "Copyright \u00a9 2021 TownyAdvanced";
-    private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.0");
+    private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.12");
+    private static final double MIN_CONFIG_VER = 1.2;
     private static Plugin plugin;
     private final Logger logger;
     private final ConfigLoader configLoader;
@@ -92,7 +93,7 @@ public class FlagWar extends JavaPlugin {
         setInstance();
 
         try {
-            configLoader.loadConfig(1.0);
+            configLoader.loadConfig(MIN_CONFIG_VER);
         } catch (IOException e) {
             logger.severe(e.getMessage());
             e.printStackTrace();
