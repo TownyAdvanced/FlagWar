@@ -27,7 +27,7 @@ show-startup-marquee: true
 
 # General Gameplay Rules
 rules:
-    # Disabling this effectively disables the whole plugin... but it will stay loaded.
+    # Disabling this effectively disables the whole plugin... but some event listeners will still operate.
     allow_attacks: true
 
     # Force attackers to only attack edge plots.
@@ -36,12 +36,14 @@ rules:
     # True: Attackers capture plots when they win. Disable if you prefer *not* dealing with that.
     flag_takes_ownership_of_town_blocks: true
 
-    # Not yet implemented - Supplies fell off the wagon during the move.
+    # Will prevent players from performing certain actions while a town is flagged or is in cooldown.
     prevent_interaction_while_flagged:
+        # Will prevent towns from leaving nations, setting HomeBlocks, and unclaiming land; prevent players leaving town
         town: true
+        # Will prevent nations from withdrawing money while actively flagged.
         nation: true
 
-    # Not yet implemented - Supplies fell off the wagon during the move.
+    # Cooldown period after a flag has been in play in milliseconds. (1000ms = 1s)
     time_to_wait_after_flagged: 600000
 
 player_limits:
@@ -66,7 +68,6 @@ beacon:
 
 # Define Economy Transactions
 economy:
-    using_economy: true # Not yet implemented, depends on Towny using economy.
     town_block_captured: 10.0
     home_block_captured: 100.0
     war_flag_cost: 10.0

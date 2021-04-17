@@ -309,15 +309,12 @@ public class FlagWarCustomListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     @SuppressWarnings("unused")
     public void onTownSetHomeBlock(final TownPreSetHomeBlockEvent townPreSetHomeBlockEvent) {
-        if (FlagWarConfig.isAllowingAttacks()) {
-            if (FlagWarAPI.isUnderAttack(townPreSetHomeBlockEvent.getTown())
-                && FlagWarConfig.isFlaggedInteractionTown()) {
-
+        if (FlagWarConfig.isAllowingAttacks() && FlagWarConfig.isFlaggedInteractionTown()) {
+            if (FlagWarAPI.isUnderAttack(townPreSetHomeBlockEvent.getTown())) {
                 cancelTownPreSetHomeBlockEvent(townPreSetHomeBlockEvent, DENY_FLAG_TOWN_UNDER_ATTACK);
             } else if (isAfterFlaggedCooldownActive(townPreSetHomeBlockEvent.getTown())) {
                 cancelTownPreSetHomeBlockEvent(townPreSetHomeBlockEvent, DENY_FLAG_RECENTLY_ATTACKED);
             }
-
         }
     }
 
@@ -349,18 +346,18 @@ public class FlagWarCustomListener implements Listener {
     }
 
     /**
-     * Listen for if a {@link Town} attempts to leave a {@link Nation}.
+     * Listen for if a {@link Resident} attempts to leave a {@link Town}.
      * <p>
      * If the Town is under attack and Flagged Interaction is prohibited, or if it was recently attacked and on
-     * cooldown, prevent it from leaving the Nation.
+     * cooldown, prevent it's players from leaving the Town.
      *
      * @param townLeaveEvent Event fired by {@link Towny} when a Town attempts to leave a Nation.
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     @SuppressWarnings("unused")
     public void onTownLeave(final TownLeaveEvent townLeaveEvent) {
-        if (FlagWarConfig.isAllowingAttacks()) {
-            if (FlagWarAPI.isUnderAttack(townLeaveEvent.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
+        if (FlagWarConfig.isAllowingAttacks() && FlagWarConfig.isFlaggedInteractionTown()) {
+            if (FlagWarAPI.isUnderAttack(townLeaveEvent.getTown())) {
                 townLeaveEvent.setCancelled(true);
                 townLeaveEvent.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
             } else if (isAfterFlaggedCooldownActive(townLeaveEvent.getTown())) {
@@ -382,12 +379,14 @@ public class FlagWarCustomListener implements Listener {
     @EventHandler (priority = EventPriority.HIGH)
     @SuppressWarnings("unused")
     private void onWarPreUnclaimed(final TownPreUnclaimCmdEvent townPreUnclaimCmdEvent) {
-        if (FlagWarAPI.isUnderAttack(townPreUnclaimCmdEvent.getTown()) && FlagWarConfig.isFlaggedInteractionTown()) {
-            townPreUnclaimCmdEvent.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
-            townPreUnclaimCmdEvent.setCancelled(true);
-        } else if (isAfterFlaggedCooldownActive(townPreUnclaimCmdEvent.getTown())) {
-            townPreUnclaimCmdEvent.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
-            townPreUnclaimCmdEvent.setCancelled(true);
+        if (FlagWarConfig.isFlaggedInteractionTown()) {
+            if (FlagWarAPI.isUnderAttack(townPreUnclaimCmdEvent.getTown())) {
+                townPreUnclaimCmdEvent.setCancelMessage(DENY_FLAG_TOWN_UNDER_ATTACK);
+                townPreUnclaimCmdEvent.setCancelled(true);
+            } else if (isAfterFlaggedCooldownActive(townPreUnclaimCmdEvent.getTown())) {
+                townPreUnclaimCmdEvent.setCancelMessage(DENY_FLAG_RECENTLY_ATTACKED);
+                townPreUnclaimCmdEvent.setCancelled(true);
+            }
         }
     }
 
