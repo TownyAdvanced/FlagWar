@@ -214,7 +214,7 @@ public class FlagWar extends JavaPlugin {
 
         addFlagToPlayerCount(playerName, cell);
         cellsUnderAttack.put(cell, cell);
-        cell.begin();
+        cell.beginAttack();
     }
 
     private void loadFlagWarMaterials() {
@@ -372,7 +372,7 @@ public class FlagWar extends JavaPlugin {
 
     private static void checkedBlockCellUnderAttack(Player player, Block block, Cancellable event, Cell cell) {
         CellUnderAttack cellAttackData = cell.getAttackData();
-        if (cellAttackData.isFlag(block)) {
+        if (cellAttackData.isFlagTimer(block)) {
             FlagWar.attackDefended(player, cellAttackData);
             event.setCancelled(true);
         } else if (cellAttackData.isImmutableBlock(block))

@@ -15,6 +15,6 @@
  */
 
 /**
- * Holds FlagWar Objects
+ * Holds FlagWar Objects.
  */
 package io.github.townyadvanced.flagwar.objects;
