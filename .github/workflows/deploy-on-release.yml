@@ -15,6 +15,6 @@ jobs:
                   distribuition: 'adopt'
                   java-version: '11'
             - name: Deploy to GitHub Package Registry
-              run: mvn -B deploy -P alternatives
+              run: mvn -B deploy -P alternatives,checkstyle,javadocs
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

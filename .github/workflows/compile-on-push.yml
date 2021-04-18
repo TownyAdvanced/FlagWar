@@ -13,4 +13,4 @@ jobs:
             - name: Compile with Maven
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: mvn -B compile test -P alternatives
+              run: mvn -B compile test -P alternatives,checkstyle,javadocs
