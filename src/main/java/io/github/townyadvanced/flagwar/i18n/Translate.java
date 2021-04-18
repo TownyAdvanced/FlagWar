@@ -19,7 +19,7 @@ package io.github.townyadvanced.flagwar.i18n;
 /**
  * Helper class for abstracting away locale utilities.
  */
-public class Translate {
+public final class Translate {
 
     private Translate() {
         throw new IllegalStateException("Utility Class");
@@ -32,7 +32,7 @@ public class Translate {
      * @param args The {@link String#format(String, Object...)} arguments to use, in place of {@link Object}s.
      * @return A translated String, with parsed arguments.
      */
-    public static String from(String translationKey, Object... args) {
+    public static String from(final String translationKey, final Object... args) {
         return String.format(LocaleUtil.getMessages().getString(translationKey), args);
     }
 
@@ -42,7 +42,8 @@ public class Translate {
      * @param translationKey The translation key, as it appears in a Translation_locale.properties ResourceBundle.
      * @return A translated String, with formatting applied (necessary for some strings with line-breaks)
      */
-    public static String from(String translationKey){
+    public static String from(final String translationKey) {
+        // Redundant call to format() is intentional
         return String.format(LocaleUtil.getMessages().getString(translationKey));
     }
 
@@ -52,7 +53,7 @@ public class Translate {
      * @param args The {@link String#format(String, Object...)} arguments to use, in place of {@link Object}s.
      * @return A prefixed message.
      */
-    public static String fromPrefixed(String translationKey, Object... args) {
+    public static String fromPrefixed(final String translationKey, final Object... args) {
         return from("message-prefix", from(translationKey, args));
     }
 
@@ -61,7 +62,7 @@ public class Translate {
      * @param translationKey A translation key, as it appears in a Translation_locale.properties ResourceBundle.
      * @return A prefixed message.
      */
-    public static String fromPrefixed(String translationKey) {
+    public static String fromPrefixed(final String translationKey) {
         return from("message-prefix", from(translationKey));
     }
 }
