@@ -25,20 +25,20 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 /**
- *  FlagWar Public API
+ *  FlagWar Public API.
  */
-public class FlagWarAPI {
+public final class FlagWarAPI {
 
     private FlagWarAPI() {
         super();
     }
 
     /**
-     * Check if a given {@link Cell} is a {@link CellUnderAttack}
+     * Check if a given {@link Cell} is a {@link CellUnderAttack}.
      * @param cell The given Cell
      * @return True or False
      */
-    public static boolean isUnderAttack (Cell cell) {
+    public static boolean isUnderAttack(final Cell cell) {
         return FlagWar.isUnderAttack(cell);
     }
 
@@ -47,7 +47,7 @@ public class FlagWarAPI {
      * @param town Target Town to check.
      * @return True if there is a {@link CellUnderAttack} related to the given Town.
      */
-    public static boolean isUnderAttack(Town town) {
+    public static boolean isUnderAttack(final Town town) {
         return FlagWar.isUnderAttack(town);
     }
 
@@ -64,16 +64,16 @@ public class FlagWarAPI {
      * @param town Target Town to check.
      * @return All {@link CellUnderAttack} objects related to the town.
      */
-    public static List<CellUnderAttack> getCellsUnderAttack(Town town) {
+    public static List<CellUnderAttack> getCellsUnderAttack(final Town town) {
         return FlagWar.getCellsUnderAttack(town);
     }
 
     /**
-     * Retrieves a {@link CellUnderAttack} list associated with a {@link Player}
+     * Retrieves a {@link CellUnderAttack} list associated with a {@link Player}.
      * @param player The Player object to check against.
      * @return a CellUnderAttack list tied to a Player.
      */
-    public static List<CellUnderAttack> getCellsUnderAttack(Player player) {
+    public static List<CellUnderAttack> getCellsUnderAttack(final Player player) {
         return FlagWar.getCellsUnderAttackByPlayer(player.getName());
     }
 
@@ -82,7 +82,7 @@ public class FlagWarAPI {
      * @param playerName The player's name to check against.
      * @return a CellUnderAttack list tied to a given player name.
      */
-    public static List<CellUnderAttack> getCellsUnderAttack(String playerName) {
+    public static List<CellUnderAttack> getCellsUnderAttack(final String playerName) {
         return FlagWar.getCellsUnderAttackByPlayer(playerName);
     }
 
@@ -91,7 +91,7 @@ public class FlagWarAPI {
      * @param player A {@link Player}
      * @return The number of flags a Player has in play.
      */
-    public static int getNumActiveFlags(Player player) {
+    public static int getNumActiveFlags(final Player player) {
         return FlagWar.getNumActiveFlags(player.getName());
     }
 
@@ -100,7 +100,7 @@ public class FlagWarAPI {
      * @param cell The cell to extract from.
      * @return The extracted CellUnderAttack object.
      */
-    public static CellUnderAttack getAttackData(Cell cell) {
+    public static CellUnderAttack getAttackData(final Cell cell) {
         return FlagWar.getAttackData(cell);
     }
 
@@ -109,7 +109,7 @@ public class FlagWarAPI {
      * @param town The town to check.
      * @return the previous timestamp for when the town was flagged, in milliseconds.
      */
-    public static long getFlaggedTimestamp(Town town) {
+    public static long getFlaggedTimestamp(final Town town) {
         return FlagWar.lastFlagged(town);
     }
 
