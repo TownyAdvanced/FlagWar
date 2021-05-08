@@ -28,7 +28,6 @@ import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleNeutralEvent
 import com.palmergames.bukkit.towny.event.town.TownLeaveEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreSetHomeBlockEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreUnclaimCmdEvent;
-import com.palmergames.bukkit.towny.exceptions.EconomyException;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Nation;
@@ -112,7 +111,6 @@ public class FlagWarCustomListener implements Listener {
 		// It doesn't entirely matter if the attacker can pay.
 		// Also doesn't take into account of paying as much as the attacker can afford (Eg: cost=10 and balance=9).
 		if (TownyEconomyHandler.isActive()) {
-			try {
 				Resident attackingPlayer = universe.getResident(cell.getNameOfFlagOwner());
 				Resident defendingPlayer = null;
 
@@ -126,13 +124,10 @@ public class FlagWarCustomListener implements Listener {
 
 				String formattedMoney = TownyEconomyHandler.getFormattedBalance(FlagWarConfig.getDefendedAttackReward());
                 sendDefendedMessages(attackingPlayer, defendingPlayer, formattedMoney);
-            } catch (EconomyException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
-    private void sendDefendedMessages(Resident attackingPlayer, Resident defendingPlayer, String formattedMoney) throws EconomyException {
+    private void sendDefendedMessages(Resident attackingPlayer, Resident defendingPlayer, String formattedMoney) {
         if (defendingPlayer == null) {
             if (attackingPlayer.getAccount().deposit(FlagWarConfig.getDefendedAttackReward(), "War - Attack Was Defended (Greater Forces)")) {
                 messageResident(attackingPlayer, Translate.fromPrefixed("area.defended.attacker.greater-forces", formattedMoney));
@@ -258,21 +253,13 @@ public class FlagWarCustomListener implements Listener {
 	}
 
     private void attackerPayTownRebuild(CellUnderAttack cell, Resident attackingResident, Nation attackingNation, Town defendingTown, double amount, String reason) {
-        try {
             if (!attackingResident.getAccount().payTo(amount, defendingTown, reason))
                 messageWon(cell, attackingResident, attackingNation);
-        } catch (EconomyException e) {
-            e.printStackTrace();
-        }
     }
 
     private double townPayAttackerSpoils(Resident attackingResident, Town defendingTown, double amount, String reason) {
-        try {
             amount = Math.min(amount, defendingTown.getAccount().getHoldingBalance());
             defendingTown.getAccount().payTo(amount, attackingResident, reason);
-        } catch (EconomyException e) {
-            e.printStackTrace();
-        }
         return amount;
     }
 

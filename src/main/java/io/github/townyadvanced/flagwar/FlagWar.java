@@ -22,7 +22,6 @@ import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
-import com.palmergames.bukkit.towny.exceptions.EconomyException;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Nation;
@@ -492,7 +491,7 @@ public class FlagWar extends JavaPlugin {
     }
 
     private static void calculateFeesAndFines(Resident attackRes, TownBlock townBlock, double costToPlaceWarFlag) throws TownyException {
-        try {
+
             double requiredAmount = costToPlaceWarFlag;
             double balance = attackRes.getAccount().getHoldingBalance();
 
@@ -534,9 +533,6 @@ public class FlagWar extends JavaPlugin {
                     throw new TownyException(Translate.fromPrefixed("error.insufficient-future-funds",
                         TownyEconomyHandler.getFormattedBalance(cost), activeFlagCount + 1, reason));
             }
-        } catch (EconomyException e) {
-            throw new TownyException(e.getError());
-        }
     }
 
     private static double homeOrTownBlock(TownBlock townBlock, int activeFlags, double homeBlockFine, double townBlockFine) {
