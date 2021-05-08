@@ -28,7 +28,6 @@ import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleNeutralEvent
 import com.palmergames.bukkit.towny.event.town.TownLeaveEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreSetHomeBlockEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreUnclaimCmdEvent;
-import com.palmergames.bukkit.towny.exceptions.EconomyException;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Nation;
@@ -409,27 +408,18 @@ public class FlagWarCustomListener implements Listener {
                                         final Town defTown,
                                         final double amount,
                                         final String reason) {
-        try {
             if (!atkRes.getAccount().payTo(amount, defTown, reason)) {
                 messageWon(cell, atkRes, atkNat);
             }
-        } catch (EconomyException e) {
-            e.printStackTrace();
-        }
     }
 
     private double townPayAttackerSpoils(final Resident attackingResident,
                                          final Town defendingTown,
                                          final double amount,
                                          final String reason) {
-        try {
             double total = Math.min(amount, defendingTown.getAccount().getHoldingBalance());
             defendingTown.getAccount().payTo(amount, attackingResident, reason);
             return total;
-        } catch (EconomyException e) {
-            e.printStackTrace();
-            return amount;
-        }
     }
 
     private void transferOrKeepTownblock(final Town atkTown, final TownBlock townBlock, final Town defTown) {
@@ -523,7 +513,6 @@ public class FlagWarCustomListener implements Listener {
      */
     private void calculateDefenderReward(final Player dP, final CellUnderAttack cell) {
         if (TownyEconomyHandler.isActive()) {
-            try {
                 Resident attackingPlayer = universe.getResident(cell.getNameOfFlagOwner());
                 Resident defendingPlayer = null;
 
@@ -533,9 +522,6 @@ public class FlagWarCustomListener implements Listener {
 
                 String styledMoney = TownyEconomyHandler.getFormattedBalance(FlagWarConfig.getDefendedAttackReward());
                 notifyDefAndPayOrRefund(attackingPlayer, defendingPlayer, styledMoney);
-            } catch (EconomyException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -545,10 +531,8 @@ public class FlagWarCustomListener implements Listener {
      * @param atkRes the attacking Resident.
      * @param defRes the defending Resident.
      * @param styledMoney the formatted string for the money balance.
-     * @throws EconomyException if there is an issue with the attacker paying the defender.
      */
-    private void notifyDefAndPayOrRefund(final Resident atkRes, final Resident defRes, final String styledMoney)
-        throws EconomyException {
+    private void notifyDefAndPayOrRefund(final Resident atkRes, final Resident defRes, final String styledMoney) {
         if (defRes == null
             && atkRes.getAccount().deposit(
             FlagWarConfig.getDefendedAttackReward(), "FlagWar Attack Defended (GF)")) {

@@ -1,3 +1,2 @@
 * text eol=lf
 *.{[cC][mM][dD]} text eol=crlf
-*.{[bB][aA][tT]} text eol=crlf

@@ -30,9 +30,14 @@ public class CellWonEvent extends Event implements Cancellable {
     /** Stores the CellUnderAttack being won. */
     private final CellUnderAttack cellUnderAttack;
 
-    /** @return the {@link HandlerList} for the {@link CellWonEvent}. */
+    /** Return the event's {@link HandlerList}. */
     @Override
     public HandlerList getHandlers() {
+        return getHandlerList();
+    }
+
+    /** @return {@link #HANDLERS} statically. */
+    public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 

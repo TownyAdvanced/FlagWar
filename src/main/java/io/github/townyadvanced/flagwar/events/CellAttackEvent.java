@@ -44,9 +44,14 @@ public class CellAttackEvent extends Event implements Cancellable {
     /** Holds the time of the attack, as a {@link Long} value. */
     private long time;
 
-    /** @return the {@link HandlerList} for the {@link CellAttackEvent}. */
+    /** Return the event's {@link HandlerList}. */
     @Override
     public HandlerList getHandlers() {
+        return getHandlerList();
+    }
+
+    /** @return {@link #HANDLERS} statically. */
+    public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 

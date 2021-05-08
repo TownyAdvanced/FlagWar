@@ -37,6 +37,11 @@ public class CellDefendedEvent extends Event implements Cancellable {
     /** Return the event's {@link HandlerList}. */
     @Override
     public HandlerList getHandlers() {
+        return getHandlerList();
+    }
+
+    /** @return {@link #HANDLERS} statically. */
+    public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 
