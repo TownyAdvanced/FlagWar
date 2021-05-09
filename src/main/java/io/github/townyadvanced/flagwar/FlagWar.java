@@ -82,7 +82,7 @@ public class FlagWar extends JavaPlugin {
     /** FlagWar Copyright String. */
     private static final String FW_COPYRIGHT = "Copyright \u00a9 2021 TownyAdvanced";
     /** Version object for storing the minimum required version of Towny for compatibility. */
-    private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.12");
+    private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.15");
     /** Value of minimum configuration file version. Used for determining if file should be regenerated. */
     private static final double MIN_CONFIG_VER = 1.2;
     /** BStats Metrics ID. */
