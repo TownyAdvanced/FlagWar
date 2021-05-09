@@ -28,7 +28,6 @@ import com.palmergames.bukkit.towny.war.common.WarZoneConfig;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.i18n.Translate;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -51,9 +50,9 @@ public class WarzoneListener implements Listener {
     @EventHandler
     @SuppressWarnings("unused")
     public void onDestroy(final TownyDestroyEvent townyDestroyEvent) {
-        Player player = townyDestroyEvent.getPlayer();
+        var player = townyDestroyEvent.getPlayer();
         TownBlockStatus status = towny.getCache(player).getStatus();
-        Material mat = townyDestroyEvent.getMaterial();
+        var mat = townyDestroyEvent.getMaterial();
 
         if (isFastFailing(status, townyDestroyEvent)) {
             return;
@@ -75,8 +74,8 @@ public class WarzoneListener implements Listener {
     @EventHandler
     @SuppressWarnings("unused")
     public void onBuild(final TownyBuildEvent townyBuildEvent) {
-        Player player = townyBuildEvent.getPlayer();
-        Material mat = townyBuildEvent.getMaterial();
+        var player = townyBuildEvent.getPlayer();
+        var mat = townyBuildEvent.getMaterial();
         TownBlockStatus status = towny.getCache(player).getStatus();
 
         if (isFastFailing(status, townyBuildEvent)) {
@@ -100,7 +99,7 @@ public class WarzoneListener implements Listener {
     @EventHandler
     @SuppressWarnings("unused")
     public void onItemUse(final TownyItemuseEvent townyItemuseEvent) {
-        Player player = townyItemuseEvent.getPlayer();
+        var player = townyItemuseEvent.getPlayer();
         TownBlockStatus status = towny.getCache(player).getStatus();
 
         if (isFastFailing(status, townyItemuseEvent)) {
@@ -124,7 +123,7 @@ public class WarzoneListener implements Listener {
     @EventHandler
     @SuppressWarnings("unused")
     public void onSwitchUse(final TownySwitchEvent townySwitchEvent) {
-        Player player = townySwitchEvent.getPlayer();
+        var player = townySwitchEvent.getPlayer();
         TownBlockStatus status = towny.getCache(player).getStatus();
 
         if (isFastFailing(status, townySwitchEvent)) {

@@ -22,7 +22,6 @@ import java.util.Objects;
 import org.bukkit.Location;
 
 import com.palmergames.bukkit.towny.object.Coord;
-import org.bukkit.World;
 
 public class Cell {
     /** Holds the Cell's associated world's name. */
@@ -87,7 +86,7 @@ public class Cell {
 
     /**
      * Parse raw {@link #xVal} and {@link #zVal}, as well as the world name to construct a new Cell.
-     * @param worldName the name of the {@link World} the cell is found in.
+     * @param worldName the name of the {@link org.bukkit.World} the cell is found in.
      * @param x the base x value of the cell.
      * @param z the base z value of the cell.
      * @return a new Cell for the given world name, with x and z values adjusted for the appropriate Cell Size
@@ -103,12 +102,12 @@ public class Cell {
     }
 
     /**
-     * Gets the {@link World} from the supplied {@link Location}.
+     * Gets the {@link org.bukkit.World} from the supplied {@link Location}.
      * @param loc the supplied location.
-     * @return sends the {@link World#getName()} and coordinates through {@link #parse(String, int, int)}
+     * @return sends the {@link org.bukkit.World#getName()} and coordinates through {@link #parse(String, int, int)}
      */
     public static Cell parse(final Location loc) {
-        World world = Objects.requireNonNull(loc.getWorld());
+        var world = Objects.requireNonNull(loc.getWorld());
         return parse(world.getName(), loc.getBlockX(), loc.getBlockZ());
     }
 

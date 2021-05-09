@@ -83,7 +83,7 @@ public final class FlagWarConfig {
      * @return the time in ticks.
      */
     public static long getFlagWaitingTime() {
-        String waitingTime = PLUGIN.getConfig().getString("flag.waiting_time");
+        var waitingTime = PLUGIN.getConfig().getString("flag.waiting_time");
         if (waitingTime == null) {
             waitingTime = "30s";
         }

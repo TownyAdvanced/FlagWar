@@ -113,7 +113,7 @@ public class FlagWarCustomListener implements Listener {
         if (cellDefendedEvent.isCancelled()) {
             return;
         }
-        Player player = cellDefendedEvent.getPlayer();
+        var player = cellDefendedEvent.getPlayer();
         CellUnderAttack cell = cellDefendedEvent.getCell().getAttackData();
         String broadcast =
             Translate.fromPrefixed("broadcast.area.defended", getPlayerOrGF(player), cell.getCellString());
@@ -139,24 +139,24 @@ public class FlagWarCustomListener implements Listener {
             return;
         }
 
-        CellUnderAttack cell = cellWonEvent.getCellUnderAttack();
+        var cell = cellWonEvent.getCellUnderAttack();
 
         try {
-            Resident attackingResident = universe.getResident(cell.getNameOfFlagOwner());
+            var attackingResident = universe.getResident(cell.getNameOfFlagOwner());
 
             // Shouldn't happen
             if (attackingResident == null) {
                 return;
             }
 
-            Town attackingTown = attackingResident.getTown();
-            Nation attackingNation = attackingTown.getNation();
+            var attackingTown = attackingResident.getTown();
+            var attackingNation = attackingTown.getNation();
 
-            WorldCoord worldCoord = FlagWar.cellToWorldCoordinate(cell);
+            var worldCoord = FlagWar.cellToWorldCoordinate(cell);
             removeWarZone(cell);
 
-            TownBlock townBlock = worldCoord.getTownBlock();
-            Town defendingTown = townBlock.getTown();
+            var townBlock = worldCoord.getTownBlock();
+            var defendingTown = townBlock.getTown();
 
             FlagWar.townFlagged(defendingTown);
 
@@ -169,7 +169,7 @@ public class FlagWarCustomListener implements Listener {
 
                 if (amount > 0) {
                     // Defending Town -> Attacker (Pillage)
-                    String reason = String.format("War - Won Enemy %s (Pillage)", townBlockType);
+                    var reason = String.format("War - Won Enemy %s (Pillage)", townBlockType);
                     amount = townPayAttackerSpoils(attackingResident, defendingTown, amount, reason);
                     moneyTransferMessage = Translate.fromPrefixed("broadcast.area.pillaged",
                         attackingResident.getFormattedName(),
@@ -179,7 +179,7 @@ public class FlagWarCustomListener implements Listener {
                 } else if (amount < 0) {
                     // Attacker -> Defending Town (Rebuild cost)
                     amount = -amount; // Inverse the amount so it's positive.
-                    String reason = String.format("War - Won Enemy %s (Rebuild Cost)", townBlockType);
+                    var reason = String.format("War - Won Enemy %s (Rebuild Cost)", townBlockType);
                     attackerPayTownRebuild(cell, attackingResident, attackingNation, defendingTown, amount, reason);
                     moneyTransferMessage = Translate.fromPrefixed("broadcast.area.rebuilding",
                         attackingResident.getFormattedName(),
@@ -498,7 +498,7 @@ public class FlagWarCustomListener implements Listener {
      * @param cell the given CellUnderAttack related to the WarZone.
      */
     private void removeWarZone(final CellUnderAttack cell) {
-        WorldCoord worldCoord = new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
+        var worldCoord = new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
         universe.removeWarZone(worldCoord);
         towny.updateCache(worldCoord);
     }
@@ -513,7 +513,7 @@ public class FlagWarCustomListener implements Listener {
      */
     private void calculateDefenderReward(final Player dP, final CellUnderAttack cell) {
         if (TownyEconomyHandler.isActive()) {
-                Resident attackingPlayer = universe.getResident(cell.getNameOfFlagOwner());
+                var attackingPlayer = universe.getResident(cell.getNameOfFlagOwner());
                 Resident defendingPlayer = null;
 
                 if (dP != null) {
@@ -560,7 +560,7 @@ public class FlagWarCustomListener implements Listener {
             playerName = "Greater Forces";
         } else {
             playerName = player.getName();
-            Resident playerRes = universe.getResident(player.getUniqueId());
+            var playerRes = universe.getResident(player.getUniqueId());
             if (playerRes != null) {
                 playerName = playerRes.getFormattedName();
             }

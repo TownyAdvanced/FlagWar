@@ -79,7 +79,7 @@ public class CellUnderAttack extends Cell {
         this.flagPhaseID = 0;
         this.thread = -1;
 
-        World world = flagBase.getWorld();
+        var world = flagBase.getWorld();
         this.flagTimerBlock = world.getBlockAt(flagBase.getX(), flagBase.getY() + 1, flagBase.getZ());
         this.flagLightBlock = world.getBlockAt(flagBase.getX(), flagBase.getY() + 2, flagBase.getZ());
 
@@ -112,16 +112,16 @@ public class CellUnderAttack extends Cell {
             return;
         }
 
-        Block minBlock = getBeaconMinBlock(getFlagBaseBlock().getWorld());
+        var minBlock = getBeaconMinBlock(getFlagBaseBlock().getWorld());
         if (getMinimumHeightForBeacon() >= minBlock.getY()) {
             return;
         }
 
         int outerEdge = beaconSize - 1;
-        for (int y = 0; y < beaconSize; y++) {
-            for (int z = 0; z < beaconSize; z++) {
-                for (int x = 0; x < beaconSize; x++) {
-                    Block block = flagBaseBlock.getWorld().getBlockAt(minBlock.getX() + x,
+        for (var y = 0; y < beaconSize; y++) {
+            for (var z = 0; z < beaconSize; z++) {
+                for (var x = 0; x < beaconSize; x++) {
+                    var block = flagBaseBlock.getWorld().getBlockAt(minBlock.getX() + x,
                         minBlock.getY() + y, minBlock.getZ() + z);
                     if (block.isEmpty()) {
                         drawBeaconOrWireframe(outerEdge, y, z, x, block);

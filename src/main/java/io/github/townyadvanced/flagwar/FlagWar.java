@@ -165,12 +165,12 @@ public class FlagWar extends JavaPlugin {
     @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
     @SuppressWarnings({"unused", "java:S1854", "java:S1481"})
     private void bStatsKickstart() {
-        Metrics metrics = new Metrics(this, METRICS_ID);
+        var metrics = new Metrics(this, METRICS_ID);
     }
 
     private void checkTowny() {
         logger.log(Level.INFO, () -> Translate.from("startup.check-towny.notify"));
-        Towny towny = Towny.getPlugin();
+        var towny = Towny.getPlugin();
         if (towny == null) {
             logger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.not-running"));
             onDisable();
@@ -183,7 +183,7 @@ public class FlagWar extends JavaPlugin {
     }
 
     private void checkTownyVersionCompatibility(final Towny towny) {
-        Version townyVersion = Version.fromString(towny.getVersion());
+        var townyVersion = Version.fromString(towny.getVersion());
         if (townyVersion.compareTo(MIN_TOWNY_VER) < 0) {
             logger.log(Level.SEVERE,
                 () -> Translate.from("startup.check-towny.outdated", MIN_TOWNY_VER.toString()));
@@ -273,7 +273,7 @@ public class FlagWar extends JavaPlugin {
         String beaconWireframe = Objects.requireNonNull(this.getConfig().getString("beacon.wireframe_block"));
 
 
-        Material lightBlock = Material.matchMaterial(flagLight);
+        var lightBlock = Material.matchMaterial(flagLight);
         if (lightBlock != null && lightBlock.isBlock() && !lightBlock.isAir() && !lightBlock.hasGravity()) {
             FlagWarConfig.setFlagLightMaterial(lightBlock);
         } else {
@@ -281,7 +281,7 @@ public class FlagWar extends JavaPlugin {
             logger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-light-block"));
         }
 
-        Material baseBlock = Material.matchMaterial(flagBase);
+        var baseBlock = Material.matchMaterial(flagBase);
         if (baseBlock != null && baseBlock.isBlock() && !baseBlock.isAir() && !baseBlock.hasGravity()) {
             FlagWarConfig.setFlagBaseMaterial(baseBlock);
         } else {
@@ -289,7 +289,7 @@ public class FlagWar extends JavaPlugin {
             logger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-base-block"));
         }
 
-        Material beaconFrame = Material.matchMaterial(beaconWireframe);
+        var beaconFrame = Material.matchMaterial(beaconWireframe);
         if (beaconFrame != null && beaconFrame.isBlock() && !beaconFrame.isAir() && !beaconFrame.hasGravity()) {
             FlagWarConfig.setBeaconWireFrameMaterial(beaconFrame);
         } else {
@@ -312,7 +312,7 @@ public class FlagWar extends JavaPlugin {
         List<CellUnderAttack> cells = new ArrayList<>();
         for (CellUnderAttack cua : ATTACK_HASH_MAP.values()) {
             try {
-                Town townUnderAttack =
+                var townUnderAttack =
                     TownyAPI.getInstance().getTownBlock(cua.getFlagBaseBlock().getLocation()).getTown();
                 if (townUnderAttack == null) {
                     continue;
@@ -330,7 +330,7 @@ public class FlagWar extends JavaPlugin {
     static boolean isUnderAttack(final Town town) {
         for (CellUnderAttack cua : ATTACK_HASH_MAP.values()) {
             try {
-                Town townUnderAttack =
+                var townUnderAttack =
                     TownyAPI.getInstance().getTownBlock(cua.getFlagBaseBlock().getLocation()).getTown();
                 if (townUnderAttack == null) {
                     continue;
@@ -359,21 +359,21 @@ public class FlagWar extends JavaPlugin {
     }
 
     static void attackWon(final CellUnderAttack cell) {
-        CellWonEvent cellWonEvent = new CellWonEvent(cell);
+        var cellWonEvent = new CellWonEvent(cell);
         PLUGIN_MANAGER.callEvent(cellWonEvent);
         cell.cancel();
         removeCellUnderAttack(cell);
     }
 
     static void attackDefended(final Player player, final CellUnderAttack cell) {
-        CellDefendedEvent cellDefendedEvent = new CellDefendedEvent(player, cell);
+        var cellDefendedEvent = new CellDefendedEvent(player, cell);
         PLUGIN_MANAGER.callEvent(cellDefendedEvent);
         cell.cancel();
         removeCellUnderAttack(cell);
     }
 
     static void attackCanceled(final CellUnderAttack cell) {
-        CellAttackCanceledEvent cellAttackCanceledEvent = new CellAttackCanceledEvent(cell);
+        var cellAttackCanceledEvent = new CellAttackCanceledEvent(cell);
         PLUGIN_MANAGER.callEvent(cellAttackCanceledEvent);
         cell.cancel();
         removeCellUnderAttack(cell);
@@ -409,7 +409,7 @@ public class FlagWar extends JavaPlugin {
 
     private static void removeFlagFromPlayerCount(final String playerName, final Cell cell) {
         List<CellUnderAttack> activeFlags = PLAYER_ATTACK_HASH_MAP.get(playerName);
-        CellUnderAttack cellUnderAttack = (CellUnderAttack) cell;
+        var cellUnderAttack = (CellUnderAttack) cell;
         if (activeFlags != null) {
             if (activeFlags.size() <= 1) {
                 PLAYER_ATTACK_HASH_MAP.remove(playerName);
@@ -434,7 +434,7 @@ public class FlagWar extends JavaPlugin {
      */
     public static void checkBlock(final Player player, final Block block, final Cancellable event) {
         if (FlagWarConfig.isAffectedMaterial(block.getType())) {
-            Cell cell = Cell.parse(block.getLocation());
+            var cell = Cell.parse(block.getLocation());
             if (cell.isUnderAttack()) {
                 CellUnderAttack cellAttackData = cell.getAttackData();
                 if (cellAttackData.isFlagTimer(block)) {
@@ -463,8 +463,8 @@ public class FlagWar extends JavaPlugin {
 
         checkFlagHeight(block);
 
-        TownyUniverse townyUniverse = TownyUniverse.getInstance();
-        Resident attackingResident = townyUniverse.getResident(player.getUniqueId());
+        var townyUniverse = TownyUniverse.getInstance();
+        var attackingResident = townyUniverse.getResident(player.getUniqueId());
         Town landOwnerTown;
         Town attackingTown;
 
@@ -578,7 +578,7 @@ public class FlagWar extends JavaPlugin {
      */
     private static boolean kickstartCellAttackEvent(final Towny towny, final Player player,
                                                     final Block block) throws TownyException {
-        CellAttackEvent cellAttackEvent = new CellAttackEvent(towny, player, block);
+        var cellAttackEvent = new CellAttackEvent(towny, player, block);
         plugin.getServer().getPluginManager().callEvent(cellAttackEvent);
         if (cellAttackEvent.isCancelled()) {
             if (cellAttackEvent.hasReason()) {
@@ -670,7 +670,7 @@ public class FlagWar extends JavaPlugin {
      * @throws TownyException if there are not enough online players.
      */
     public static void checkIfTownHasMinOnlineForWar(final Town town) throws TownyException {
-        int requiredOnline = FlagWarConfig.getMinPlayersOnlineInTownForWar();
+        var requiredOnline = FlagWarConfig.getMinPlayersOnlineInTownForWar();
         int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(town).size();
         if (onlinePlayerCount < requiredOnline) {
             throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players",

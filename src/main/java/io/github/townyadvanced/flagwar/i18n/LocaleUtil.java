@@ -47,15 +47,15 @@ public final class LocaleUtil {
      * @param localeString the String to be parsed for loading the locale.
      */
     public static void setUpLocale(final String localeString) {
-        Logger logger = FlagWar.getInstance().getLogger();
-        Locale defaultLocale = new Locale("en", "US");
+        var logger = FlagWar.getInstance().getLogger();
+        var defaultLocale = new Locale("en", "US");
         String language;
         String region;
         String variant;
         Locale locale;
 
         // Regular Expressions for localeString parsing.
-        String localeRegEx = "[a-zA-Z]{2,8}";
+        var localeRegEx = "[a-zA-Z]{2,8}";
         String regionRegEx = localeRegEx + "_([a-zA-Z]{2}|[0-9]{3})";
         String variantRegEx = regionRegEx + "[_-]([0-9][0-9a-zA-Z]{3}|[0-9a-zA-Z]{5,8})";
 
@@ -85,9 +85,9 @@ public final class LocaleUtil {
 
     private static void finalizeSetup(final Logger logger, final Locale locale) {
         setLocale(locale);
-        ResourceBundle msg = ResourceBundle.getBundle("Translation", getLocale());
+        var msg = ResourceBundle.getBundle("Translation", getLocale());
         setMessages(msg);
-        String usingLocale = String.format("Using locale: %s - %s",
+        var usingLocale = String.format("Using locale: %s - %s",
             getMessages().getString("locale"), getMessages().getString("locale-version"));
         logger.info(usingLocale);
     }
@@ -119,7 +119,7 @@ public final class LocaleUtil {
     }
 
     private static boolean fileInJar(final String localeString) {
-        String localeFile = String.format("/Translation_%s.properties", localeString);
+        var localeFile = String.format("/Translation_%s.properties", localeString);
         URL u = FlagWar.class.getResource(localeFile);
         return u != null;
     }

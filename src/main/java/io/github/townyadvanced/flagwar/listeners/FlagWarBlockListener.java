@@ -68,9 +68,9 @@ public class FlagWarBlockListener implements Listener {
             return;
         }
 
-        Player player = townyBuildEvent.getPlayer();
-        Block block = player.getWorld().getBlockAt(townyBuildEvent.getLocation());
-        WorldCoord worldCoord = new WorldCoord(block.getWorld().getName(), Coord.parseCoord(block));
+        var player = townyBuildEvent.getPlayer();
+        var block = player.getWorld().getBlockAt(townyBuildEvent.getLocation());
+        var worldCoord = new WorldCoord(block.getWorld().getName(), Coord.parseCoord(block));
 
         if (towny.getCache(player).getStatus().equals(TownBlockStatus.ENEMY)) {
             tryCallCellAttack(townyBuildEvent, player, block, worldCoord);

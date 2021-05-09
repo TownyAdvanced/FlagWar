@@ -52,11 +52,11 @@ public class ConfigLoader {
      */
     public void loadConfig(final double minConfigVer) throws IOException, InvalidConfigurationException {
         plugin.saveDefaultConfig();
-        File configFile = new File("plugins/FlagWar/config.yml");
+        var configFile = new File("plugins/FlagWar/config.yml");
         plugin.getConfig().load(configFile);
 
         if (plugin.getConfig().getDouble("config_version") < minConfigVer) {
-            File backupFile = new File("plugins/FlagWar/config.old.yml");
+            var backupFile = new File("plugins/FlagWar/config.old.yml");
             if (backupFile.createNewFile()) {
                 logger.warning("Created new backup location: Flagwar/config.old.yml");
             }
