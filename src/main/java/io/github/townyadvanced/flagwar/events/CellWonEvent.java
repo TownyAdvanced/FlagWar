@@ -20,6 +20,7 @@ import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class CellWonEvent extends Event implements Cancellable {
 
@@ -32,7 +33,7 @@ public class CellWonEvent extends Event implements Cancellable {
 
     /** Return the event's {@link HandlerList}. */
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return getHandlerList();
     }
 

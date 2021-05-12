@@ -26,6 +26,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import com.palmergames.bukkit.towny.Towny;
+import org.jetbrains.annotations.NotNull;
 
 public class CellAttackEvent extends Event implements Cancellable {
 
@@ -46,7 +47,7 @@ public class CellAttackEvent extends Event implements Cancellable {
 
     /** Return the event's {@link HandlerList}. */
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return getHandlerList();
     }
 
