@@ -228,7 +228,7 @@
                             </dependency>
                         </dependencies>
                         <configuration>
-                            <configLocation>checkstyle.xml</configLocation>
+                            <configLocation>.checkstyle/checkstyle.xml</configLocation>
                             <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
