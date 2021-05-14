@@ -2,20 +2,27 @@
 ==================================================================
 
 ----
-### Notices
+### Important Notices
 
-```yaml
-Warning: FlagWar is not yet ready to be considered stable. Some features will likely be missing.
-Please consider currently available builds as 'Pre-Alpha' or Development builds.
+<details><summary>Development Software</summary>
+FlagWar is not yet ready to be considered "Stable". Please consider all currently available builds to be 
+development builds.
 
-Admins: It is not yet advised to use it on a server in a production environment.
-If you're using FlagWar in production, consider using the version of FlagWar built into Towny.
-Do not report bugs for the bundled version of FlagWar here.
+Some features will likely still be missing or broken.
+For known deficiencies, please refer to the [issue tracker][issue-tracker] and/or
+the [Feature Parity Checklist][boards-1].
 
-Developers: Depend at your own risk. We cannot guarantee the API stability at this time,
-even between recent snapshots. Assistance and PRs are always welcome.
-```
-For known deficiencies, please refer to the [issue tracker][issue-tracker] and [Feature Parity Checklist][boards-1].
+If you would like to help out with development, translations, or other efforts: please see the 
+<a href="#developer-resources">Developer Resources</a> section.
+</details>
+
+<details><summary>Metrics / Telemetry</summary>
+
+FlagWar, makes use of the [bStats](https://bstats.org/) metrics library. For an idea of what is collected, you can view
+the telemetry reports [here](https://bstats.org/plugin/bukkit/FlagWar/10325).
+While we would appreciate it if you were to keep reporting enabled, you can opt-out of sending telemetry
+by modifying the bStats config found at `yourServer/plugins/bStats/`.
+</details>
 
 ----
 Summary
@@ -50,41 +57,25 @@ Sections
 3) [Developer Resources 🧰][developer-resources]
    - [Contributing Code 💻][contrib-code]
    - [Contributing Documentation 🗒][contrib-docs] - WIP
-   - [Localizing FlagWar 🗺][contrib-localize]	- WIP
+   - [Localizing FlagWar 🗺][contrib-localize]    - WIP
    - [Building FlagWar 🏗][building]
-4) [Supporting the Project 🦸][supporting-flagwar]	
+4) [Supporting the Project 🦸][supporting-flagwar]    
 
 Licensing
 ---------
 
 <img align="right" height="155" src="https://opensource.org/files/OSI_Approved_License.png">
 
-FlagWar is licensed under the [Apache License, Version 2.0][apache-v2], which is approved by the
+FlagWar is licensed under the [Apache License, Version 2.0][apache-v2], a license approved by the
 [Open Source Initiative][osi] and is [GPL Compatible][gpl-apache].
-
-<!--TODO: Move this to a wiki page, or something. It's good stuff, but it clutters an already cluttered README file.
-On why we chose to avoid reusing the Towny license for FlagWar:
-- It's ill advised by Creative Commons, FSF, and OSI. See: https://creativecommons.org/faq/#can-i-apply-a-creative-commons-license-to-software
-- It's not a Free Culture license, as it restricts commercial and derivative works
-- It does not have provisions for contributions to the work, resulting in the messy need to have contributors sign over
-  their copyright.
-- If Towny Advanced dies off, all subprojects under it's license cannot be adapted or extended.
-- Assuming the Spigot license remains legally applicable, using Towny's license would be in violation of the GNU GPLv3.
-
-Why we choose the Apache License for FlagWar:
-- Longevity: Adaptions can legally outlive the originating codebase and developers' interests.
-- Server Friendly: Perpetual license to use, including any relevant included patents held by contributors.
-- Developer Friendly: Adaptions permitted, and offers the free exchange of ideas. Contributor agreements baked directly
-  into the license.
-- Attribution: Attribution is given within each class, and any outside work can be cited in the NOTICE file. It is
-  also required of forks to appropriately give attribution back to the project.
--->
-
 Some portions, such as shaded libraries, may be alternatively licensed. See the [NOTICE][notice] for any alternative
-licensing or copyright limitations. Additionally, please respect [Towny's license][cc by-nc-nd 3.0] when used in
-conjunction. FlagWar does not give legal bypasses for Towny's usage restrictions.
+licensing or copyright limitations.
 
 Documentation found on the [FlagWar Wiki][wiki] is licensed under [CC BY 4.0][cc by].
+
+Additionally, please respect [Towny's license][cc by-nc-nd 3.0] when using FlagWar with Towny.
+Use of FlagWar does not constitute a way to bypass Towny's license restrictions.
+When in doubt, [ask for clarification][get-support]. 
 
 Administrator Resources
 -----------------------
@@ -120,8 +111,9 @@ On the [Issue Tracker][issue-tracker] you can file [bug reports][bug],
 
 [![Average Issue Resolution Time][iim-time-badge]][iim-time] [![Percentage of Issues 'Open'][iim-percent-badge]][iim-percent]
 
-If you still need help, come and join us on the [Discord server][discord], where you can find cutting edge updates and
-discussions on the development of FlagWar, as well as the rest of the plugins in the Towny Advanced family.
+If you still need help, come and join us on the [TownyAdvanced Discord server][discord]. There, you can also find
+support, get notified on the latest updates for Towny, chat with other admins, and have discussions over plugin
+development with developers from multiple projects.
 
 Developer Resources
 -------------------
@@ -130,36 +122,43 @@ Developer Resources
 
 If you would like to contribute to the FlagWar code, first please read the [Contributing Guidelines][contributing].
 
-For basic work, involving only minor changes (1-2 lines), you can use GitHub's built-in editor after
+For basic work, involving only minor changes (1-2 lines), you _can_ use GitHub's built-in editor after
 forking the project.
 
 For anything more involved, you will need to fulfill the following requirements:
-- A [Java Development Kit][jdk], for Java SE 8 or higher
-- A competent editor or an Integrated Development Environment (IDE)
+- A [Java Development Kit][jdk], for Java 11 or higher
+- A competent text editor (documentation, translations), or an Integrated Development Environment (code)
     - Competent Editors: 
       [Atom][atom], [Notepad++][npp], [Sublime Text][sublime], [Vim][vim], [Visual Studio Code][vscode]
     - Recommendable IDEs: [Apache NetBeans][netbeans], [Eclipse IDE][eclipse], [IntelliJ IDEA][idea]
-- Apache Maven (See [Building FlagWar](#building-flagwar))
-
-> Note that some IDEs bundle a JDK and Apache Maven. For the love of all that is code, do not use Microsoft Notepad.
+- Apache Maven (_See [Building FlagWar](#building-flagwar); Note that some IDEs bundle a JDK and Apache Maven, or
+  can grab them for you._)
 
 ### Contributing Documentation
-Help with the documentation is much appreciated. If you are interested in writing for the wiki, please create a ticket
-detailing as much, or chime in on the Towny discussion board. 
+Help with the documentation would be much appreciated.
+If you are interested in writing for the wiki, please create a ticket, adk on the Towny Discord,
+or chime in on the Towny discussion board to be given write access. 
 
 ### Localizing FlagWar
-FlagWar includes localizations built-in, rather than using a configurable file. To localize FlagWar to your language,
-copy the [Translation_en_US.properties](src/main/resources/Translation_en_US.properties) file from the
-[`resources` directory](src/main/resources) as `Translation_{ID}.properties`, requiring at least the first two parts
-of the id.
 
-The `ID`, or the locale id compatible with the Java [Locale Class](https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html),
-is a 1-to-3 part code representing the _language_, the _region_, and the _variant_ (if desired); delimited by
-underscores. Examples: en, en_US, en_US_POSIX.
+The localization files for FlagWar are built directly into the jarfile using ResourceBundles.
 
-See the Locale javadoc linked above for well-formed naming. FlagWar does not support `script` or `extension` fields,
-so `ID`s should stick to the `language(_REGION(_VARIANT))` format.  
+To localize FlagWar to your language, copy the 
+[Translation_en_US.properties](src/main/resources/Translation_en_US.properties) file from the
+[`resources` directory](src/main/resources) as `Translation_{LOCALE}.properties`.
 
+The `LOCALE`, or the locale id compatible with the Java Locale class,
+is a 1-to-3 segment string representing the _language_, the _region_, and the _variant_ (if desired);
+delimited primarily by underscores, with variants optionally being hyphenated. 
+
+Examples: en, en_US, en_US-POSIX.
+
+See the Java [Locale](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Locale.html) documentation 
+for well-formed naming. 
+
+> &ast; FlagWar does not support `script` or `extension` fields, so Locale IDs should stick to the 
+`lang(_REGION([_\-]VARIANT))` format.  
+> PRs to Locale processing are welcome. It's pretty messy in there...
 Once you have that done, you can go ahead and translate the strings from there.
 
 After translation is complete, save your changes. You will need to [Build FlagWar](README.md#Building-FlagWar) to ensure
@@ -168,24 +167,18 @@ that all strings are accounted for, and that they render properly for end users.
 ### Building FlagWar
 
 Building FlagWar requires the use of [Apache Maven][maven], [Git][git] (optional), a [Java Development Kit][jdk] for
-Java 8 (or greater; [Corretto Recommended][corretto]), and an internet connection. 
+Java 11 (or greater; [Amazon Corretto recommended][corretto]), and an internet connection.
 
-> If you run into "command not found" issues, please make sure your JAVA_HOME and PATH environment variables have been
-> set. (Don't bother with your M2_HOME, that's [deprecated][m2home].)
-
-1) Clone FlagWar from GitHub. 
-   > Unfamiliar with Git? See the [GitHub Docs][github-docs], and refer to the [Git Documentation][git-docs].
-2) From your terminal, navigate into the `FlagWar` directory
+1) Clone FlagWar from GitHub. _See the [GitHub Docs][github-docs], if you are unfamiliar with cloning projects._
+2) In a terminal shell, navigate into the cloned `FlagWar` directory. Or, if your OS supports opening a terminal from a
+   directory in its file browser, you can do that.
 3) Run `mvn clean package` to build FlagWar. This will put generated files into the `FlagWar/target` directory.
-   > If you run into "command not found" issues, please make sure you have everything required and that your environment
-   > variables have been set.
-   >
-   > If you use a Linux distribution and get JAVA_HOME errors, try adding the `-P alternatives` flag to your
-   > Maven commands. Popular distributions typically use the set-alternatives tool to map programs to the path, and this
-   > profile works around the issue.
+   
+   > 💡 If you are on Linux and get JAVA_HOME errors, try adding the `-P alternatives` flag to your
+   > Maven command(s).
 
-Alternatively, you can build it through your IDE, provided that it bundles with Maven, or that
-it can at the very least find it. Check your IDE's documentation regarding Maven support.
+Alternatively, you can build it through your IDE, provided that it includes Maven, or that
+it can at least find it. Check your IDE's documentation regarding Maven support.
 
 Supporting the Project
 ----------------------
@@ -193,12 +186,21 @@ Supporting the Project
 If you've found FlagWar to be of use and would like to support the project, then thank you!
 
 You can support the project in multiple ways:
-- Contribute to the project 📝 
+
+- **Contribute to the project 📝**  
   Be it through [adding or expanding a localization][contrib-localize], endorsing the project,
   hunting for bugs, [writing code][contrib-code], or [writing documentation][contrib-docs], any help is appreciated.
-- Sponsor a Developer 💗 
-  Sponsoring a developer is appreciated and gives back to those who have spent time to keep the project going.  
-  See the sidebar for open sponsorships, and learn about GitHub's [Sponsors Program][gh-sponsors].
+  
+
+- **Sponsor a Developer 💗**  
+  Sponsoring a developer is appreciated, and gives back to those who have spent time to keep the project going.  
+  See the sidebar for open sponsorships and learn about GitHub's [Sponsors Program][gh-sponsors].
+  
+
+- **Use FlagWar ⛳**  
+  Using FlagWar lets us know that people still love the war system. It can be encouraging for everyone involved.  
+  Keeping metrics on, while optional, also gives us a rough idea of the health and adoption of FlagWar in the
+  TownyAdvanced ecosystem.
 
 <!-- Links -->
 [admin-resources]: README.md#administrator-resources "Administrator Resources"
@@ -233,7 +235,6 @@ You can support the project in multiple ways:
 [issue-tracker]: https://github.com/TownyAdvanced/FlagWar/issues "FlagWar Issue Tracker"
 [jdk]: https://sdkman.io/jdks "JDK Distributions | SDKMAN!"
 [licensing]: README.md#licensing "Licensing"
-[m2home]: https://issues.apache.org/jira/browse/MNG-5607 "Don't use M2_HOME in mvn shell/command scripts anymore"
 [maven]: https://maven.apache.org/ "Apache Maven Software Project Management and Comprehension Tool"
 [netbeans]: https://netbeans.apache.org/ "Fits the Pieces Together"
 [notice]: NOTICE "Legal Notices for FlagWar"

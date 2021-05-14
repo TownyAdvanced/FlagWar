@@ -20,46 +20,49 @@ import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
 public class CellWonEvent extends Event implements Cancellable {
 
-	private static final HandlerList handlers = new HandlerList();
-	private boolean cancelled = false;
+    /** Stores the {@link HandlerList} for the {@link CellWonEvent}. */
+    private static final HandlerList HANDLERS = new HandlerList();
+    /** Stores the cancellation state of the event. */
+    private boolean cancelled = false;
+    /** Stores the CellUnderAttack being won. */
+    private final CellUnderAttack cellUnderAttack;
 
+    /** Return the event's {@link HandlerList}. */
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return getHandlerList();
     }
 
+    /** @return {@link #HANDLERS} statically. */
     public static HandlerList getHandlerList() {
-        return Objects.requireNonNull(handlers);
+        return HANDLERS;
     }
 
-	private final CellUnderAttack cellAttackData;
-
     /**
-     * Associates a {@link CellUnderAttack} with the CellWonEvent to be later parsed for information.
+     * Associates a {@link CellUnderAttack} with the {@link CellWonEvent} to be later parsed for information.
      * @param cellAttackData the CellUnderAttack to associate to the event.
      */
-    public CellWonEvent(CellUnderAttack cellAttackData) {
-		this.cellAttackData = cellAttackData;
-	}
+    public CellWonEvent(final CellUnderAttack cellAttackData) {
+        this.cellUnderAttack = cellAttackData;
+    }
 
     /**
      * Returns the {@link CellUnderAttack} from the event to be further parsed for data.
      * @return The CellUnderAttack from the event.
      */
-	public CellUnderAttack getCellAttackData() {
-		return cellAttackData;
-	}
+    public CellUnderAttack getCellUnderAttack() {
+        return cellUnderAttack;
+    }
 
     /**
      * Check if the CellWonEvent was cancelled.
      * @return true if the event was cancelled.
      */
-	@Override
+    @Override
     public boolean isCancelled() {
         return cancelled;
     }
@@ -69,7 +72,7 @@ public class CellWonEvent extends Event implements Cancellable {
      * @param cancel if event should cancel.
      */
     @Override
-    public void setCancelled(boolean cancel) {
+    public void setCancelled(final boolean cancel) {
         this.cancelled = cancel;
     }
 }

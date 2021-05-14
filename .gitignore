@@ -7,6 +7,9 @@
 # Ensure project is compiled appropriately
 !/.idea/compiler.xml
 !/.idea/encodings.xml
+!/.idea/vcs.xml
+# Pre-configure project for users of the IDEA CheckStyle plugin.
+!/.idea/checkstyle-idea.xml
 
 # Eclipse Specific
 .classpath

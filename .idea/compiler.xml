@@ -9,8 +9,5 @@
         <module name="FlagWar" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="FlagWar" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

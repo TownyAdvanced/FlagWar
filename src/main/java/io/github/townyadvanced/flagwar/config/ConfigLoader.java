@@ -28,47 +28,76 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class ConfigLoader {
 
+    /** {@link Plugin} instance used for basic operations, as well as associating the appropriate {@link #logger}.*/
     private final Plugin plugin;
+    /** JUL Logger associated with the {@link Plugin} instance. */
     private final Logger logger;
 
-    public ConfigLoader(Plugin plugin){
-        this.plugin = plugin;
+    /**
+     * Constructs the ConfigLoader, linking the {@link Plugin} instance and {@link Logger} variables.
+     * @param bukkitPlugin the Plugin to link to for both it's instance and logger.
+     */
+    public ConfigLoader(final Plugin bukkitPlugin) {
+        this.plugin = bukkitPlugin;
         this.logger = plugin.getLogger();
     }
 
-    public void loadConfig() throws IOException, InvalidConfigurationException {
-        double needConfVer = 1.0;
-
+    /**
+     * Intended to load the configuration. If the configuration version number is below the required version for safe
+     * operation, attempt {@link #regenerateConfiguration(File, File)}
+     * @param minConfigVer Minimum configuration version required. If not met, will attempt to back up and regenerate
+     *                     configuration.
+     * @throws IOException Thrown if for any reason it cannot read the config file, or create the backup file.
+     * @throws InvalidConfigurationException Thrown if the configuration file is invalid.
+     */
+    public void loadConfig(final double minConfigVer) throws IOException, InvalidConfigurationException {
         plugin.saveDefaultConfig();
-        File configFile = new File("plugins/FlagWar/config.yml");
+        var configFile = new File("plugins/FlagWar/config.yml");
         plugin.getConfig().load(configFile);
 
-        if (plugin.getConfig().getDouble("config_version") < needConfVer) {
-            File backupFile = new File("plugins/FlagWar/config.old.yml");
-            if (backupFile.createNewFile())
+        if (plugin.getConfig().getDouble("config_version") < minConfigVer) {
+            var backupFile = new File("plugins/FlagWar/config.old.yml");
+            if (backupFile.createNewFile()) {
                 logger.warning("Created new backup location: Flagwar/config.old.yml");
+            }
             regenerateConfiguration(configFile, backupFile);
         }
 
         plugin.getConfig().load(configFile);
     }
 
-    public void regenerateConfiguration(File configFile, File backupFile) throws IOException {
-        if(!backupConfig(configFile, backupFile))
+    /**
+     * Attempts to regenerate the configuration by first running {@link #backupConfig(File, File)} then generating a
+     * fresh config.
+     *
+     * @param configFile File on disk responsible for storing configuration.
+     * @param backupFile File on disk responsible for storing old configuration.
+     * @throws IOException Thrown if there are issues writing either the backupFile or the configFile.
+     */
+    public void regenerateConfiguration(final File configFile, final File backupFile) throws IOException {
+        if (!backupConfig(configFile, backupFile)) {
             plugin.onDisable();
-
+        }
         Files.delete(configFile.toPath());
         plugin.saveDefaultConfig();
     }
 
-    public boolean backupConfig(File sourceFile, File targetFile) throws IOException {
+    /**
+     * Attempts to clone the sourceFile's contents to the targetFile. Both files must exist to work.
+     *
+     * @param sourceFile The source File, or the current configuration.
+     * @param targetFile The target File to write to, or the backup. Writable file must pre-exist on disk.
+     * @return True if a backup was successfully written to. False is returned if the TargetFile does not exist.
+     * @throws IOException Thrown if the backup file exists, but is not writable - or if the source file does not exist
+     * or is not readable.
+     */
+    public boolean backupConfig(final File sourceFile, final File targetFile) throws IOException {
         logger.warning("Attempting to back up the configuration.");
-        if (targetFile.exists()){
+        if (targetFile.exists()) {
             Files.copy(sourceFile.toPath(), targetFile.toPath(), REPLACE_EXISTING);
             logger.warning("Configuration Backup Successful. Old Backup Replaced.");
             return true;
-        }
-        else {
+        } else {
             logger.severe("ABORTING: Unable to back up configuration! Please back up manually.");
             return false;
         }

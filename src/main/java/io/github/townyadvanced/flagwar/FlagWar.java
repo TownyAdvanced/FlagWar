@@ -43,7 +43,6 @@ import io.github.townyadvanced.flagwar.i18n.Translate;
 import io.github.townyadvanced.flagwar.listeners.FlagWarBlockListener;
 import io.github.townyadvanced.flagwar.listeners.FlagWarCustomListener;
 import io.github.townyadvanced.flagwar.listeners.FlagWarEntityListener;
-import io.github.townyadvanced.flagwar.listeners.WarzoneListener;
 import io.github.townyadvanced.flagwar.objects.Cell;
 import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 
@@ -66,40 +65,67 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+/**
+ * The main class of the TownyAdvanced: FlagWar addon. Houses core functionality.
+ */
 public class FlagWar extends JavaPlugin {
 
-    private static final PluginManager pluginManager = Bukkit.getPluginManager();
-    private static final Map<Cell, CellUnderAttack> cellsUnderAttack = new HashMap<>();
-	private static final Map<String, List<CellUnderAttack>> cellsUnderAttackByPlayer = new HashMap<>();
-	private static final Map<Town, Long> lastFlag = new HashMap<>();
-	private static final String FW_COPYRIGHT = "Copyright \u00a9 2021 TownyAdvanced";
-    private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.0");
-    private static Plugin plugin;
-    private final Logger logger;
-    private final ConfigLoader configLoader;
-    private FlagWarBlockListener flagWarBlockListener;
-	private FlagWarCustomListener flagWarCustomListener;
-	private FlagWarEntityListener flagWarEntityListener;
-	private WarzoneListener warzoneListener;
+    /** Holds the Bukkit {@link PluginManager}. */
+    private static final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
+    /** Holds a hashmap of all active {@link CellUnderAttack}. **/
+    private static final Map<Cell, CellUnderAttack> ATTACK_HASH_MAP = new HashMap<>();
+    /** Holds a map of {@link Player}s and a list of {@link CellUnderAttack} flagged by them. */
+    private static final Map<String, List<CellUnderAttack>> PLAYER_ATTACK_HASH_MAP = new HashMap<>();
+    /** Holds a map of {@link Town}s, and when they were last flagged. */
+    private static final Map<Town, Long> TOWN_LAST_FLAGGED_HASH_MAP = new HashMap<>();
+    /** FlagWar Copyright String. */
+    private static final String FW_COPYRIGHT = "Copyright \u00a9 2021 TownyAdvanced";
+    /** Version object for storing the minimum required version of Towny for compatibility. */
+    private static final Version MIN_TOWNY_VER = Version.fromString("0.96.7.15");
+    /** Value of minimum configuration file version. Used for determining if file should be regenerated. */
+    private static final double MIN_CONFIG_VER = 1.2;
+    /** BStats Metrics ID. */
+    public static final int METRICS_ID = 10325;
 
-    public FlagWar(){
-	    logger = this.getLogger();
-	    configLoader = new ConfigLoader(this);
+    /** Stores instance of Plugin, for easy operations. */
+    private static Plugin plugin;
+    /** Holds FlagWar's Bukkit-assigned JUL {@link Logger}. */
+    private final Logger flagWarLogger;
+    /** Holds FlagWar's {@link ConfigLoader}. */
+    private final ConfigLoader configLoader;
+
+    /** Holds instance of the {@link FlagWarBlockListener}. */
+    private FlagWarBlockListener flagWarBlockListener;
+    /** Holds instance of the {@link FlagWarCustomListener}. */
+    private FlagWarCustomListener flagWarCustomListener;
+    /** Holds instance of the {@link FlagWarEntityListener}. */
+    private FlagWarEntityListener flagWarEntityListener;
+    //** Holds instance of the {@link WarzoneListener}. */
+    //private WarzoneListener warzoneListener;    // DISABLED, BUGGY - Disabled due to issue with onBuild and onDestroy
+                                                  // resolving in wilderness.
+
+    /** Configure {@link #flagWarLogger} and set up {@link #configLoader} on load. */
+    public FlagWar() {
+        flagWarLogger = this.getLogger();
+        configLoader = new ConfigLoader(this);
     }
 
-	@Override
+    /**
+     * Operations to perform when called by {@link org.bukkit.plugin.PluginLoader#enablePlugin(Plugin)}.
+     */
+    @Override
     public void onEnable() {
         setInstance();
 
         try {
-            configLoader.loadConfig();
+            configLoader.loadConfig(MIN_CONFIG_VER);
         } catch (IOException e) {
-            logger.severe(e.getMessage());
+            flagWarLogger.severe(e.getMessage());
             e.printStackTrace();
             onDisable();
             return;
         } catch (Exception e) {
-            logger.severe(e.getMessage());
+            flagWarLogger.severe(e.getMessage());
             onDisable();
             return;
         }
@@ -107,350 +133,411 @@ public class FlagWar extends JavaPlugin {
 
         brandingMessage();
         checkTowny();
-        registerListeners();
+        initializeListeners();
         loadFlagWarMaterials();
         registerEvents();
         bStatsKickstart();
     }
 
+    /**
+     * Operations to perform when called by {@link org.bukkit.plugin.PluginLoader#disablePlugin(Plugin)}.
+     * (Or, if called internally.)
+     */
     @Override
     public void onDisable() {
-        logger.log(Level.INFO, () -> Translate.from("shutdown.cancel-all"));
+        flagWarLogger.log(Level.INFO, () -> Translate.from("shutdown.cancel-all"));
 
         try {
-            for (CellUnderAttack cell : new ArrayList<>(cellsUnderAttack.values()))
+            for (CellUnderAttack cell : new ArrayList<>(ATTACK_HASH_MAP.values())) {
                 attackCanceled(cell);
+            }
         } catch (NullPointerException npe) {
             npe.printStackTrace();
         }
     }
 
     private void setLocale() {
-        if (plugin.getConfig().getString("translation") != null) {
-            LocaleUtil.setUpLocale(plugin.getConfig().getString("translation"));
-        } else {
-            LocaleUtil.setUpLocale("en_US");
-        }
+        LocaleUtil.setUpLocale(plugin.getConfig().getString("translation") != null
+            ? Objects.requireNonNull(plugin.getConfig().getString("translation")) : "en_US");
     }
 
+    /** Register FlagWar with bStats. Viewable from: https://bstats.org/plugin/bukkit/FlagWar/ */
     @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
     @SuppressWarnings({"unused", "java:S1854", "java:S1481"})
     private void bStatsKickstart() {
-        Metrics metrics = new Metrics(this, 10325);
+        var metrics = new Metrics(this, METRICS_ID);
     }
 
     private void checkTowny() {
-        logger.log(Level.INFO, () -> Translate.from("startup.check-towny.notify"));
-        Towny towny = Towny.getPlugin();
+        flagWarLogger.log(Level.INFO, () -> Translate.from("startup.check-towny.notify"));
+        var towny = Towny.getPlugin();
         if (towny == null) {
-            logger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.not-running"));
+            flagWarLogger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.not-running"));
             onDisable();
-        }
-        else if (towny.isError()) {
-            logger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.isError"));
+        } else if (towny.isError()) {
+            flagWarLogger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.isError"));
             onDisable();
         } else {
             checkTownyVersionCompatibility(towny);
         }
     }
 
-    private void checkTownyVersionCompatibility(Towny towny) {
-        Version townyVersion = Version.fromString(towny.getVersion());
+    private void checkTownyVersionCompatibility(final Towny towny) {
+        var townyVersion = Version.fromString(towny.getVersion());
         if (townyVersion.compareTo(MIN_TOWNY_VER) < 0) {
-            logger.log(Level.SEVERE, () -> Translate.from("startup.check-towny.outdated", MIN_TOWNY_VER.toString()));
+            flagWarLogger.log(Level.SEVERE,
+                () -> Translate.from("startup.check-towny.outdated", MIN_TOWNY_VER.toString()));
             onDisable();
         } else {
-            logger.log(Level.INFO, () -> Translate.from("startup.check-towny.good-to-go"));
+            flagWarLogger.log(Level.INFO, () -> Translate.from("startup.check-towny.good-to-go"));
         }
     }
 
-	public void registerEvents() {
-        logger.log(Level.INFO, () -> Translate.from("startup.events.register"));
-        pluginManager.registerEvents(flagWarBlockListener, this);
-        pluginManager.registerEvents(flagWarCustomListener, this);
-        pluginManager.registerEvents(flagWarEntityListener, this);
-        pluginManager.registerEvents(warzoneListener, this);
-        logger.log(Level.INFO, () -> Translate.from("startup.events.registered"));
-	}
+    /** Register events with the {@link PluginManager}. */
+    public void registerEvents() {
+        flagWarLogger.log(Level.INFO, () -> Translate.from("startup.events.register"));
+        PLUGIN_MANAGER.registerEvents(flagWarBlockListener, this);
+        PLUGIN_MANAGER.registerEvents(flagWarCustomListener, this);
+        PLUGIN_MANAGER.registerEvents(flagWarEntityListener, this);
+        //PLUGIN_MANAGER.registerEvents(warzoneListener, this); // Disabled due to bug
+        flagWarLogger.log(Level.INFO, () -> Translate.from("startup.events.registered"));
+    }
 
-	private void registerListeners() {
-        logger.log(Level.INFO, () -> Translate.from("startup.listeners.register"));
+    /** Initialize Event Listeners. */
+    private void initializeListeners() {
+        flagWarLogger.log(Level.INFO, () -> Translate.from("startup.listeners.initialize"));
         flagWarBlockListener = new FlagWarBlockListener(this);
         flagWarCustomListener = new FlagWarCustomListener(this);
         flagWarEntityListener = new FlagWarEntityListener();
-        warzoneListener = new WarzoneListener();
-        logger.log(Level.INFO, () -> Translate.from("startup.listeners.registered"));
+        // warzoneListener = new WarzoneListener(); // Disabled due to bug
+        flagWarLogger.log(Level.INFO, () -> Translate.from("startup.listeners.initialized"));
     }
 
+    /** @return the FlagWar {@link #plugin} instance. */
     public static Plugin getInstance() {
         return plugin;
     }
 
+    /** Set the FlagWar {@link #plugin} instance.*/
     private static void setInstance() {
         plugin = Bukkit.getServer().getPluginManager().getPlugin("FlagWar");
     }
 
+    /** Function to print ASCII marquee and {@link #FW_COPYRIGHT} to the logger on the INFO channel. */
     void brandingMessage() {
-        if (this.getConfig().getBoolean("show-startup-marquee")){
-            logger.log(Level.INFO, () -> Translate.from("startup.marquee-art"));
+        if (this.getConfig().getBoolean("show-startup-marquee")) {
+            flagWarLogger.log(Level.INFO, () -> Translate.from("startup.marquee-art"));
         }
-        logger.info(FW_COPYRIGHT);
+        flagWarLogger.info(FW_COPYRIGHT);
     }
 
-	public static void registerAttack(CellUnderAttack cell) throws TownyException {
+    /**
+     * Function to register an attack to a player (by running through
+     * {@link #addFlagToPlayerCount(String, CellUnderAttack)}), add it to the {@link #ATTACK_HASH_MAP}, and run
+     * {@link CellUnderAttack#beginAttack()}.
+     *
+     * @param cell CellUnderAttack to process.
+     * @throws TownyException if the Player's active flags would become greater than the Maximum per Player.
+     * @throws TownyException if the attackCell is already registered in the {@link #ATTACK_HASH_MAP}.
+     */
+    public static void registerAttack(final CellUnderAttack cell) throws TownyException {
 
-		CellUnderAttack attackCell = cellsUnderAttack.get(cell);
+        CellUnderAttack attackCell = ATTACK_HASH_MAP.get(cell);
+        String playerName = cell.getNameOfFlagOwner();
+        checkCellAlreadyRegistered(attackCell);
+        checkPlayerActiveFlagLimit(playerName);
 
-		if (attackCell != null)
-			throw new AlreadyRegisteredException(Translate.fromPrefixed("error.cell-already-under-attack", attackCell.getNameOfFlagOwner()));
+        addFlagToPlayerCount(playerName, cell);
+        ATTACK_HASH_MAP.put(cell, cell);
+        cell.beginAttack();
+    }
 
-		String playerName = cell.getNameOfFlagOwner();
+    private static void checkPlayerActiveFlagLimit(final String playerName) throws TownyException {
+        if ((getNumActiveFlags(playerName) + 1) > FlagWarConfig.getMaxActiveFlagsPerPerson()) {
+            throw new TownyException(Translate.fromPrefixed("error.flag.max-flags-placed",
+                FlagWarConfig.getMaxActiveFlagsPerPerson()));
+        }
+    }
 
-		// Check that the user is under his limit of active war flags.
-		int futureActiveFlagCount = getNumActiveFlags(playerName) + 1;
-		if (futureActiveFlagCount > FlagWarConfig.getMaxActiveFlagsPerPerson())
-		    throw new TownyException(Translate.fromPrefixed("error.flag.max-flags-placed", FlagWarConfig.getMaxActiveFlagsPerPerson()));
+    private static void checkCellAlreadyRegistered(final CellUnderAttack attackCell) throws AlreadyRegisteredException {
+        if (attackCell != null) {
+            throw new AlreadyRegisteredException(Translate.fromPrefixed("error.cell-already-under-attack",
+                attackCell.getNameOfFlagOwner()));
+        }
+    }
 
-		addFlagToPlayerCount(playerName, cell);
-		cellsUnderAttack.put(cell, cell);
-		cell.begin();
-	}
-
-	private void loadFlagWarMaterials() {
-        logger.log(Level.INFO, () -> Translate.from("startup.load-materials.notify"));
+    private void loadFlagWarMaterials() {
+        flagWarLogger.log(Level.INFO, () -> Translate.from("startup.load-materials.notify"));
         String flagLight = Objects.requireNonNull(this.getConfig().getString("flag.light_block"));
         String flagBase = Objects.requireNonNull(this.getConfig().getString("flag.base_block"));
         String beaconWireframe = Objects.requireNonNull(this.getConfig().getString("beacon.wireframe_block"));
 
 
-        Material lightBlock = Material.matchMaterial(flagLight);
-        if (lightBlock != null && lightBlock.isBlock() && !lightBlock.isAir() && !lightBlock.hasGravity())
+        var lightBlock = Material.matchMaterial(flagLight);
+        if (lightBlock != null && lightBlock.isBlock() && !lightBlock.isAir() && !lightBlock.hasGravity()) {
             FlagWarConfig.setFlagLightMaterial(lightBlock);
-        else {
+        } else {
             FlagWarConfig.setFlagLightMaterial(Material.TORCH);
-            logger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-light-block"));
+            flagWarLogger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-light-block"));
         }
 
-        Material baseBlock = Material.matchMaterial(flagBase);
-        if (baseBlock != null && baseBlock.isBlock() && !baseBlock.isAir() && !baseBlock.hasGravity())
+        var baseBlock = Material.matchMaterial(flagBase);
+        if (baseBlock != null && baseBlock.isBlock() && !baseBlock.isAir() && !baseBlock.hasGravity()) {
             FlagWarConfig.setFlagBaseMaterial(baseBlock);
-        else {
+        } else {
             FlagWarConfig.setFlagBaseMaterial(Material.OAK_FENCE);
-            logger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-base-block"));
+            flagWarLogger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-base-block"));
         }
 
-        Material beaconFrame = Material.matchMaterial(beaconWireframe);
-        if (beaconFrame != null && beaconFrame.isBlock() && !beaconFrame.isAir() && !beaconFrame.hasGravity())
+        var beaconFrame = Material.matchMaterial(beaconWireframe);
+        if (beaconFrame != null && beaconFrame.isBlock() && !beaconFrame.isAir() && !beaconFrame.hasGravity()) {
             FlagWarConfig.setBeaconWireFrameMaterial(beaconFrame);
-        else {
+        } else {
             FlagWarConfig.setBeaconWireFrameMaterial(Material.GLOWSTONE);
-            logger.log(Level.WARNING, () -> Translate.from("startup.load-materials.invalid-beacon-wireframe"));
+            flagWarLogger.log(Level.WARNING,
+                () -> Translate.from("startup.load-materials.invalid-beacon-wireframe"));
         }
     }
 
-	static int getNumActiveFlags(String playerName) {
-		List<CellUnderAttack> activeFlags = cellsUnderAttackByPlayer.get(playerName);
-		return activeFlags == null ? 0 : activeFlags.size();
-	}
+    static int getNumActiveFlags(final String playerName) {
+        List<CellUnderAttack> activeFlags = PLAYER_ATTACK_HASH_MAP.get(playerName);
+        return activeFlags == null ? 0 : activeFlags.size();
+    }
 
-	static List<CellUnderAttack> getCellsUnderAttack() {
-		return new ArrayList<>(cellsUnderAttack.values());
-	}
+    static List<CellUnderAttack> getCellsUnderAttack() {
+        return new ArrayList<>(ATTACK_HASH_MAP.values());
+    }
 
-	static List<CellUnderAttack> getCellsUnderAttack(Town town) {
-		List<CellUnderAttack> cells = new ArrayList<>();
-		for(CellUnderAttack cua : cellsUnderAttack.values()) {
-			try {
-				Town townUnderAttack = TownyAPI.getInstance().getTownBlock(cua.getFlagBaseBlock().getLocation()).getTown();
-				if (townUnderAttack == null)
-					continue;
-				if(townUnderAttack == town)
-				    cells.add(cua);
-			}
-			catch(NotRegisteredException nre) {
-			    nre.printStackTrace();
+    static List<CellUnderAttack> getCellsUnderAttack(final Town town) {
+        List<CellUnderAttack> cells = new ArrayList<>();
+        for (CellUnderAttack cua : ATTACK_HASH_MAP.values()) {
+            try {
+                var townUnderAttack =
+                    TownyAPI.getInstance().getTownBlock(cua.getFlagBaseBlock().getLocation()).getTown();
+                if (townUnderAttack == null) {
+                    continue;
+                }
+                if (townUnderAttack == town) {
+                    cells.add(cua);
+                }
+            } catch (NotRegisteredException nre) {
+                nre.printStackTrace();
             }
-		}
-		return cells;
-	}
+        }
+        return cells;
+    }
 
-	static boolean isUnderAttack(Town town) {
-		for(CellUnderAttack cua : cellsUnderAttack.values()) {
-			try {
-				Town townUnderAttack = TownyAPI.getInstance().getTownBlock(cua.getFlagBaseBlock().getLocation()).getTown();
-				if (townUnderAttack == null)
-					continue;
-				if(townUnderAttack == town)
-					return true;
-			}
-			catch(NotRegisteredException nre) {
-			    nre.printStackTrace();
+    static boolean isUnderAttack(final Town town) {
+        for (CellUnderAttack cua : ATTACK_HASH_MAP.values()) {
+            try {
+                var townUnderAttack =
+                    TownyAPI.getInstance().getTownBlock(cua.getFlagBaseBlock().getLocation()).getTown();
+                if (townUnderAttack == null) {
+                    continue;
+                }
+                if (townUnderAttack == town) {
+                    return true;
+                }
+            } catch (NotRegisteredException nre) {
+                nre.printStackTrace();
             }
-		}
-		return false;
-	}
+        }
+        return false;
+    }
 
-	static boolean isUnderAttack(Cell cell) {
-		return cellsUnderAttack.containsKey(cell);
-	}
+    static boolean isUnderAttack(final Cell cell) {
+        return ATTACK_HASH_MAP.containsKey(cell);
+    }
 
-	static CellUnderAttack getAttackData(Cell cell) {
-		return cellsUnderAttack.get(cell);
-	}
+    static CellUnderAttack getAttackData(final Cell cell) {
+        return ATTACK_HASH_MAP.get(cell);
+    }
 
-	static void removeCellUnderAttack(CellUnderAttack cell) {
-		removeFlagFromPlayerCount(cell.getNameOfFlagOwner(), cell);
-		cellsUnderAttack.remove(cell);
-	}
+    static void removeCellUnderAttack(final CellUnderAttack cell) {
+        removeFlagFromPlayerCount(cell.getNameOfFlagOwner(), cell);
+        ATTACK_HASH_MAP.remove(cell);
+    }
 
-	static void attackWon(CellUnderAttack cell) {
-		CellWonEvent cellWonEvent = new CellWonEvent(cell);
-		pluginManager.callEvent(cellWonEvent);
-		cell.cancel();
-		removeCellUnderAttack(cell);
-	}
+    static void attackWon(final CellUnderAttack cell) {
+        var cellWonEvent = new CellWonEvent(cell);
+        PLUGIN_MANAGER.callEvent(cellWonEvent);
+        cell.cancel();
+        removeCellUnderAttack(cell);
+    }
 
-	static void attackDefended(Player player, CellUnderAttack cell) {
-		CellDefendedEvent cellDefendedEvent = new CellDefendedEvent(player, cell);
-		pluginManager.callEvent(cellDefendedEvent);
-		cell.cancel();
-		removeCellUnderAttack(cell);
-	}
+    static void attackDefended(final Player player, final CellUnderAttack cell) {
+        var cellDefendedEvent = new CellDefendedEvent(player, cell);
+        PLUGIN_MANAGER.callEvent(cellDefendedEvent);
+        cell.cancel();
+        removeCellUnderAttack(cell);
+    }
 
-	static void attackCanceled(CellUnderAttack cell) {
-		CellAttackCanceledEvent cellAttackCanceledEvent = new CellAttackCanceledEvent(cell);
-		pluginManager.callEvent(cellAttackCanceledEvent);
-		cell.cancel();
-		removeCellUnderAttack(cell);
-	}
+    static void attackCanceled(final CellUnderAttack cell) {
+        var cellAttackCanceledEvent = new CellAttackCanceledEvent(cell);
+        PLUGIN_MANAGER.callEvent(cellAttackCanceledEvent);
+        cell.cancel();
+        removeCellUnderAttack(cell);
+    }
 
-	public static void removeAttackerFlags(String playerName) {
-		List<CellUnderAttack> cells = cellsUnderAttackByPlayer.get(playerName);
-		if (cells != null)
-			for (CellUnderAttack cell : cells)
-				attackCanceled(cell);
-	}
+    /**
+     * Cancel all active attacks started by a given player.
+     * @param playerName name of a {@link Player}, used as key when looking up CellUnderAttack to cancel.
+     */
+    public static void removeAttackerFlags(final String playerName) {
+        List<CellUnderAttack> cells = PLAYER_ATTACK_HASH_MAP.get(playerName);
+        if (cells != null) {
+            for (CellUnderAttack cell : cells) {
+                attackCanceled(cell);
+            }
+        }
+    }
 
-	static List<CellUnderAttack> getCellsUnderAttackByPlayer(String playerName) {
-		List<CellUnderAttack> cells = cellsUnderAttackByPlayer.get(playerName);
-		if (cells == null) {
+    static List<CellUnderAttack> getCellsUnderAttackByPlayer(final String playerName) {
+        List<CellUnderAttack> cells = PLAYER_ATTACK_HASH_MAP.get(playerName);
+        if (cells == null) {
             return new ArrayList<>(0);
-        } else
+        } else {
             return new ArrayList<>(cells);
-	}
-
-	private static void addFlagToPlayerCount(String playerName, CellUnderAttack cell) {
-		List<CellUnderAttack> activeFlags = getCellsUnderAttackByPlayer(playerName);
-		activeFlags.add(cell);
-		cellsUnderAttackByPlayer.put(playerName, activeFlags);
-	}
-
-	private static void removeFlagFromPlayerCount(String playerName, Cell cell) {
-		List<CellUnderAttack> activeFlags = cellsUnderAttackByPlayer.get(playerName);
-		CellUnderAttack cellUnderAttack = (CellUnderAttack) cell;
-		if (activeFlags != null) {
-			if (activeFlags.size() <= 1)
-				cellsUnderAttackByPlayer.remove(playerName);
-			else {
-				activeFlags.remove(cellUnderAttack);
-				cellsUnderAttackByPlayer.put(playerName, activeFlags);
-			}
-		}
-	}
-
-	public static void checkBlock(Player player, Block block, Cancellable event) {
-		if (FlagWarConfig.isAffectedMaterial(block.getType()))
-            checkedBlockAffected(player, block, event);
-	}
-
-    private static void checkedBlockAffected(Player player, Block block, Cancellable event) {
-        Cell cell = Cell.parse(block.getLocation());
-        if (cell.isUnderAttack())
-            checkedBlockCellUnderAttack(player, block, event, cell);
+        }
     }
 
-    private static void checkedBlockCellUnderAttack(Player player, Block block, Cancellable event, Cell cell) {
-        CellUnderAttack cellAttackData = cell.getAttackData();
-        if (cellAttackData.isFlag(block)) {
-            FlagWar.attackDefended(player, cellAttackData);
-            event.setCancelled(true);
-        } else if (cellAttackData.isImmutableBlock(block))
-            event.setCancelled(true);
+    private static void addFlagToPlayerCount(final String playerName, final CellUnderAttack cell) {
+        List<CellUnderAttack> activeFlags = getCellsUnderAttackByPlayer(playerName);
+        activeFlags.add(cell);
+        PLAYER_ATTACK_HASH_MAP.put(playerName, activeFlags);
     }
 
-    public static boolean callAttackCellEvent(Towny plugin, Player player, Block block, WorldCoord worldCoord) throws TownyException {
+    private static void removeFlagFromPlayerCount(final String playerName, final Cell cell) {
+        List<CellUnderAttack> activeFlags = PLAYER_ATTACK_HASH_MAP.get(playerName);
+        var cellUnderAttack = (CellUnderAttack) cell;
+        if (activeFlags != null) {
+            if (activeFlags.size() <= 1) {
+                PLAYER_ATTACK_HASH_MAP.remove(playerName);
+            } else {
+                activeFlags.remove(cellUnderAttack);
+                PLAYER_ATTACK_HASH_MAP.put(playerName, activeFlags);
+            }
+        }
+    }
+
+    /**
+     * Evaluate a {@link Block} to register a successful defense and/or cancel a {@link Cancellable} event.
+     * <p>
+     * If a Block is in the {@link FlagWarConfig#isAffectedMaterial(Material)} list and the Block's {@link Cell}
+     * is under attack, evaluate if the Block is the flagTimerBlock, and if so: call
+     * {@link #attackDefended(Player, CellUnderAttack)} amd cancel the event. If it is not the flagTimerBlock, but does
+     * match with {@link CellUnderAttack#isImmutableBlock(Block)}: cancel the event.
+     *
+     * @param player player to be registered as the attack defender.
+     * @param block Block to evaluate
+     * @param event an event being evaluated for cancellation.
+     */
+    public static void checkBlock(final Player player, final Block block, final Cancellable event) {
+        if (FlagWarConfig.isAffectedMaterial(block.getType())) {
+            var cell = Cell.parse(block.getLocation());
+            if (cell.isUnderAttack()) {
+                CellUnderAttack cellAttackData = cell.getAttackData();
+                if (cellAttackData.isFlagTimer(block)) {
+                    FlagWar.attackDefended(player, cellAttackData);
+                    event.setCancelled(true);
+                } else if (cellAttackData.isImmutableBlock(block)) {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    /**
+     * Qualifies an action as a successful attack, charges any fees (if economy enabled), then kick-starts the
+     * {@link CellAttackEvent} and sets up associated variables.
+     *
+     * @param towny Towny Instance.
+     * @param player The would-be attacker.
+     * @param block The block that would form the flagBaseBlock.
+     * @param worldCoord The WorldCoord of the block, or where the attack is taking place.
+     * @return True if the attack was successful and after everything
+     * @throws TownyException If the attack would be invalid. Not all returns are thrown exceptions.
+     */
+    public static boolean callAttackCellEvent(final Towny towny, final Player player, final Block block,
+                                              final WorldCoord worldCoord) throws TownyException {
+
         checkFlagHeight(block);
 
-        TownyUniverse townyUniverse = TownyUniverse.getInstance();
-		Resident attackingResident = townyUniverse.getResident(player.getUniqueId());
-		Town landOwnerTown;
-		Town attackingTown = null;
+        var townyUniverse = TownyUniverse.getInstance();
+        var attackingResident = townyUniverse.getResident(player.getUniqueId());
+        Town landOwnerTown;
+        Town attackingTown;
 
-		Nation landOwnerNation;
-		Nation attackingNation = null;
-		TownBlock townBlock;
+        Nation landOwnerNation;
+        Nation attackingNation;
+        TownBlock townBlock;
 
-		if (attackingResident == null || !attackingResident.hasNation())
-			throw new TownyException(Translate.fromPrefixed("error.player-not-in-nation"));
+        if (attackingResident == null || !attackingResident.hasNation()) {
+            throw new TownyException(Translate.fromPrefixed("error.player-not-in-nation"));
+        }
 
-        if (attackingResident.hasTown())
+        if (attackingResident.hasTown()) {
             attackingTown = attackingResident.getTown();
-
-        if (attackingTown != null && attackingTown.hasNation())
-            attackingNation = attackingResident.getTown().getNation();
-
-        if (attackingTown == null || attackingNation == null)
+        } else {
             return false;
+        }
 
-		if (attackingTown.getTownBlocks().isEmpty())
-			throw new TownyException(Translate.fromPrefixed("error.need-at-least-1-claim"));
+        if (attackingTown != null && attackingTown.hasNation()) {
+            attackingNation = attackingResident.getTown().getNation();
+        } else {
+            return false;
+        }
 
-		try {
-			landOwnerTown = worldCoord.getTownBlock().getTown();
-			townBlock = worldCoord.getTownBlock();
-			landOwnerNation = landOwnerTown.getNation();
-		} catch (NotRegisteredException e) {
-			throw new TownyException(Translate.fromPrefixed("error.area-not-in-nation"));
-		}
+        if (attackingTown.getTownBlocks().isEmpty()) {
+            throw new TownyException(Translate.fromPrefixed("error.need-at-least-1-claim"));
+        }
 
-		checkTargetPeaceful(player, townyUniverse, landOwnerNation, attackingNation);
+        try {
+            landOwnerTown = worldCoord.getTownBlock().getTown();
+            townBlock = worldCoord.getTownBlock();
+            landOwnerNation = landOwnerTown.getNation();
+        } catch (NotRegisteredException e) {
+            throw new TownyException(Translate.fromPrefixed("error.area-not-in-nation"));
+        }
+
+        checkTargetPeaceful(player, townyUniverse, landOwnerNation, attackingNation);
 
         checkPlayerLimits(landOwnerTown, attackingTown, landOwnerNation, attackingNation);
 
         // Check that attack takes place on the edge of a town
-		if (FlagWarConfig.isAttackingBordersOnly() && !AreaSelectionUtil.isOnEdgeOfOwnership(landOwnerTown, worldCoord))
-			throw new TownyException(Translate.fromPrefixed("error.border-attack-only"));
+        if (FlagWarConfig.isAttackingBordersOnly()
+            && !AreaSelectionUtil.isOnEdgeOfOwnership(landOwnerTown, worldCoord)) {
+            throw new TownyException(Translate.fromPrefixed("error.border-attack-only"));
+        }
 
-		double costToPlaceWarFlag = FlagWarConfig.getCostToPlaceWarFlag();
-		if (TownyEconomyHandler.isActive()) {
+        double costToPlaceWarFlag = FlagWarConfig.getCostToPlaceWarFlag();
+        if (TownyEconomyHandler.isActive()) {
             calculateFeesAndFines(attackingResident, townBlock, costToPlaceWarFlag);
         }
 
-		if (kickstartCellUnderAttack(plugin, player, block)) {
+        if (!kickstartCellAttackEvent(towny, player, block)) {
             return false;
         }
-
-        // Successful Attack
-
-        if (TownyEconomyHandler.isActive() && costToPlaceWarFlag > 0)
+        if (TownyEconomyHandler.isActive() && costToPlaceWarFlag > 0) {
             payForWarFlag(attackingResident, costToPlaceWarFlag);
+        }
 
         setAttackerAsEnemy(landOwnerNation, attackingNation);
+        addWarzoneAndUpdateCache(towny, worldCoord, townyUniverse);
 
-        // Update Cache
-        updateTownyCache(plugin, worldCoord, townyUniverse);
-
-        TownyMessaging.sendGlobalMessage(Translate.fromPrefixed("broadcast.area.under_attack", landOwnerTown.getFormattedName(), worldCoord.toString(), attackingResident.getFormattedName()));
-		return true;
-	}
-
-    private static void checkFlagHeight(Block block) throws TownyException {
-        int topY = block.getWorld().getHighestBlockYAt(block.getX(), block.getZ()) - 1;
-        if (block.getY() < topY)
-            throw new TownyException(Translate.fromPrefixed("error.flag.need-above-ground"));
+        TownyMessaging.sendGlobalMessage(Translate.fromPrefixed("broadcast.area.under_attack",
+            landOwnerTown.getFormattedName(), worldCoord.toString(), attackingResident.getFormattedName()));
+        return true;
     }
 
-    private static void setAttackerAsEnemy(Nation defendingNation, Nation attackingNation)
+    private static void checkFlagHeight(final Block block) throws TownyException {
+        int topY = block.getWorld().getHighestBlockYAt(block.getX(), block.getZ()) - 1;
+        if (block.getY() < topY) {
+            throw new TownyException(Translate.fromPrefixed("error.flag.need-above-ground"));
+        }
+    }
+
+    private static void setAttackerAsEnemy(final Nation defendingNation, final Nation attackingNation)
         throws AlreadyRegisteredException {
         if (!defendingNation.hasEnemy(attackingNation)) {
             defendingNation.addEnemy(attackingNation);
@@ -458,47 +545,62 @@ public class FlagWar extends JavaPlugin {
         }
     }
 
-    private static void checkPlayerLimits(Town defendingTown, Town attackingTown, Nation defendingNation,
-        Nation attackingNation) throws TownyException {
+    private static void checkPlayerLimits(final Town defendingTown,
+                                          final Town attackingTown,
+                                          final Nation defendingNation,
+                                          final Nation attackingNation) throws TownyException {
         checkIfTownHasMinOnlineForWar(defendingTown);
         checkIfNationHasMinOnlineForWar(defendingNation);
         checkIfTownHasMinOnlineForWar(attackingTown);
         checkIfNationHasMinOnlineForWar(attackingNation);
     }
 
-    private static void updateTownyCache(Towny plugin, WorldCoord worldCoord,
-        TownyUniverse townyUniverse) {
+    private static void addWarzoneAndUpdateCache(final Towny towny,
+                                                 final WorldCoord worldCoord,
+                                                 final TownyUniverse townyUniverse) {
         townyUniverse.addWarZone(worldCoord);
-        plugin.updateCache(worldCoord);
+        towny.updateCache(worldCoord);
     }
 
-    private static void payForWarFlag(Resident attackRes, double cost) throws TownyException {
+    private static void payForWarFlag(final Resident attackRes, final double cost) throws TownyException {
         attackRes.getAccount().withdraw(cost, "War - WarFlag Cost");
         TownyMessaging.sendResidentMessage(attackRes, Translate.fromPrefixed("warflag-purchased",
                 TownyEconomyHandler.getFormattedBalance(cost)));
     }
 
-    private static boolean kickstartCellUnderAttack(Towny towny, Player player, Block block) throws TownyException {
-        CellAttackEvent cellAttackEvent = new CellAttackEvent(towny, player, block);
+    /**
+     * Kickstart a {@link CellAttackEvent}, then return false if it does not get canceled.
+     * @param towny Instance of {@link Towny}.
+     * @param player Player who should be listed as the attacker.
+     * @param block Block where the flagBaseBlock should have been placed.
+     * @return TRUE if the event was kick-started successfully. FALSE if event canceled.
+     * @throws TownyException if the CellAttackEvent is canceled with a given reason.
+     */
+    private static boolean kickstartCellAttackEvent(final Towny towny, final Player player,
+                                                    final Block block) throws TownyException {
+        var cellAttackEvent = new CellAttackEvent(towny, player, block);
         plugin.getServer().getPluginManager().callEvent(cellAttackEvent);
         if (cellAttackEvent.isCancelled()) {
-            if (cellAttackEvent.hasReason())
+            if (cellAttackEvent.hasReason()) {
                 throw new TownyException(cellAttackEvent.getReason());
-            else
-                return true;
+            } else {
+                return false;
+            }
         }
-        return false;
+        return true;
     }
 
-    private static void calculateFeesAndFines(Resident attackRes, TownBlock townBlock, double costToPlaceWarFlag) throws TownyException {
-
+    private static void calculateFeesAndFines(final Resident attackRes,
+                                              final TownBlock townBlock,
+                                              final double costToPlaceWarFlag) throws TownyException {
             double requiredAmount = costToPlaceWarFlag;
             double balance = attackRes.getAccount().getHoldingBalance();
 
             // Check that the user can pay for the war flag.
-            if (balance < costToPlaceWarFlag)
+            if (balance < costToPlaceWarFlag) {
                 throw new TownyException(Translate.fromPrefixed("error.flag.insufficient-funds",
                     TownyEconomyHandler.getFormattedBalance(costToPlaceWarFlag)));
+            }
 
             // Check that the user can pay the fines from losing/winning all future war flags.
             int activeFlagCount = getNumActiveFlags(attackRes.getName());
@@ -529,60 +631,92 @@ public class FlagWar extends JavaPlugin {
                 }
 
                 // Check if player can pay in worst case scenario.
-                if (balance < requiredAmount)
+                if (balance < requiredAmount) {
                     throw new TownyException(Translate.fromPrefixed("error.insufficient-future-funds",
                         TownyEconomyHandler.getFormattedBalance(cost), activeFlagCount + 1, reason));
+                }
             }
     }
 
-    private static double homeOrTownBlock(TownBlock townBlock, int activeFlags, double homeBlockFine, double townBlockFine) {
+    private static double homeOrTownBlock(final TownBlock townBlock, final int activeFlags, final double homeBlockFine,
+                                          final double townBlockFine) {
         double attackWinCost;
-        if (townBlock.isHomeBlock())
+        if (townBlock.isHomeBlock()) {
             attackWinCost = homeBlockFine + activeFlags * townBlockFine;
-        else
+        } else {
             attackWinCost = (activeFlags + 1) * townBlockFine;
+        }
         return attackWinCost;
     }
 
-    private static void checkTargetPeaceful(Player player, TownyUniverse townyUniverse,
-        Nation landOwnerNation, Nation attackingNation) throws TownyException {
-        if (landOwnerNation.isNeutral())
+    private static void checkTargetPeaceful(final Player player,
+                                            final TownyUniverse townyUniverse,
+                                            final Nation landOwnerNation,
+                                            final Nation attackingNation) throws TownyException {
+
+        if (landOwnerNation.isNeutral()) {
             throw new TownyException(Translate.fromPrefixed("error.target-is-peaceful", landOwnerNation
                 .getFormattedName()));
-        if (!townyUniverse.getPermissionSource().isTownyAdmin(player) && attackingNation.isNeutral())
+        }
+        if (!townyUniverse.getPermissionSource().isTownyAdmin(player) && attackingNation.isNeutral()) {
             throw new TownyException(Translate.fromPrefixed("error.target-is-peaceful", attackingNation
                 .getFormattedName()));
+        }
     }
 
-    public static void checkIfTownHasMinOnlineForWar(Town town) throws TownyException {
-		int requiredOnline = FlagWarConfig.getMinPlayersOnlineInTownForWar();
-		int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(town).size();
-		if (onlinePlayerCount < requiredOnline)
-			throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players", requiredOnline, town.getFormattedName()));
-	}
+    /**
+     * Check if a {@link Town} meets the minimum requirement of {@link Player}s online to participate in a flag war.
+     * @param town Town to check for eligibility.
+     * @throws TownyException if there are not enough online players.
+     */
+    public static void checkIfTownHasMinOnlineForWar(final Town town) throws TownyException {
+        var requiredOnline = FlagWarConfig.getMinPlayersOnlineInTownForWar();
+        int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(town).size();
+        if (onlinePlayerCount < requiredOnline) {
+            throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players",
+                requiredOnline, town.getFormattedName()));
+        }
+    }
 
-	public static void checkIfNationHasMinOnlineForWar(Nation nation) throws TownyException {
-		int requiredOnline = FlagWarConfig.getMinPlayersOnlineInNationForWar();
-		int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(nation).size();
-		if (onlinePlayerCount < requiredOnline)
-			throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players", requiredOnline, nation.getFormattedName()));
-	}
+    /**
+     * Check if a {@link Nation} meets the minimum requirement of {@link Player}s online to participate in a flag war.
+     * @param nation Nation to check for eligibility.
+     * @throws TownyException if there are not enough online players.
+     */
+    public static void checkIfNationHasMinOnlineForWar(final Nation nation) throws TownyException {
+        int requiredOnline = FlagWarConfig.getMinPlayersOnlineInNationForWar();
+        int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(nation).size();
+        if (onlinePlayerCount < requiredOnline) {
+            throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players",
+                requiredOnline, nation.getFormattedName()));
+        }
+    }
 
-	public static WorldCoord cellToWorldCoordinate(Cell cell) {
-		return new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
-	}
+    /**
+     * Convert a {@link Cell} to it's appropriate {@link WorldCoord}.
+     * @param cell supplied  for conversion.
+     * @return a WorldCoord with the Cell's associated world name, x value, and z value.
+     */
+    public static WorldCoord cellToWorldCoordinate(final Cell cell) {
+        return new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
+    }
 
-	static long lastFlagged(Town town) {
-		if (lastFlag.containsKey(town))
-			return lastFlag.get(town);
-		else
-			return 0;
-	}
+    static long lastFlagged(final Town town) {
+        if (TOWN_LAST_FLAGGED_HASH_MAP.containsKey(town)) {
+            return TOWN_LAST_FLAGGED_HASH_MAP.get(town);
+        }
+        return 0;
+    }
 
-	public static void townFlagged(Town town) {
-		if (lastFlag.containsKey(town))
-			lastFlag.replace(town, System.currentTimeMillis());
-		else
-			lastFlag.put(town, System.currentTimeMillis());
-	}
+    /**
+     * Update a {@link Town}'s entry in the {@link #TOWN_LAST_FLAGGED_HASH_MAP}.
+     * @param town the Town to update the last-flagged entry for.
+     */
+    public static void townFlagged(final Town town) {
+        if (TOWN_LAST_FLAGGED_HASH_MAP.containsKey(town)) {
+            TOWN_LAST_FLAGGED_HASH_MAP.replace(town, System.currentTimeMillis());
+        } else {
+            TOWN_LAST_FLAGGED_HASH_MAP.put(town, System.currentTimeMillis());
+        }
+    }
 }

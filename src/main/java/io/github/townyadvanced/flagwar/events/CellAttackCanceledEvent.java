@@ -21,41 +21,57 @@ import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+public class CellAttackCanceledEvent extends Event implements Cancellable {
 
-public class CellAttackCanceledEvent extends Event implements Cancellable{
+    /** Holds the event's {@link HandlerList}. */
+    private static final HandlerList HANDLERS = new HandlerList();
+    /** Holds if the event state has been canceled, or not. */
+    private boolean cancelled = false;
+    /** Holds the {@link CellUnderAttack} being canceled. */
+    private final CellUnderAttack cell;
 
-	private static final HandlerList handlers = new HandlerList();
-	private boolean cancelled = false;
+    /** Return the event's {@link HandlerList}. */
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return getHandlerList();
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return getHandlerList();
-	}
-
+    /** @return {@link #HANDLERS} statically. */
     public static HandlerList getHandlerList() {
-		return Objects.requireNonNull(handlers);
-	}
+        return HANDLERS;
+    }
 
-	private final CellUnderAttack cell;
+    /**
+     * Constructs the {@link CellAttackCanceledEvent}.
+     * @param cellUnderAttack the {@link CellUnderAttack} to be canceled.
+     */
+    public CellAttackCanceledEvent(final CellUnderAttack cellUnderAttack) {
+        super();
+        this.cell = cellUnderAttack;
+    }
 
-	public CellAttackCanceledEvent(CellUnderAttack cell) {
-		super();
-		this.cell = cell;
-	}
+    /** @return the {@link CellUnderAttack} being processed for cancellation. */
+    public CellUnderAttack getCell() {
+        return cell;
+    }
 
-	public CellUnderAttack getCell() {
-		return cell;
-	}
+    /**
+     * Gets the cancellation state of this event.
+     * @return true if this event is cancelled.
+     */
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
-
-	@Override
-	public void setCancelled(boolean cancel) {
-		this.cancelled = cancel;
-	}
+    /**
+     * Sets the cancellation state of this event.
+     * @param cancel true if you wish to cancel this event.
+     */
+    @Override
+    public void setCancelled(final boolean cancel) {
+        this.cancelled = cancel;
+    }
 }

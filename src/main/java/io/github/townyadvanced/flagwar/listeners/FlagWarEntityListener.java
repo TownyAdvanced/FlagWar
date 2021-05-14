@@ -27,11 +27,16 @@ import io.github.townyadvanced.flagwar.FlagWar;
 
 public class FlagWarEntityListener implements Listener {
 
-	@EventHandler(priority = EventPriority.LOWEST)
+    /** Listens for instances of the {@link EntityExplodeEvent},
+     * and runs a {@link FlagWar#checkBlock(org.bukkit.entity.Player, Block, org.bukkit.event.Cancellable)}
+     * for each block against a null {@link org.bukkit.entity.Player}.
+     * @param event the {@link EntityExplodeEvent}.
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
-    public void onEntityExplode(EntityExplodeEvent event) {
-
-		for (Block block : event.blockList())
-			FlagWar.checkBlock(null, block, event);
-	}
+    public void onEntityExplode(final EntityExplodeEvent event) {
+        for (Block block : event.blockList()) {
+            FlagWar.checkBlock(null, block, event);
+        }
+    }
 }
