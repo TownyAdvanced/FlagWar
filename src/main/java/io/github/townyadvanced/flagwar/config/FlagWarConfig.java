@@ -19,6 +19,7 @@ package io.github.townyadvanced.flagwar.config;
 import io.github.townyadvanced.flagwar.FlagWar;
 import com.palmergames.util.TimeTools;
 
+import io.github.townyadvanced.flagwar.util.Messaging;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.plugin.Plugin;
@@ -92,6 +93,16 @@ public final class FlagWarConfig {
     }
 
     /**
+     * Check if extra "debug" messages should be written to the JUL logger on the WARN level.
+     * <p>
+     * (Lazy way to bypass Spigot's log4j settings.)
+     * @return true if configured to show debug messages.
+     */
+    public static boolean isDebugging() {
+        return PLUGIN.getConfig().getBoolean("extra.debug");
+    }
+
+    /**
      * Gets the time between iterations though the {@link #TIMER_MATERIALS}; a fraction of {@link #getFlagWaitingTime()}
      * over the length of the array.
      * @return the temporal difference between color changes, in ticks.
@@ -105,7 +116,9 @@ public final class FlagWarConfig {
      * @return the result of beacon.draw, from the configuration file.
      */
     public static boolean isDrawingBeacon() {
-        return PLUGIN.getConfig().getBoolean("beacon.draw");
+        var beaconIsDrawn = PLUGIN.getConfig().getBoolean("beacon.draw");
+        Messaging.debug("(Config) Should beacons be drawn: %s", new Object[] {beaconIsDrawn});
+        return beaconIsDrawn;
     }
 
     /**

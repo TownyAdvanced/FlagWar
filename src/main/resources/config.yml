@@ -72,3 +72,7 @@ economy:
     home_block_captured: 100.0
     war_flag_cost: 10.0
     attack_defended_reward: 10.0
+
+extra:
+    # If enabled, show additional debug messages as warnings. Recommended to keep these disabled unless requested.
+    debug: false

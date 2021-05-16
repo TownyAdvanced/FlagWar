@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import io.github.townyadvanced.flagwar.i18n.Translate;
+import io.github.townyadvanced.flagwar.util.Messaging;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -101,6 +102,7 @@ public class CellUnderAttack extends Cell {
     /** Function to load the war beacon. */
     public void loadBeacon() {
         if (!FlagWarConfig.isDrawingBeacon()) {
+            Messaging.debug("loadBeacon() returned. Config:beacon.draw read as false");
             return;
         }
 
@@ -109,21 +111,26 @@ public class CellUnderAttack extends Cell {
 
         int beaconSize = FlagWarConfig.getBeaconSize();
         if (Coord.getCellSize() < beaconSize) {
+            Messaging.debug("loadBeacon() returned. \"Coord#getCellSize()\" smaller than Config:beacon.size");
             return;
         }
 
         var minBlock = getBeaconMinBlock(getFlagBaseBlock().getWorld());
-        if (getMinimumHeightForBeacon() >= minBlock.getY()) {
+        var minHeight = (getTopOfFlagBlock().getY() + FlagWarConfig.getBeaconMinHeightAboveFlag());
+        if (minHeight <= getTopOfFlagBlock().getY()) {
+            Messaging.debug("loadBeacon() returned. Minimum Y-height <= top of flag.");
             return;
         }
 
         int outerEdge = beaconSize - 1;
+        Messaging.debug("(Beacon) Drawing. Now iterating over blocks.");
         for (var y = 0; y < beaconSize; y++) {
             for (var z = 0; z < beaconSize; z++) {
                 for (var x = 0; x < beaconSize; x++) {
                     var block = flagBaseBlock.getWorld().getBlockAt(minBlock.getX() + x,
                         minBlock.getY() + y, minBlock.getZ() + z);
                     if (block.isEmpty()) {
+                        Messaging.debug("(Beacon) Spawning %s at %d, %d, %d", new Object[] {block.toString(), x, y, z});
                         drawBeaconOrWireframe(outerEdge, y, z, x, block);
                     }
                 }
@@ -142,10 +149,6 @@ public class CellUnderAttack extends Cell {
 
     private Block getTopOfFlagBlock() {
         return flagLightBlock;
-    }
-
-    private int getMinimumHeightForBeacon() {
-        return getTopOfFlagBlock().getY() + FlagWarConfig.getBeaconMinHeightAboveFlag();
     }
 
     private int getEdgeCount(final int x, final int y, final int z, final int outerEdge) {
