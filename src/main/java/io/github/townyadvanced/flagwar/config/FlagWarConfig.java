@@ -19,6 +19,7 @@ package io.github.townyadvanced.flagwar.config;
 import io.github.townyadvanced.flagwar.FlagWar;
 import com.palmergames.util.TimeTools;
 
+import io.github.townyadvanced.flagwar.util.Messaging;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.plugin.Plugin;
@@ -92,6 +93,16 @@ public final class FlagWarConfig {
     }
 
     /**
+     * Check if extra "debug" messages should be written to the JUL logger on the WARN level.
+     * <p>
+     * (Lazy way to bypass Spigot's log4j settings.)
+     * @return true if configured to show debug messages.
+     */
+    public static boolean isDebugging() {
+        return PLUGIN.getConfig().getBoolean("extra.debug");
+    }
+
+    /**
      * Gets the time between iterations though the {@link #TIMER_MATERIALS}; a fraction of {@link #getFlagWaitingTime()}
      * over the length of the array.
      * @return the temporal difference between color changes, in ticks.
@@ -105,7 +116,9 @@ public final class FlagWarConfig {
      * @return the result of beacon.draw, from the configuration file.
      */
     public static boolean isDrawingBeacon() {
-        return PLUGIN.getConfig().getBoolean("beacon.draw");
+        var beaconIsDrawn = PLUGIN.getConfig().getBoolean("beacon.draw");
+        Messaging.debug("(Config) Should beacons be drawn: %s", new Object[] {beaconIsDrawn});
+        return beaconIsDrawn;
     }
 
     /**
@@ -141,14 +154,14 @@ public final class FlagWarConfig {
         return getBeaconRadius() * 2 - 1;
     }
 
-    /** @return the beacon's minimum y-value above the flag, as defined by the 'beacon.height_above_flag_min' key. */
+    /** @return the beacon's minimum y-value above the flag, as defined by the 'beacon.height_above_flag.min' key. */
     public static int getBeaconMinHeightAboveFlag() {
-        return PLUGIN.getConfig().getInt("beacon.height_above_flag_min");
+        return PLUGIN.getConfig().getInt("beacon.height_above_flag.min");
     }
 
-    /** @return the value of 'rules.get_time_to_wait_after_flag' as a long (ticks). */
+    /** @return the value of 'rules.time_to_wait_after_flag' as a long (ticks). */
     public static long getTimeToWaitAfterFlagged() {
-        return PLUGIN.getConfig().getLong("rules.get_time_to_wait_after_flagged");
+        return PLUGIN.getConfig().getLong("rules.time_to_wait_after_flagged");
     }
 
     /** @return the value of 'rules.prevent_interaction_while_flagged.town'. */
@@ -161,9 +174,9 @@ public final class FlagWarConfig {
         return PLUGIN.getConfig().getBoolean("rules.prevent_interaction_while_flagged.nation");
     }
 
-    /** @return the value of 'beacon.height_above_flag_max'. */
+    /** @return the value of 'beacon.height_above_flag.max'. */
     public static int getBeaconMaxHeightAboveFlag() {
-        return PLUGIN.getConfig().getInt("beacon.height_above_flag_max");
+        return PLUGIN.getConfig().getInt("beacon.height_above_flag.max");
     }
 
     /**
