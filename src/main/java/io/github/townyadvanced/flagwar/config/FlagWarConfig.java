@@ -154,14 +154,14 @@ public final class FlagWarConfig {
         return getBeaconRadius() * 2 - 1;
     }
 
-    /** @return the beacon's minimum y-value above the flag, as defined by the 'beacon.height_above_flag_min' key. */
+    /** @return the beacon's minimum y-value above the flag, as defined by the 'beacon.height_above_flag.min' key. */
     public static int getBeaconMinHeightAboveFlag() {
-        return PLUGIN.getConfig().getInt("beacon.height_above_flag_min");
+        return PLUGIN.getConfig().getInt("beacon.height_above_flag.min");
     }
 
-    /** @return the value of 'rules.get_time_to_wait_after_flag' as a long (ticks). */
+    /** @return the value of 'rules.time_to_wait_after_flag' as a long (ticks). */
     public static long getTimeToWaitAfterFlagged() {
-        return PLUGIN.getConfig().getLong("rules.get_time_to_wait_after_flagged");
+        return PLUGIN.getConfig().getLong("rules.time_to_wait_after_flagged");
     }
 
     /** @return the value of 'rules.prevent_interaction_while_flagged.town'. */
@@ -174,9 +174,9 @@ public final class FlagWarConfig {
         return PLUGIN.getConfig().getBoolean("rules.prevent_interaction_while_flagged.nation");
     }
 
-    /** @return the value of 'beacon.height_above_flag_max'. */
+    /** @return the value of 'beacon.height_above_flag.max'. */
     public static int getBeaconMaxHeightAboveFlag() {
-        return PLUGIN.getConfig().getInt("beacon.height_above_flag_max");
+        return PLUGIN.getConfig().getInt("beacon.height_above_flag.max");
     }
 
     /**

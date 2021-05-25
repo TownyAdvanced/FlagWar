@@ -119,6 +119,8 @@ public class CellUnderAttack extends Cell {
         var minHeight = (getTopOfFlagBlock().getY() + FlagWarConfig.getBeaconMinHeightAboveFlag());
         if (minHeight <= getTopOfFlagBlock().getY()) {
             Messaging.debug("loadBeacon() returned. Minimum Y-height <= top of flag.");
+            Messaging.debug("Top-of-flag: %d, Beacon Min-Height: %d",
+                new Object[]{getTopOfFlagBlock().getY(), minHeight});
             return;
         }
 
