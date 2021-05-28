@@ -72,7 +72,7 @@ public final class LocaleUtil {
             locale = new Locale(language, region, variant);
         } else if (localeString.matches(regionRegEx)) { // Locale + Region (en_US, fr_CA)
             language = localeString.substring(0, localeString.indexOf("_"));
-            region = localeString.substring(localeString.indexOf("_"));
+            region = localeString.substring(localeString.indexOf("_") + 1);
             locale = new Locale(language, region);
         } else if (localeString.matches(localeRegEx)) { // Locale Only (en / english)
             locale = new Locale(localeString);
