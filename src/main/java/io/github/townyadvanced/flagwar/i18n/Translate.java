@@ -16,6 +16,8 @@
 
 package io.github.townyadvanced.flagwar.i18n;
 
+import com.palmergames.bukkit.util.Colors;
+
 /**
  * Helper class for abstracting away locale utilities.
  */
@@ -33,7 +35,7 @@ public final class Translate {
      * @return A translated String, with parsed arguments.
      */
     public static String from(final String translationKey, final Object... args) {
-        return String.format(LocaleUtil.getMessages().getString(translationKey), args);
+        return Colors.translateColorCodes(String.format(LocaleUtil.getMessages().getString(translationKey), args));
     }
 
     /**
@@ -44,7 +46,7 @@ public final class Translate {
      */
     public static String from(final String translationKey) {
         // Redundant call to format() is intentional
-        return String.format(LocaleUtil.getMessages().getString(translationKey));
+        return Colors.translateColorCodes(String.format(LocaleUtil.getMessages().getString(translationKey)));
     }
 
     /**
