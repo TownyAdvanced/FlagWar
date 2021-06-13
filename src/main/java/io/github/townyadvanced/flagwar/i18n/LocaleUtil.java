@@ -63,7 +63,7 @@ public final class LocaleUtil {
         if (localeString.isEmpty() || !fileInJar(localeString)) {
             locale = defaultLocale;
             logger.severe("Locale String was either empty, or translation is not in JAR. Defaulting!");
-        } else if (localeString.matches(variantRegEx) || localeString.matches(regionRegEx) {
+        } else if (localeString.matches(variantRegEx) || localeString.matches(regionRegEx)) {
             Messaging.debug("Locale contains a Region. Parsing...");
             language = localeString.substring(0, localeString.indexOf("_"));
             region = localeString.substring(localeString.indexOf("_") + 1);
@@ -73,11 +73,11 @@ public final class LocaleUtil {
                 region = parseRegion(region);
                 locale = new Locale(language, region, variant);
                 Messaging.debug("Lang: %s, Region: %s, Variant: %s", new Object[]{language, region, variant});
-            } else if (localeString.matches(regionRegEx) {
+            } else if (localeString.matches(regionRegEx)) {
                 locale = new Locale(language, region);
                 Messaging.debug("Lang: %s, Region: %s", new Object[]{language, region});
             } else {
-                Messagin.debug("Defaulting: Unable to match an appropriate Region or Variant.");
+                Messaging.debug("Defaulting: Unable to match an appropriate Region or Variant.");
                 locale = defaultLocale;
             }
         } else if (localeString.matches(localeRegEx)) {
