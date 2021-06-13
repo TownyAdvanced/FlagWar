@@ -60,25 +60,26 @@ public final class LocaleUtil {
         var regionRegEx = String.format("%s_([a-zA-Z]{2}|[0-9]{3})", localeRegEx);
         var variantRegEx = String.format("%s[_-]([0-9][0-9a-zA-Z]{3}|[0-9a-zA-Z]{5,8})", regionRegEx);
 
-        // RegEx Evaluation and variable assignment (Fallback >> Most Complex >> Most Simple)
         if (localeString.isEmpty() || !fileInJar(localeString)) {
             locale = defaultLocale;
-            logger.severe("Locale is undefined or is not in FlagWar. Defaulting!");
-        } else if (localeString.matches(variantRegEx)) {
-            Messaging.debug("Regex matched for Variant-specific Locale.");
+            logger.severe("Locale String was either empty, or translation is not in JAR. Defaulting!");
+        } else if (localeString.matches(variantRegEx) || localeString.matches(regionRegEx)) {
+            Messaging.debug("Locale contains a Region. Parsing...");
             language = localeString.substring(0, localeString.indexOf("_"));
-            region = localeString.substring(localeString.indexOf("_"));
-            // Parse the variant out of the region, and realign region. Well this doesn't sound racist at all...
-            variant = parseVariant(region);
-            region = parseRegion(region);
-            Messaging.debug("Using Lang: %s, Region: %s, Variant: %s", new Object[]{language, region, variant});
-            locale = new Locale(language, region, variant);
-        } else if (localeString.matches(regionRegEx)) {
-            Messaging.debug("Regex matched for Region-specific Locale.");
-            language = localeString.substring(0, localeString.indexOf("_"));
-            region = localeString.substring(localeString.indexOf("_"));
-            Messaging.debug("Using Lang: %s, Region: %s", new Object[]{language, region});
-            locale = new Locale(language, region);
+            region = localeString.substring(localeString.indexOf("_") + 1);
+            if (localeString.matches(variantRegEx)) {
+                Messaging.debug("Locale contains a Variant. Parsing...");
+                variant = parseVariant(region);
+                region = parseRegion(region);
+                locale = new Locale(language, region, variant);
+                Messaging.debug("Lang: %s, Region: %s, Variant: %s", new Object[]{language, region, variant});
+            } else if (localeString.matches(regionRegEx)) {
+                locale = new Locale(language, region);
+                Messaging.debug("Lang: %s, Region: %s", new Object[]{language, region});
+            } else {
+                Messaging.debug("Defaulting: Unable to match an appropriate Region or Variant.");
+                locale = defaultLocale;
+            }
         } else if (localeString.matches(localeRegEx)) {
             Messaging.debug("Regex matched for generic Locale. Using %s", new Object[]{localeString});
             locale = new Locale(localeString);
@@ -102,10 +103,10 @@ public final class LocaleUtil {
     private static String parseVariant(final String region) {
         String variant;
         if (region.contains("_")) {
-            variant = region.substring(region.indexOf("_"));
+            variant = region.substring(region.lastIndexOf("_") + 1);
             Messaging.debug("Variant assigned using lastIndexOf('_')");
         } else if (region.contains("-")) {
-            variant = region.substring(region.indexOf("-"));
+            variant = region.substring(region.lastIndexOf("-") + 1);
             Messaging.debug("Variant assigned using lastIndexOf('-')");
         } else {
             variant = "";
@@ -119,10 +120,10 @@ public final class LocaleUtil {
     private static String parseRegion(final String region) {
         String newRegion;
         if (region.contains("_")) {
-            newRegion = region.substring(0, region.indexOf("_"));
+            newRegion = region.substring(0, region.lastIndexOf("_"));
             Messaging.debug("Region set to '%s', using '_' to lint.", new Object[]{newRegion});
         } else if (region.contains("-")) {
-            newRegion = region.substring(0, region.indexOf("-"));
+            newRegion = region.substring(0, region.lastIndexOf("-"));
             Messaging.debug("Region set to '%s', using '-' to lint.", new Object[]{newRegion});
         } else {
             newRegion = region;
