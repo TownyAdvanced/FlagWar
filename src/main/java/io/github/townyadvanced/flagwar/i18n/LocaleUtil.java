@@ -17,6 +17,7 @@
 package io.github.townyadvanced.flagwar.i18n;
 
 import io.github.townyadvanced.flagwar.FlagWar;
+import io.github.townyadvanced.flagwar.util.Messaging;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
@@ -56,28 +57,33 @@ public final class LocaleUtil {
 
         // Regular Expressions for localeString parsing.
         var localeRegEx = "[a-zA-Z]{2,8}";
-        String regionRegEx = localeRegEx + "_([a-zA-Z]{2}|[0-9]{3})";
-        String variantRegEx = regionRegEx + "[_-]([0-9][0-9a-zA-Z]{3}|[0-9a-zA-Z]{5,8})";
+        var regionRegEx = String.format("%s_([a-zA-Z]{2}|[0-9]{3})", localeRegEx);
+        var variantRegEx = String.format("%s[_-]([0-9][0-9a-zA-Z]{3}|[0-9a-zA-Z]{5,8})", regionRegEx);
 
         // RegEx Evaluation and variable assignment (Fallback >> Most Complex >> Most Simple)
         if (localeString.isEmpty() || !fileInJar(localeString)) {
             locale = defaultLocale;
             logger.severe("Locale is undefined or is not in FlagWar. Defaulting!");
-        } else if (localeString.matches(variantRegEx)) { // Locale + Region + Variant (en_US-POSIX)
+        } else if (localeString.matches(variantRegEx)) {
+            Messaging.debug("Regex matched for Variant-specific Locale.");
             language = localeString.substring(0, localeString.indexOf("_"));
             region = localeString.substring(localeString.indexOf("_"));
             // Parse the variant out of the region, and realign region. Well this doesn't sound racist at all...
             variant = parseVariant(region);
             region = parseRegion(region);
+            Messaging.debug("Using Lang: %s, Region: %s, Variant: %s", new Object[]{language, region, variant});
             locale = new Locale(language, region, variant);
-        } else if (localeString.matches(regionRegEx)) { // Locale + Region (en_US, fr_CA)
+        } else if (localeString.matches(regionRegEx)) {
+            Messaging.debug("Regex matched for Region-specific Locale.");
             language = localeString.substring(0, localeString.indexOf("_"));
             region = localeString.substring(localeString.indexOf("_"));
+            Messaging.debug("Using Lang: %s, Region: %s", new Object[]{language, region});
             locale = new Locale(language, region);
-        } else if (localeString.matches(localeRegEx)) { // Locale Only (en / english)
+        } else if (localeString.matches(localeRegEx)) {
+            Messaging.debug("Regex matched for generic Locale. Using %s", new Object[]{localeString});
             locale = new Locale(localeString);
         } else {
-            logger.severe("Defaulting because something went wrong while assigning the locale!");
+            logger.severe("Defaulting Locale! File exists, but does not match a valid regular expression.");
             locale = defaultLocale;
         }
         finalizeSetup(logger, locale);
@@ -97,11 +103,15 @@ public final class LocaleUtil {
         String variant;
         if (region.contains("_")) {
             variant = region.substring(region.indexOf("_"));
+            Messaging.debug("Variant assigned using lastIndexOf('_')");
         } else if (region.contains("-")) {
             variant = region.substring(region.indexOf("-"));
+            Messaging.debug("Variant assigned using lastIndexOf('-')");
         } else {
             variant = "";
+            Messaging.debug("Variant regex contained neither '_' nor '-' and is therefore null.");
         }
+        Messaging.debug("Variant = %s", new Object[]{variant});
         return variant;
     }
 
@@ -110,10 +120,13 @@ public final class LocaleUtil {
         String newRegion;
         if (region.contains("_")) {
             newRegion = region.substring(0, region.indexOf("_"));
+            Messaging.debug("Region set to '%s', using '_' to lint.", new Object[]{newRegion});
         } else if (region.contains("-")) {
             newRegion = region.substring(0, region.indexOf("-"));
+            Messaging.debug("Region set to '%s', using '-' to lint.", new Object[]{newRegion});
         } else {
             newRegion = region;
+            Messaging.debug("Region set to equal 'region'");
         }
         return newRegion;
     }
