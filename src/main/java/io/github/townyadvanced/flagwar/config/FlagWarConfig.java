@@ -16,15 +16,15 @@
 
 package io.github.townyadvanced.flagwar.config;
 
-import io.github.townyadvanced.flagwar.FlagWar;
 import com.palmergames.util.TimeTools;
-
+import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.util.Messaging;
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
 
 public final class FlagWarConfig {
 
@@ -32,10 +32,8 @@ public final class FlagWarConfig {
         super();
     }
 
-    /**
-     * {@link Material} array used for representing the FlagWar Flag Timer, used in both beacons and tops of War Flags.
-     */
-    static final Material[] TIMER_MATERIALS = new Material[] {
+    /** Default timer materials */
+    private static final Material[] DEFAULT_TIMER_MATERIALS = new Material[] {
         Material.LIME_WOOL, Material.GREEN_WOOL, Material.BLUE_WOOL, Material.CYAN_WOOL,
         Material.LIGHT_BLUE_WOOL, Material.GRAY_WOOL, Material.WHITE_WOOL,
         Material.PINK_WOOL, Material.ORANGE_WOOL, Material.RED_WOOL };
@@ -48,15 +46,23 @@ public final class FlagWarConfig {
     private static Material beaconWireFrameMaterial = null;
     /** {@link Plugin} instance, used internally. */
     private static final Plugin PLUGIN = FlagWar.getInstance();
+    /** Holds an instance of FlagWar's logger. */
+    private static final Logger LOGGER = PLUGIN.getLogger();
+
+    /**
+     * {@link Material} array used for representing the FlagWar Flag Timer, used in both beacons and tops of War Flags.
+     */
+    static final Material[] TIMER_MATERIALS = isUsingDefaultTimerBlocks() ?
+        DEFAULT_TIMER_MATERIALS : getCustomTimerBlocks();
 
     /**
      * Checks if a {@link Material} should be affected by an operation.
      * @param material simple Material to check.
      * @return True if the matched Material is used in constructing a war flag's base or light, or the wireframe; Or, if
-     * the material is wool.
+     * the material is one of the timer materials.
      */
     public static boolean isAffectedMaterial(final Material material) {
-        return Tag.WOOL.isTagged(material)
+        return Arrays.asList(TIMER_MATERIALS).contains(material)
             || material == getFlagBaseMaterial()
             || material == getFlagLightMaterial()
             || material == getBeaconWireFrameMaterial();
@@ -68,6 +74,39 @@ public final class FlagWarConfig {
      */
     public static Material[] getTimerBlocks() {
         return Arrays.copyOf(TIMER_MATERIALS, TIMER_MATERIALS.length);
+    }
+
+    /**
+     * Returns a copy of the {@link Material} array making up the WarFlag's timer indicators.
+     * @return a clone of the Material array.
+     */
+    public static Material[] getCustomTimerBlocks() {
+        List<?> blocks = PLUGIN.getConfig().getList("timer_blocks.blocks", null);
+        if (blocks != null) {
+            int i = blocks.size();
+            Material[] materials = new Material[i];
+            try {
+                for (int j = 0; j < i; j++) {
+                    materials[j] = Material.valueOf(String.valueOf(blocks.get(j)).toUpperCase());
+                }
+                return materials;
+            } catch (IllegalArgumentException e) {
+                LOGGER.severe("One or more timer blocks were invalid! Using default list.");
+                LOGGER.severe(e.getMessage());
+                return DEFAULT_TIMER_MATERIALS;
+            }
+        } else {
+            LOGGER.severe("Timer blocks list was null! Using default list.");
+            return DEFAULT_TIMER_MATERIALS;
+        }
+    }
+
+    /**
+     * Check if default timer blocks are being used, as set in the configuration file.
+     * @return True if timer_blocks.use_default is set to true in the configuration file.
+     */
+    public static boolean isUsingDefaultTimerBlocks() {
+        return PLUGIN.getConfig().getBoolean("timer_blocks.use_default");
     }
 
     /**
