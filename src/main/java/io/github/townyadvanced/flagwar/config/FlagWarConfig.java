@@ -32,7 +32,7 @@ public final class FlagWarConfig {
         super();
     }
 
-    /** Default timer materials */
+    /** Default timer materials. */
     private static final Material[] DEFAULT_TIMER_MATERIALS = new Material[] {
         Material.LIME_WOOL, Material.GREEN_WOOL, Material.BLUE_WOOL, Material.CYAN_WOOL,
         Material.LIGHT_BLUE_WOOL, Material.GRAY_WOOL, Material.WHITE_WOOL,
@@ -52,8 +52,8 @@ public final class FlagWarConfig {
     /**
      * {@link Material} array used for representing the FlagWar Flag Timer, used in both beacons and tops of War Flags.
      */
-    static final Material[] TIMER_MATERIALS = isUsingDefaultTimerBlocks() ?
-        DEFAULT_TIMER_MATERIALS : getCustomTimerBlocks();
+    static final Material[] TIMER_MATERIALS = isUsingDefaultTimerBlocks()
+        ? DEFAULT_TIMER_MATERIALS : getCustomTimerBlocks();
 
     /**
      * Checks if a {@link Material} should be affected by an operation.
