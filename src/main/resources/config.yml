@@ -58,6 +58,24 @@ flag:
     base_block: 'OAK_FENCE' # Block required to place a flag.
     light_block: 'TORCH' # TORCH and SOUL_TORCH good. REDSTONE_TORCH questionable.
 
+# Defines the War Flag timer blocks.
+timer_blocks:
+    # Will use the classic wool palette if true.
+    use_default: true
+    # Will set the timer blocks. Each entry is allotted an equal amount of time.
+    # Use multiple entries to achieve more granularity. Case-insensitive.
+    blocks:
+        - lime_terracotta
+        - green_terracotta
+        - blue_terracotta
+        - cyan_terracotta
+        - light_blue_terracotta
+        - gray_terracotta
+        - white_terracotta
+        - pink_terracotta
+        - orange_terracotta
+        - red_terracotta
+
 # Define Beacon Structure
 beacon:
     draw: true
