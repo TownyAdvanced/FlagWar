@@ -2,7 +2,7 @@
 # Everything should be Unix-style EOL, unless used explicitly for Windows.
 
 *                   text    eol=lf
-*.cmd      text    eol=crlf
+*.cmd               text    eol=crlf
 
 *.jar               binary
 *.jpg               binary
