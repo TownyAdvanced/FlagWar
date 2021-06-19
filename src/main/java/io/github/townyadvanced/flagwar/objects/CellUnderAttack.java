@@ -305,18 +305,6 @@ public class CellUnderAttack extends Cell {
     }
 
     /**
-     * Legacy method that would return if the given {@link Block} was the {@link #flagTimerBlock}.
-     * @param block the supplied Block.
-     * @return the result of {@link #isFlagTimer(Block)}.
-     * @deprecated since FlagWar 0.1.2, marked for future removal. Use {@link #isFlagTimer(Block)} or
-     * {@link #isFlagPart(Block)} instead.
-     */
-    @Deprecated(since = "0.1.2", forRemoval = true)
-    public boolean isFlag(final Block block) {
-        return isFlagTimer(block);
-    }
-
-    /**
      * Check to see if the supplied {@link Block} is part of the war flag's construction.
      * @param block the supplied Block.
      * @return TRUE if the supplied block matches any of the conditions.
