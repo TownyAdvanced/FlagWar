@@ -7,12 +7,12 @@
     <groupId>io.github.townyadvanced.flagwar</groupId>
     <artifactId>FlagWar</artifactId>
     <packaging>jar</packaging>
-    <version>0.2.0</version>
+    <version>0.2.1-SNAPSHOT</version>
     <description>An OG war system for TownyAdvanced. Celebrating a decade of Flag-based Towny Warfare.</description>
 
     <properties>
-        <java.version>11</java.version>
-        <project.bukkitAPIVersion>1.16</project.bukkitAPIVersion>
+        <java.version>16</java.version>
+        <project.bukkitAPIVersion>1.17</project.bukkitAPIVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <plugin.javadoc.version>3.3.0</plugin.javadoc.version>
     </properties>
@@ -62,9 +62,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
+            <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>1.17-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
