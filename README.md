@@ -5,8 +5,9 @@
 ### Important Notices
 
 <details><summary>Development Software</summary>
-FlagWar is not yet ready to be considered "Stable". Please consider all currently available builds to be 
-development builds.
+
+FlagWar is not yet considered "Stable". Releases will have bugs, or be out of date with the code.
+Releases provided as a courtesy to users wanting to try it out for themselves.
 
 Some features will likely still be missing or broken.
 For known deficiencies, please refer to the [issue tracker][issue-tracker] and/or
@@ -20,7 +21,7 @@ If you would like to help out with development, translations, or other efforts: 
 
 FlagWar, makes use of the [bStats](https://bstats.org/) metrics library. For an idea of what is collected, you can view
 the telemetry reports [here](https://bstats.org/plugin/bukkit/FlagWar/10325).
-While we would appreciate it if you were to keep reporting enabled, you can opt-out of sending telemetry
+While we would appreciate it if you were to keep bstats reporting enabled, you can opt-out of sending telemetry
 by modifying the bStats config found at `yourServer/plugins/bStats/`.
 </details>
 
@@ -96,9 +97,12 @@ Administrator Resources
 
 <img align=right src="https://user-images.githubusercontent.com/879756/65964779-3a067200-e423-11e9-9928-938b976af2c2.gif" height="155">
 
-All Release builds and Development builds are being made available here on GitHub's [Releases][releases] page.
+All Release builds and Development builds have been made available here on GitHub's [Releases][releases] page.
 We encourage server admins to "watch" FlagWar on GitHub in order to receive update notifications.
 Just click the watch button in the upper right and select "Releases Only".
+
+Sometimes, releases can be incubating for extended periods of time. You can build from main if you want to test on 
+the bleeding edge.
 
 ### Getting Support
 
@@ -121,30 +125,29 @@ Developer Resources
 
 If you would like to contribute to the FlagWar code, first please read the [Contributing Guidelines][contributing].
 
-For basic work, involving only minor changes (1-2 lines), you _can_ use GitHub's built-in editor after
-forking the project.
-
-For anything more involved, you will need to fulfill the following requirements:
-- A [Java Development Kit][jdk], for Java 11 or higher
-- A competent text editor (documentation, translations), or an Integrated Development Environment (code)
-    - Competent Editors: 
-      [Atom][atom], [Notepad++][npp], [Sublime Text][sublime], [Vim][vim], [Visual Studio Code][vscode]
-    - Recommendable IDEs: [Apache NetBeans][netbeans], [Eclipse IDE][eclipse], [IntelliJ IDEA][idea]
-- Apache Maven (_See [Building FlagWar](#building-flagwar); Note that some IDEs bundle a JDK and Apache Maven, or
-  can grab them for you._)
+You will also want to ensure that your working environment is in order. You can check out
+[Environment Setup][env-setup] over on our wiki to help you get started.
 
 ### Contributing Documentation
-Help with the documentation would be much appreciated.
-If you are interested in writing for the wiki, please create a ticket, adk on the Towny Discord,
-or chime in on the Towny discussion board to be given write access. 
+
+Documentation could also use a fair bit of work. Help in this department would be much appreciated.
+
+We document both in plain-text (LICENSE, NOTICE) and in GitHub-Flavored Markdown (everywhere else).
+
+If you are interested in writing for the [FlagWar Wiki][wiki], feel free to ask on the [Towny Discord][discord]
+(ping FlagCourier), or chime in on the [Towny Discussion Board][discuss-towny] to be given write access. 
 
 ### Localizing FlagWar
 
-The localization files for FlagWar are built directly into the jarfile using ResourceBundles.
+The localization files for FlagWar are built directly into the jar using ResourceBundles.
 
 To localize FlagWar to your language, copy the 
 [Translation_en_US.properties](src/main/resources/Translation_en_US.properties) file from the
 [`resources` directory](src/main/resources) as `Translation_{LOCALE}.properties`.
+
+If a locale already exists, please refrain from creating a duplicate. Some locales may be stubs that were added for
+debugging purposes (en_GB, en_US[-_]POSIX, es_MX.) Feel free to modify them, but ensure they have the same key values
+as the master file (en_US).
 
 The `LOCALE`, or the locale id compatible with the Java Locale class,
 is a 1-to-3 segment string representing the _language_, the _region_, and the _variant_ (if desired);
@@ -155,28 +158,29 @@ Examples: en, en_US, en_US-POSIX.
 See the Java [Locale](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Locale.html) documentation 
 for well-formed naming. 
 
-> &ast; FlagWar does not support `script` or `extension` fields, so Locale IDs should stick to the 
-`lang(_REGION([_\-]VARIANT))` format.  
+> &ast; FlagWar's Locale IDs should stick to the `lang(_REGION([_\-]VARIANT))` format.  
 > PRs to Locale processing are welcome. It's pretty messy in there...
-Once you have that done, you can go ahead and translate the strings from there.
 
 After translation is complete, save your changes. You will need to [Build FlagWar](README.md#Building-FlagWar) to ensure
 that all strings are accounted for, and that they render properly for end users.
 
 ### Building FlagWar
 
-Building FlagWar requires the use of [Apache Maven][maven], [Git][git] (optional), a [Java Development Kit][jdk] for
-Java 11 (or greater; [Amazon Corretto recommended][corretto]), and an internet connection.
+Assuming you've got your [environment properly set up][env-setup], building FlagWar is relatively straight forward.
 
-1) Clone FlagWar from GitHub. _See the [GitHub Docs][github-docs], if you are unfamiliar with cloning projects._
-2) In a terminal shell, navigate into the cloned `FlagWar` directory. Or, if your OS supports opening a terminal from a
-   directory in its file browser, you can do that.
-3) Run `mvn clean package` to build FlagWar. This will put generated files into the `FlagWar/target` directory.
-   
-   > 💡 If you are on Linux and get JAVA_HOME errors, try adding the `-P alternatives` flag to your
-   > Maven command(s).
+Steps:
+1) Clone FlagWar from GitHub.
+    - _See the [GitHub Docs][github-docs], if you are unfamiliar with cloning projects._
+2) Navigate into the cloned `FlagWar` directory in your terminal.
+3) Run `mvn clean package` to build FlagWar. This will generate files to the `FlagWar/target/` directory.
+    - We also supply several maven profiles for convenience. Append `-P profileX,profileY,profileZ` to use them,
+      obviously replacing the ridiculous placeholder profiles listed here.
+    - 💡 If you are on Linux and get JAVA_HOME errors, try using the  `alternatives` profile.
+    - The `checkstyle` profile will ensure that code edits are in-line with the code style guidelines.
+    - The `javadocs` profile will generate a `FlagWar-version-javadoc.jar` file, as well as the
+      `FlagWar/target/apidocs/` folder.
 
-Alternatively, you can build it through your IDE, provided that it includes Maven, or that
+You can alternatively build FlagWar through your IDE, provided that it includes Maven, or that
 it can at least find it. Check your IDE's documentation regarding Maven support.
 
 Supporting the Project
@@ -192,13 +196,12 @@ You can support the project in multiple ways:
   
 
 - **Sponsor a Developer 💗**  
-  Sponsoring a developer is appreciated, and gives back to those who have spent time to keep the project going.  
+  Sponsoring a developer gives back to those who have spent time to keep the project going.  
   See the sidebar for open sponsorships and learn about GitHub's [Sponsors Program][gh-sponsors].
-  
 
 - **Use FlagWar ⛳**  
-  Using FlagWar lets us know that people still love the war system. It can be encouraging for everyone involved.  
-  Keeping metrics on, while optional, also gives us a rough idea of the health and adoption of FlagWar in the
+  Using FlagWar lets us know that people still love the war system.  
+  Keeping metrics on, while optional, also gives us a rough idea of the adoption of FlagWar in the
   TownyAdvanced ecosystem.
 
 <!-- Links -->
@@ -219,6 +222,7 @@ You can support the project in multiple ways:
 [discord]: https://discord.gg/gnpVs5m "Join the TownyAdvanced Discord server"
 [discuss-towny]: https://github.com/TownyAdvanced/Towny/discussions/categories/q-a "View Towny's Q&A Discussion Board"
 [eclipse]: https://www.eclipse.org/eclipseide/ "The Leading Open Platform for Professional Developers"
+[env-setup]: https://github.com/TownyAdvanced/FlagWar/wiki/Environment-Setup "FlagWar Docs: Environment Setup"
 [feature]: https://github.com/TownyAdvanced/FlagWar/issues/new?assignees=&labels=&template=feature_request.md&title=Suggestion%3A+ "Request a new feature or tweak"
 [get-support]: README.md#getting-support "Getting Support"
 [gh-sponsors]: https://github.com/sponsors "Invest in the software that powers your world"
