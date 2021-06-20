@@ -16,6 +16,6 @@ jobs:
                   java-version: '16'
                   java-package: jdk
             - name: Deploy to GitHub Package Registry
-              run: mvn -B deploy -P checkstyle,javadocs -X
+              run: mvn -B deploy -P checkstyle,javadocs
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

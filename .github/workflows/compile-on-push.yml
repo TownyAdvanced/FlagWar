@@ -14,4 +14,4 @@ jobs:
             - name: Compile with Maven
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: mvn -B compile test -P checkstyle,javadocs -X
+              run: mvn -B compile test -P checkstyle,javadocs

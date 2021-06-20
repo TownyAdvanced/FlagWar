@@ -175,7 +175,6 @@ Steps:
 3) Run `mvn clean package` to build FlagWar. This will generate files to the `FlagWar/target/` directory.
     - We also supply several maven profiles for convenience. Append `-P profileX,profileY,profileZ` to use them,
       obviously replacing the ridiculous placeholder profiles listed here.
-    - 💡 If you are on Linux and get JAVA_HOME errors, try using the  `alternatives` profile.
     - The `checkstyle` profile will ensure that code edits are in-line with the code style guidelines.
     - The `javadocs` profile will generate a `FlagWar-version-javadoc.jar` file, as well as the
       `FlagWar/target/apidocs/` folder.

@@ -14,7 +14,6 @@
         <java.version>16</java.version>
         <project.bukkitAPIVersion>1.17</project.bukkitAPIVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <plugin.javadoc.version>3.3.1-SNAPSHOT</plugin.javadoc.version>
     </properties>
 
     <licenses>
@@ -201,7 +200,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${plugin.javadoc.version}</version>
+                        <version>3.3.0</version>
                         <executions>
                             <execution>
                                 <phase>compile</phase>
@@ -247,32 +246,6 @@
                                 <phase>validate</phase>
                                 <goals>
                                     <goal>check</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <!-- Use if you need Javadocs on Linux distributions using the (update-)alternatives system. -->
-            <id>alternatives</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${plugin.javadoc.version}</version>
-                        <configuration>
-                            <source>${java.version}</source>
-                            <javadocExecutable>/usr/bin/javadoc</javadocExecutable>
-                            <notimestamp>true</notimestamp>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>jar</goal>
                                 </goals>
                             </execution>
                         </executions>
