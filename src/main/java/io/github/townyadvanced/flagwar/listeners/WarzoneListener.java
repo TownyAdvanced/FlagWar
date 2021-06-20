@@ -152,8 +152,8 @@ public class WarzoneListener implements Listener {
      */
     private boolean isFastFailing(final TownBlockStatus townBlockStatus, final TownyActionEvent townyActionEvent) {
         return !townBlockStatus.equals(TownBlockStatus.WARZONE)
-            && !FlagWarConfig.isAllowingAttacks()
-            && townyActionEvent.isInWilderness();
+            || !FlagWarConfig.isAllowingAttacks()
+            || townyActionEvent.isInWilderness();
     }
 
     /**
