@@ -9,12 +9,13 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-            - name: Set up OpenJDK 11
+            - name: Set up OpenJDK 16
               uses: actions/setup-java@v2
               with:
-                  distribuition: 'adopt'
-                  java-version: '11'
+                  distribution: 'adopt'
+                  java-version: '16'
+                  java-package: jdk
             - name: Deploy to GitHub Package Registry
-              run: mvn -B deploy -P alternatives,checkstyle,javadocs
+              run: mvn -B deploy -P checkstyle,javadocs
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

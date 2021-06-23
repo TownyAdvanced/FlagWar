@@ -130,10 +130,9 @@ public class Cell {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof Cell)) {
+        if (!(obj instanceof Cell that)) {
             return false;
         }
-        Cell that = (Cell) obj;
         return xVal == that.xVal && zVal == that.zVal && (Objects.equals(this.cellsWorldName, that.cellsWorldName));
     }
 

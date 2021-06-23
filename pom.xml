@@ -7,14 +7,13 @@
     <groupId>io.github.townyadvanced.flagwar</groupId>
     <artifactId>FlagWar</artifactId>
     <packaging>jar</packaging>
-    <version>0.2.0</version>
+    <version>0.2.1-SNAPSHOT</version>
     <description>An OG war system for TownyAdvanced. Celebrating a decade of Flag-based Towny Warfare.</description>
 
     <properties>
-        <java.version>11</java.version>
-        <project.bukkitAPIVersion>1.16</project.bukkitAPIVersion>
+        <java.version>16</java.version>
+        <project.bukkitAPIVersion>1.17</project.bukkitAPIVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <plugin.javadoc.version>3.3.0</plugin.javadoc.version>
     </properties>
 
     <licenses>
@@ -62,9 +61,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
+            <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <version>1.17-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -92,6 +91,13 @@
         </dependency>
     </dependencies>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>apache.snapshots</id>
+            <url>https://repository.apache.org/snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
@@ -112,7 +118,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.3.0-SNAPSHOT</version>
                 <configuration>
                     <relocations>
                         <relocation>
@@ -194,7 +200,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${plugin.javadoc.version}</version>
+                        <version>3.3.0</version>
                         <executions>
                             <execution>
                                 <phase>compile</phase>
@@ -240,32 +246,6 @@
                                 <phase>validate</phase>
                                 <goals>
                                     <goal>check</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <!-- Use if you need Javadocs on Linux distributions using the (update-)alternatives system. -->
-            <id>alternatives</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${plugin.javadoc.version}</version>
-                        <configuration>
-                            <source>${java.version}</source>
-                            <javadocExecutable>/usr/bin/javadoc</javadocExecutable>
-                            <notimestamp>true</notimestamp>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>jar</goal>
                                 </goals>
                             </execution>
                         </executions>

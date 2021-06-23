@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="FlagWar" target="11" />
+      <module name="FlagWar" target="16" />
     </bytecodeTargetLevel>
   </component>
 </project>

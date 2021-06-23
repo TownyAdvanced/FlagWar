@@ -84,9 +84,9 @@ public final class FlagWarConfig {
         List<?> blocks = PLUGIN.getConfig().getList("timer_blocks.blocks", null);
         if (blocks != null) {
             int i = blocks.size();
-            Material[] materials = new Material[i];
+            var materials = new Material[i];
             try {
-                for (int j = 0; j < i; j++) {
+                for (var j = 0; j < i; j++) {
                     materials[j] = Material.valueOf(String.valueOf(blocks.get(j)).toUpperCase());
                 }
                 return materials;
