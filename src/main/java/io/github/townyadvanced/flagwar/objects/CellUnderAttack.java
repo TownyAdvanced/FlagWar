@@ -17,23 +17,28 @@
 
 package io.github.townyadvanced.flagwar.objects;
 
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
+import com.palmergames.bukkit.towny.Towny;
+import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.flagwar.CellAttackThread;
 import io.github.townyadvanced.flagwar.FlagWar;
+import io.github.townyadvanced.flagwar.HologramUpdateThread;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import io.github.townyadvanced.flagwar.i18n.Translate;
 import io.github.townyadvanced.flagwar.util.Messaging;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
 
-import com.palmergames.bukkit.towny.Towny;
-import com.palmergames.bukkit.towny.object.Coord;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CellUnderAttack extends Cell {
 
@@ -60,8 +65,14 @@ public class CellUnderAttack extends Cell {
     private int flagPhaseID;
     /** A thread used to update the state of the {@link CellUnderAttack} using the scheduleSyncRepeatingTask. */
     private int thread;
-
-
+    /** A thread used to update the {@link #hologram}'s {@link #timerLine}. */
+    private int hologramThread;
+    /** Holds the war flag hologram. */
+    private Hologram hologram;
+    /** Holds the time, in seconds, assuming 20 ticks is 1 second, of the war flag. */
+    private int time;
+    /** Holds the {@link TextLine} of the hologram timer line. */
+    private TextLine timerLine;
 
     /**
      * Prepares the CellUnderAttack.
@@ -79,6 +90,8 @@ public class CellUnderAttack extends Cell {
         this.flagBaseBlock = flagBase;
         this.flagPhaseID = 0;
         this.thread = -1;
+        hologramThread = -1;
+        this.time = (int) (FlagWarConfig.getFlagWaitingTime() / 20L);
 
         var world = flagBase.getWorld();
         this.flagTimerBlock = world.getBlockAt(flagBase.getX(), flagBase.getY() + 1, flagBase.getZ());
@@ -256,8 +269,76 @@ public class CellUnderAttack extends Cell {
     }
 
     /**
+     * Function to draw the {@link #hologram}. Retrieves hologram settings via
+     * {@link FlagWarConfig#getHologramSettings()}. Creates a new {@link #hologram} supplying the plugin instance with
+     * {@link FlagWar#getInstance()}, and a temporary {@link org.bukkit.Location} using the {@link #flagLightBlock}.
+     * Disables visibility. Then, iterates through the hologram settings, adding lines corresponding to the line
+     * type and data. Finally, adjusts the location of the hologram according to the height of the {@link #hologram},
+     * and enables its visibility.
+     * */
+    public void drawHologram() {
+        List<Map.Entry<String, String>> holoSettings = FlagWarConfig.getHologramSettings();
+        Location loc = flagLightBlock.getLocation();
+        hologram = HologramsAPI.createHologram(FlagWar.getInstance(), loc);
+        hologram.getVisibilityManager().setVisibleByDefault(false);
+        for (Map.Entry<String, String> holoSetting : holoSettings) {
+            var type = holoSetting.getKey();
+            var data = holoSetting.getValue();
+            switch (type) {
+                case "item":
+                    hologram.appendItemLine(new ItemStack(Material.matchMaterial(data)));
+                    break;
+                case "text":
+                    hologram.appendTextLine(data);
+                    break;
+                case "timer":
+                    timerLine = hologram.appendTextLine(formatTime(time, data));
+                    break;
+                case "empty":
+                    hologram.appendTextLine("");
+                    break;
+            }
+        }
+        hologram.teleport(loc.add(0.5, 0.9 + hologram.getHeight(), 0.5));
+        hologram.getVisibilityManager().setVisibleByDefault(true);
+    }
+
+    /**
+     * Decreases {@link #time} by 1, and sets the {@link #hologram} {@link #timerLine} text using
+     * {@link #formatTime(int, String)} with {@link #time} and {@link FlagWarConfig#getTimerText()}
+     * as the parameters.
+     * */
+    public void updateHologram() {
+        time -= 1;
+        timerLine.setText(formatTime(time, FlagWarConfig.getTimerText()));
+    }
+
+    /** Deletes the {@link #hologram}. */
+    public void destroyHologram() {
+        this.hologram.delete();
+    }
+
+    /**
+     * Function used to format the hologram {@link #time} according to the timer text defined in
+     * {@link FlagWarConfig#getTimerText()}.
+     * @param time Time, in seconds.
+     * @param toFormat The string to format. Should contain one or more format specifiers with argument indexes
+     *                 corresponding to seconds, minutes, and hours, respectively.
+     * @return The formatted string.
+     * */
+    public String formatTime(int time, String toFormat) {
+        int seconds = (time % 60);
+        int minutes = (time % 3600) / 60;
+        int hours = time / 3600;
+        return String.format(toFormat, seconds, minutes, hours);
+    }
+
+    /**
      * {@link #drawFlag()}, then schedule a {@link CellAttackThread} synchronously on the main thread, using the
      * {@link #flagPhaseInterval} as both the repeat delay and runtime timer.
+     * If {@link FlagWarConfig#isHologramEnabled()} returns true, also {@link #drawHologram()}, and if
+     * {@link FlagWarConfig#hasTimerLine()} returns true, also start a {@link #hologramThread}, with
+     * 20 ticks as both the repeat delay and runtime timer.
      */
     public void beginAttack() {
         drawFlag();
@@ -265,14 +346,31 @@ public class CellUnderAttack extends Cell {
             new CellAttackThread(this),
             this.flagPhaseInterval,
             this.flagPhaseInterval);
+        if (FlagWarConfig.isHologramEnabled()) {
+            drawHologram();
+            if (FlagWarConfig.hasTimerLine()) {
+                hologramThread = towny.getServer().getScheduler().scheduleSyncRepeatingTask(towny,
+                    new HologramUpdateThread(this),
+                    20L,
+                    20L);
+            }
+        }
     }
 
-    /** Cancels the {@link #thread} task, started in {@link #beginAttack()}. Then runs {@link #destroyFlag()}.*/
+    /**
+     * Cancels the {@link #thread} task, started in {@link #beginAttack()}. Then runs {@link #destroyFlag()}.
+     * Also cancels the {@link #hologramThread} task, if running, and destroys the {@link #hologram}, if it
+     * exists, using {@link #destroyHologram()}.
+     */
     public void cancel() {
         if (thread != -1) {
             towny.getServer().getScheduler().cancelTask(thread);
         }
+        if (hologramThread != -1) {
+            towny.getServer().getScheduler().cancelTask(hologramThread);
+        }
         destroyFlag();
+        if (hologram != null) { destroyHologram(); }
     }
 
     /** @return the string "%getWorldName% (%getX%, %getZ%)". */

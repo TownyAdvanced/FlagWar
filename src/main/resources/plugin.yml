@@ -16,5 +16,8 @@ prefix: FlagWar
 
 description: ${description}
 
+softdepend:
+    - HolographicDisplays
+
 depend:
     - Towny

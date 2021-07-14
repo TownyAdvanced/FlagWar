@@ -16,14 +16,19 @@
 
 package io.github.townyadvanced.flagwar.config;
 
+import com.palmergames.bukkit.util.Colors;
 import com.palmergames.util.TimeTools;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.util.Messaging;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public final class FlagWarConfig {
@@ -54,6 +59,22 @@ public final class FlagWarConfig {
      */
     static final Material[] TIMER_MATERIALS = isUsingDefaultTimerBlocks()
         ? DEFAULT_TIMER_MATERIALS : getCustomTimerBlocks();
+
+    /** Holds the result of {@link #isHologramEnabled(boolean)}. */
+    static boolean isHologramEnabled = isHologramEnabled(true);
+
+    /**
+     * Holds the hologram settings. First checks {@link #isHologramEnabled()}, and if true retrieves the
+     * hologram settings via {@link #getHologramConfig()}.
+     */
+    static final List<Map.Entry<String, String>> HOLOGRAM_SETTINGS = isHologramEnabled()
+        ? getHologramConfig() : null;
+
+    /** Holds whether or not a valid hologram timer line is supplied in the config. */
+    static boolean hasTimerLine;
+
+    /** Holds the text of the hologram timer line, if it exists. */
+    static String timerText;
 
     /**
      * Checks if a {@link Material} should be affected by an operation.
@@ -107,6 +128,133 @@ public final class FlagWarConfig {
      */
     public static boolean isUsingDefaultTimerBlocks() {
         return PLUGIN.getConfig().getBoolean("timer_blocks.use_default");
+    }
+
+    /**
+     * Check if Holograms are enabled in the config, and if HolographicDisplays is present. Also, if Holograms are
+     * enabled, but HolographicDisplays is missing, log an error and return false.
+     * @return True if both conditions are true.
+     */
+    private static boolean isHologramEnabled(boolean checkConfig) {
+        if (PLUGIN.getConfig().getBoolean("holograms.enabled")) {
+            if (PLUGIN.getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
+                return true;
+            } else {
+                LOGGER.severe("HolographicDisplays was not found! Holograms will be disabled.");
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /** @return {@link #isHologramEnabled}, the cached result of {@link #isHologramEnabled(boolean)}. */
+    public static boolean isHologramEnabled() {
+        return isHologramEnabled;
+    }
+
+    /**
+     * Retrieve the {@link ConfigurationSection} for the hologram lines. Then, instantiate an {@link ArrayList} for the
+     * hologram settings. If the hologram lines section is empty, log the error, and disable holograms. Store the
+     * maximum and minimum indexes. If there are indexes less than zero, ignore those indexes and log the error. Then,
+     * for each supplied hologram line, pass the data through {@link Colors#translateColorCodes(String)} to parse any
+     * color codes, validate the type and data, and add the line to the hologram settings. If type or data are invalid,
+     * log the error, and set the line to an empty one. Finally, return the parsed hologram settings as a {@link List}
+     * of {@link Map.Entry}'s containing the type and data of each line.
+     */
+    public static List<Map.Entry<String, String>> getHologramConfig() {
+        ConfigurationSection holoLines = PLUGIN.getConfig().getConfigurationSection("holograms.lines");
+        List<Map.Entry<String, String>> holoSettings = new ArrayList<>();
+        if (holoLines.getKeys(false).isEmpty()) {
+            LOGGER.severe("Hologram line settings not found!");
+            LOGGER.severe("Disabling holograms.");
+            isHologramEnabled = false;
+            return null;
+        }
+        int maxIdx = holoLines.getKeys(false)
+            .stream().mapToInt(Integer::valueOf).max().orElse(-1);
+        int minIdx = holoLines.getKeys(false)
+            .stream().mapToInt(Integer::valueOf).min().orElse(-1);
+        if (minIdx < 0) {
+            LOGGER.severe("Hologram line indexes cannot be less than zero!");
+            LOGGER.severe("Ignoring invalid lines.");
+        }
+        for (int i = 0; i < maxIdx + 1; i++) {
+            String lineType = holoLines.getString(i + ".type", "empty");
+            String data = Colors.translateColorCodes(holoLines.getString(i + ".data", "null"));
+            switch(lineType.toLowerCase()) {
+                case "item":
+                    if (Material.matchMaterial(data) == null) {
+                        LOGGER.severe(String.format("Invalid hologram material %s for line %s!", data, i));
+                        setEmpty(holoSettings, i);
+                    } else {
+                        holoSettings.add(new AbstractMap.SimpleEntry<>("item", data));
+                    }
+                    break;
+                case "text":
+                    if (data.equals("null")) {
+                        LOGGER.severe(String.format("Missing hologram text for line %s!", i));
+                        setEmpty(holoSettings, i);
+                    } else {
+                        holoSettings.add(new AbstractMap.SimpleEntry<>("text", data));
+                    }
+                    break;
+                case "timer":
+                    if (!data.contains("%")) {
+                        LOGGER.severe(String.format("Missing time placeholder for hologram line %s!", i));
+                        setEmpty(holoSettings, i);
+                    } else {
+                        if (!hasTimerLine) {
+                            hasTimerLine = true;
+                            timerText = data;
+                            holoSettings.add(new AbstractMap.SimpleEntry<>("timer", data));
+                        } else {
+                            LOGGER.severe(String.format("Duplicate timer for hologram line %s!", i));
+                            setEmpty(holoSettings, i);
+                        }
+                    }
+                    break;
+                case "empty":
+                    LOGGER.severe(String.format("Missing hologram line type for line %s!", i));
+                    setEmpty(holoSettings, i);
+                    break;
+                default:
+                    LOGGER.severe(String.format("Invalid hologram line type %s for line %s!", lineType, i));
+                    setEmpty(holoSettings, i);
+            }
+        }
+        return holoSettings;
+    }
+
+    /**
+     * Helper function for {@link #getHologramConfig()}. If the supplied line is the first line (i == 0), log that it
+     * will simply be ignored. Otherwise, log that the line will be set to empty, and add it to the hologram settings
+     * list.
+     * @param list The hologram settings list.
+     * @param i The hologram line index being parsed, used for error logging.
+     */
+    private static void setEmpty(List<Map.Entry<String, String>> list, int i) {
+        if (i != 0) {
+            LOGGER.severe("Setting to empty line.");
+            list.add(new AbstractMap.SimpleEntry<>("empty", "null"));
+        } else {
+            LOGGER.severe("It's the first line! Ignoring.");
+        }
+    }
+
+    /** @return {@link #HOLOGRAM_SETTINGS}, defined by {@link #getHologramConfig()}. */
+    public static List<Map.Entry<String, String>> getHologramSettings() {
+        return HOLOGRAM_SETTINGS;
+    }
+
+    /** @return The hologram {@link #timerText}, if it exists, defined in {@link #getHologramConfig()}. */
+    public static String getTimerText() {
+        return timerText;
+    }
+
+    /** @return TRUE if a timer line is defined in {@link #getHologramConfig()}. */
+    public static boolean hasTimerLine() {
+        return hasTimerLine;
     }
 
     /**
