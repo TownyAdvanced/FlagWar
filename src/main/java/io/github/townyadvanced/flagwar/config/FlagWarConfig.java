@@ -61,7 +61,7 @@ public final class FlagWarConfig {
         ? DEFAULT_TIMER_MATERIALS : getCustomTimerBlocks();
 
     /** Holds the result of {@link #isHologramEnabled(boolean)}. */
-    static boolean isHologramEnabled = isHologramEnabled(true);
+    private static boolean isHologramEnabled = isHologramEnabled(true);
 
     /**
      * Holds the hologram settings. First checks {@link #isHologramEnabled()}, and if true retrieves the
@@ -71,10 +71,10 @@ public final class FlagWarConfig {
         ? getHologramConfig() : null;
 
     /** Holds whether or not a valid hologram timer line is supplied in the config. */
-    static boolean hasTimerLine;
+    private static boolean hasTimerLine;
 
     /** Holds the text of the hologram timer line, if it exists. */
-    static String timerText;
+    private static String timerText;
 
     /**
      * Checks if a {@link Material} should be affected by an operation.
@@ -133,9 +133,10 @@ public final class FlagWarConfig {
     /**
      * Check if Holograms are enabled in the config, and if HolographicDisplays is present. Also, if Holograms are
      * enabled, but HolographicDisplays is missing, log an error and return false.
+     * @param checkConfig Overload parameter, not used for anything else
      * @return True if both conditions are true.
      */
-    private static boolean isHologramEnabled(boolean checkConfig) {
+    private static boolean isHologramEnabled(final boolean checkConfig) {
         if (PLUGIN.getConfig().getBoolean("holograms.enabled")) {
             if (PLUGIN.getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
                 return true;
@@ -161,6 +162,7 @@ public final class FlagWarConfig {
      * color codes, validate the type and data, and add the line to the hologram settings. If type or data are invalid,
      * log the error, and set the line to an empty one. Finally, return the parsed hologram settings as a {@link List}
      * of {@link Map.Entry}'s containing the type and data of each line.
+     * @return Hologram settings {@link List}.
      */
     public static List<Map.Entry<String, String>> getHologramConfig() {
         ConfigurationSection holoLines = PLUGIN.getConfig().getConfigurationSection("holograms.lines");
@@ -182,7 +184,7 @@ public final class FlagWarConfig {
         for (int i = 0; i < maxIdx + 1; i++) {
             String lineType = holoLines.getString(i + ".type", "empty");
             String data = Colors.translateColorCodes(holoLines.getString(i + ".data", "null"));
-            switch(lineType.toLowerCase()) {
+            switch (lineType.toLowerCase()) {
                 case "item":
                     if (Material.matchMaterial(data) == null) {
                         LOGGER.severe(String.format("Invalid hologram material %s for line %s!", data, i));
@@ -233,7 +235,7 @@ public final class FlagWarConfig {
      * @param list The hologram settings list.
      * @param i The hologram line index being parsed, used for error logging.
      */
-    private static void setEmpty(List<Map.Entry<String, String>> list, int i) {
+    private static void setEmpty(final List<Map.Entry<String, String>> list, final int i) {
         if (i != 0) {
             LOGGER.severe("Setting to empty line.");
             list.add(new AbstractMap.SimpleEntry<>("empty", "null"));

@@ -38,7 +38,7 @@ public class HologramUpdateThread extends TimerTask {
     }
 
     /**
-     * Updates the hologram of the war flag within the {@link CellUnderAttack}
+     * Updates the hologram of the war flag within the {@link CellUnderAttack}.
      */
     @Override
     public void run() {

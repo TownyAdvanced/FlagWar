@@ -91,7 +91,8 @@ public class CellUnderAttack extends Cell {
         this.flagPhaseID = 0;
         this.thread = -1;
         hologramThread = -1;
-        this.time = (int) (FlagWarConfig.getFlagWaitingTime() / 20L);
+        final long ticksInSecond = 20L;
+        this.time = (int) (FlagWarConfig.getFlagWaitingTime() / ticksInSecond);
 
         var world = flagBase.getWorld();
         this.flagTimerBlock = world.getBlockAt(flagBase.getX(), flagBase.getY() + 1, flagBase.getZ());
@@ -294,12 +295,13 @@ public class CellUnderAttack extends Cell {
                 case "timer":
                     timerLine = hologram.appendTextLine(formatTime(time, data));
                     break;
-                case "empty":
+                default:
                     hologram.appendTextLine("");
-                    break;
             }
         }
-        hologram.teleport(loc.add(0.5, 0.9 + hologram.getHeight(), 0.5));
+        final double hOffset = 0.5d;
+        final double vOffset = 0.9d;
+        hologram.teleport(loc.add(hOffset, vOffset + hologram.getHeight(), hOffset));
         hologram.getVisibilityManager().setVisibleByDefault(true);
     }
 
@@ -321,15 +323,17 @@ public class CellUnderAttack extends Cell {
     /**
      * Function used to format the hologram {@link #time} according to the timer text defined in
      * {@link FlagWarConfig#getTimerText()}.
-     * @param time Time, in seconds.
+     * @param timeIn Time, in seconds.
      * @param toFormat The string to format. Should contain one or more format specifiers with argument indexes
      *                 corresponding to seconds, minutes, and hours, respectively.
      * @return The formatted string.
      * */
-    public String formatTime(int time, String toFormat) {
-        int seconds = (time % 60);
-        int minutes = (time % 3600) / 60;
-        int hours = time / 3600;
+    public String formatTime(final int timeIn, final String toFormat) {
+        final int secondsInMinute = 60;
+        final int secondsInHour = 3600;
+        final int seconds = (timeIn % secondsInMinute);
+        final int minutes = (timeIn % secondsInHour) / secondsInMinute;
+        final int hours = timeIn / secondsInHour;
         return String.format(toFormat, seconds, minutes, hours);
     }
 
@@ -346,13 +350,14 @@ public class CellUnderAttack extends Cell {
             new CellAttackThread(this),
             this.flagPhaseInterval,
             this.flagPhaseInterval);
+        final long ticksInSecond = 20L;
         if (FlagWarConfig.isHologramEnabled()) {
             drawHologram();
             if (FlagWarConfig.hasTimerLine()) {
                 hologramThread = towny.getServer().getScheduler().scheduleSyncRepeatingTask(towny,
                     new HologramUpdateThread(this),
-                    20L,
-                    20L);
+                    ticksInSecond,
+                    ticksInSecond);
             }
         }
     }
@@ -370,7 +375,9 @@ public class CellUnderAttack extends Cell {
             towny.getServer().getScheduler().cancelTask(hologramThread);
         }
         destroyFlag();
-        if (hologram != null) { destroyHologram(); }
+        if (hologram != null) {
+            destroyHologram();
+        }
     }
 
     /** @return the string "%getWorldName% (%getX%, %getZ%)". */
