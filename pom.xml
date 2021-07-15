@@ -89,6 +89,12 @@
             <artifactId>bstats-bukkit</artifactId>
             <version>2.2.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.filoghost.HolographicDisplays</groupId>
+            <artifactId>holographicdisplays-api</artifactId>
+            <version>2.4.5</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <pluginRepositories>
