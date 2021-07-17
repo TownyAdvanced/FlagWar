@@ -24,6 +24,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Event fired when a Towny Cell was defended by the defending team.
+ */
 public class CellDefendedEvent extends Event implements Cancellable {
 
     /** Holds the event's {@link HandlerList}. */

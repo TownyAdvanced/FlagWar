@@ -22,6 +22,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Event fired when a Cell attack has been successful.
+ */
 public class CellWonEvent extends Event implements Cancellable {
 
     /** Stores the {@link HandlerList} for the {@link CellWonEvent}. */

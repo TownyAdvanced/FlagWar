@@ -23,6 +23,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Event fired when an attack on a Cell is being cancelled.
+ */
 public class CellAttackCanceledEvent extends Event implements Cancellable {
 
     /** Holds the event's {@link HandlerList}. */

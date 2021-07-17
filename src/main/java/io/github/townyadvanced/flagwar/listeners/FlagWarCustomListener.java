@@ -53,6 +53,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
 
+/**
+ * General-purpose event listener for tracking Towny and FlagWar events.
+ */
 public class FlagWarCustomListener implements Listener {
     /** Holds localized string for key: error.player-town-under-attack. */
     public static final String DENY_FLAG_TOWN_UNDER_ATTACK

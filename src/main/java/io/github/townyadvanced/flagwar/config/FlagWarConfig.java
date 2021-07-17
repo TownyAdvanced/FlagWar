@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * Transitional class holding values from the configuration file, as well as defining some defaults.
+ */
 public final class FlagWarConfig {
 
     private FlagWarConfig() {

@@ -31,6 +31,9 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+/**
+ * WarZone Listener, ported from Towny.
+ **/
 public class WarzoneListener implements Listener {
 
     /** Holds the {@link Towny} instance. */

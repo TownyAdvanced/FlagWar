@@ -37,6 +37,10 @@ import com.palmergames.bukkit.towny.object.PlayerCache.TownBlockStatus;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 
+/**
+ * Listens for interactions with Blocks, then runs a check if qualified.
+ * Used for flag protections and triggering CellAttackEvents.
+ */
 public class FlagWarBlockListener implements Listener {
     /** Retains the {@link Towny} instance, after construction.  */
     private Towny towny;

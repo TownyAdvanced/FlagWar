@@ -24,6 +24,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Handles messaging for FlagWar.
+ * Useful for debugging or sending a String to a Player.
+ */
 public final class Messaging {
     /** Sets the logger to the Bukkit-provided logger. */
     private static final Logger LOGGER = FlagWar.getInstance().getLogger();

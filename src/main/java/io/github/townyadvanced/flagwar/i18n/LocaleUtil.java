@@ -25,6 +25,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+/**
+ * Utility class for handling the loading of translation property files.
+ */
 public final class LocaleUtil {
     /** Holds the currentLocale. */
     private static Locale currentLocale;

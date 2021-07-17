@@ -40,6 +40,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Extension of a {@link Cell} when under attack.
+ **/
 public class CellUnderAttack extends Cell {
 
     /** Holds an instance of FlagWar's logger. */

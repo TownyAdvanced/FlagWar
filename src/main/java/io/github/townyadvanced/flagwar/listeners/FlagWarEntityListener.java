@@ -25,6 +25,9 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 
 import io.github.townyadvanced.flagwar.FlagWar;
 
+/**
+ * Entity Listener.
+ **/
 public class FlagWarEntityListener implements Listener {
 
     /** Listens for instances of the {@link EntityExplodeEvent},

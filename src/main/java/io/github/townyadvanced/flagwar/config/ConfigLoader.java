@@ -26,6 +26,9 @@ import java.util.logging.Logger;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
+/**
+ * Handles loading of configuration files.
+ */
 public class ConfigLoader {
 
     /** {@link Plugin} instance used for basic operations, as well as associating the appropriate {@link #logger}.*/

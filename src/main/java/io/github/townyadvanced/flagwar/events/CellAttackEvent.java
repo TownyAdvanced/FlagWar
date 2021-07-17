@@ -28,6 +28,9 @@ import org.bukkit.event.HandlerList;
 import com.palmergames.bukkit.towny.Towny;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Event fired when a Towny Cell is being attacked.
+ */
 public class CellAttackEvent extends Event implements Cancellable {
 
     /** Holds the {@link HandlerList} for the {@link CellAttackEvent}. */

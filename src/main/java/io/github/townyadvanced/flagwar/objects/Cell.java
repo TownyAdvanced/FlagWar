@@ -23,6 +23,9 @@ import org.bukkit.Location;
 
 import com.palmergames.bukkit.towny.object.Coord;
 
+/**
+ * Representation of a Towny plot, based on it's {@link Coord}, used for manipulation in FlagWar.
+ */
 public class Cell {
     /** Holds the Cell's associated world's name. */
     private final String cellsWorldName;
