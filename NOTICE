@@ -27,12 +27,27 @@ Contributors to the FlagWar repository retain their copyright, subject to the te
 Notices for libraries and other works not belonging to the contributors of FlagWar or TownyAdvanced
 --------------------------------------------------
 
+// Functionality //
+/ Towny (Hard Dependency) /
+Towny is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+Full License: https://github.com/TownyAdvanced/Towny/blob/master/LICENSE.MD
+Source Code: https://github.com/TownyAdvanced/Towny/
+Copyright © 2011-2012 Chris Holland
+Copyright © 2012-2021 TownyAdvanced
+
+/ HolographicDisplays (Soft Dependency) /
+HolographicDisplays is licensed under the GNU General Public License Version 3.0, or any later version.
+Full License: https://github.com/filoghost/HolographicDisplays/blob/master/LICENSE.txt
+Source Code: https://github.com/filoghost/HolographicDisplays/
+Copyright © 2014-2021 filoghost
+
+
 // Annotations //
 / JetBrains Java Annotations (compile-only) /
 JetBrains annotations are provided under version 2 of the Apache License. (Apache-2)
 Full License: https://github.com/JetBrains/java-annotations/blob/master/LICENSE.txt
 Source Code: https://github.com/JetBrains/java-annotations
-Copyright © 2000-2020 JetBrains s.r.o. (as part of FindBugs / Bytecode Analysis Framework)
+Copyright © 2000-2021 JetBrains s.r.o.
 
 / SpotBugs Annotations (compile-only) /
 Annotations for SpotBugs (or FindBugs) are licensed under the GNU Lesser General Public License,
@@ -43,7 +58,12 @@ Copyright © 2005, University of Maryland (as part of FindBugs)
 
 // Metrics //
 / bStats /
-bStats is licensed under the GNU Lesser General Public License v3.0 (LGPL-3.0).
-Full License: https://github.com/Bastian/bStats/blob/master/LICENSE
-Source Code: https://github.com/Bastian/bStats-Metrics
+bStats metrics are provided as a service to the plugin community.
+Versions <= 1.x are licensed under the GPL v3.0, while versions >= 2.x are
+unlicensed and are assumed to be "ALL RIGHTS RESERVED". FlagWar presently makes use
+of the later, but may, upon request, revert to 1.x. An alternative metrics
+provider may be used in the future.
+
+BStats 1.x License: https://github.com/Bastian/bStats/license
+BStats 2.x Source Code: https://github.com/Bastian/bStats-Metrics
 Copyright © 2016-2021 Bastian Oppermann (AKA BtoBastian)
