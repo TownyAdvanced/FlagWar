@@ -4,24 +4,21 @@
 ----
 ### Important Notices
 
-<details><summary>Development Software</summary>
+<details><summary><b>Transitioning from the Integrated FlagWar system.</b></summary>
 
-FlagWar is not yet considered "Stable". Releases will have bugs, or be out of date with the code.
-Releases provided as a courtesy to users wanting to try it out for themselves.
-
-Some features will likely still be missing or broken.
-For known deficiencies, please refer to the [issue tracker][issue-tracker] and/or
-the [Feature Parity Checklist][boards-1].
+FlagWar has it's own methods for configuration and localization, independent of Towny. Please be advised that we
+currently only provide an English translation. There will likely be other teething issues, but we are here to help with
+them when required. See [Getting Support][get-support] if you have issues.
 
 If you would like to help out with development, translations, or other efforts: please see the 
 <a href="#developer-resources">Developer Resources</a> section.
 </details>
 
-<details><summary>Metrics / Telemetry</summary>
+<details><summary><b>Metrics / Telemetry</b></summary>
 
 FlagWar, makes use of the [bStats](https://bstats.org/) metrics library. For an idea of what is collected, you can view
 the telemetry reports [here](https://bstats.org/plugin/bukkit/FlagWar/10325).
-While we would appreciate it if you were to keep bstats reporting enabled, you can opt-out of sending telemetry
+While we would appreciate it if you were to keep bStats reporting enabled, you can opt-out of sending telemetry
 by modifying the bStats config found at `yourServer/plugins/bStats/`.
 </details>
 
@@ -83,31 +80,31 @@ Administrator Resources
 
 ### Supported Releases
 
-| FlagWar Release | 📅           | Requirements                                     |
+| FlagWar Release | 📅 Released On          | Requirements                                     |
 |:--------------: | :----------: | :----------------------------------------------: |
-| [v0.2.0-devel][0.2.0]    | Jun 18, 2021 | Towny 0.97.0.3+, Paper 1.16          |
-| _Pre-History_   | _2011_       | _Included in Towny until v0.9x.x.x; no support._ |
+| [v0.3.0][0.3.0]    | July 17, 2021 | Towny 0.97.0.12+, Paper 1.17.1         |
+| _Pre-History_   | _2011_       | _Included in Towny until v0.97.1.0; Officially Deprecated in v0.97.0.0; no support._ |
 
-> With 0.2.0, FlagWar has adopted the use of Paper as an API provider. Spigot should however still be viable. Please
+> FlagWar has adopted the use of Paper as an API provider. Spigot should however still be viable. Please
 > submit a ticket if you experience any issues.
 
-[0.2.0]: https://github.com/TownyAdvanced/FlagWar/releases/tag/0.2.0-devel "FlagWar 0.2.0 Development Release"
+[0.3.0]: https://github.com/TownyAdvanced/FlagWar/releases/tag/0.3.0 "FlagWar Release 0.3.0"
 
 ### Staying up to Date
 
 <img align=right src="https://user-images.githubusercontent.com/879756/65964779-3a067200-e423-11e9-9928-938b976af2c2.gif" height="155">
 
-All Release builds and Development builds have been made available here on GitHub's [Releases][releases] page.
-We encourage server admins to "watch" FlagWar on GitHub in order to receive update notifications.
+All Release builds and Development builds have been made available here on GitHub's [Releases][releases] page.  
+We encourage server admins to "watch" FlagWar on GitHub in order to receive update notifications.  
 Just click the watch button in the upper right and select "Releases Only".
 
-Sometimes, releases can be incubating for extended periods of time. You can build from main if you want to test on 
-the bleeding edge.
+Sometimes, releases can be incubating for extended periods of time.   
+You can build from main if you want to test on the bleeding edge.
 
 ### Getting Support
 
-The documentation found on the [FlagWar Wiki][wiki] will be updated every time a Release version of FlagWar is tagged.
-If you find the documentation insufficient, please open an issue, and we will assess the need.
+The documentation found on the [FlagWar Wiki][wiki] will be updated semi-regularly, usually after a tagged release.
+If you find the documentation insufficient, please open an issue so that we can address it.
 
 On the [Issue Tracker][issue-tracker] you can file [bug reports][bug],
 [feature requests][feature], or review / submit a [QA discussion][discuss-towny] on the Towny discussion board.
@@ -197,6 +194,7 @@ You can support the project in multiple ways:
 - **Sponsor a Developer 💗**  
   Sponsoring a developer gives back to those who have spent time to keep the project going.  
   See the sidebar for open sponsorships and learn about GitHub's [Sponsors Program][gh-sponsors].
+
 
 - **Use FlagWar ⛳**  
   Using FlagWar lets us know that people still love the war system.  
