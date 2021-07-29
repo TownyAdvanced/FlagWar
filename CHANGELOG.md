@@ -2,6 +2,27 @@
 
 Latest first.
 
+## STAGING
+
+### Misc. Changes
+- Removed unnecessary deployment to GitHub Packages
+
+## 0.3.0
+General Availability
+
+### Additions
+- Added Optional Holograms for War Flags (Courtesy of @gaffy00 with #58)
+  - Requires HolographicDisplays to function.
+
+### Fixes
+- Restore WarZoneListener Functionality
+
+### Misc. Changes
+- API: Removed `CellUnderAttack#isFlag(Block)`, previously deprecated.
+  - Use `#isFlagTimer(Block)`, or `#isFlagPart(Block)`
+- Removed `alternatives` Maven profile
+- Update Build Targets: Java 16, Paper 1.17.1, Towny 0.97.0.12
+
 ## 0.2.0
 Development Release
 
