@@ -8,7 +8,8 @@ Latest first.
 - Add `FlagWarAPI#isUnderAttack(Nation)`
   - Returns true if any town in the supplied nation contains a cell under attack.
 - Add `OutlawListener` and listen for the `OutlawTeleportEvent`
-  - Outlaws cannot teleport away during an attack while in enemy territory or enemy nation zone during a war.
+  - Outlaws cannot be teleported away during an attack while in enemy territory (or enemy nation zone) during an active
+  war.
   - Add `error.outlaw.cannot-teleport-here` translation key, sent to the outlaw.
 
 ### Misc. Changes

@@ -36,7 +36,9 @@ import org.jetbrains.annotations.Nullable;
 public class OutlawListener implements Listener {
 
     /**
-     * Listens to the OutlawTeleportEvent, then cancels it if the appropriate conditions are met.
+     * Listens to the {@link OutlawTeleportEvent}, then cancels it if the appropriate conditions are met.
+     * Typically, the event should only ever be fired when an outlaw would attempt to enter a town that has barred them,
+     * and therefore acts similar to a border-patrol.
      * @param event {@link OutlawTeleportEvent} thrown by Towny.
      */
     @EventHandler(priority = EventPriority.LOWEST)
@@ -63,7 +65,7 @@ public class OutlawListener implements Listener {
             nationOfLocation = getClosestNation(locTownBlock);
         }
 
-        // Ignore if we cannot get the (nearest) nation. This should only happen on worlds without claims.
+        // Ignore if we cannot get the (nearest) nation. This should never happen when this event is fired.
         if (nationOfLocation == null) {
             Messaging.debug("Outlaw Teleport Not Canceled: nationOfLocation is NULL");
             return;
@@ -78,8 +80,8 @@ public class OutlawListener implements Listener {
         // Require location to be under attack, and for appropriate outlaw association.
         if (FlagWarAPI.isUnderAttack(nationOfLocation) && nationOfLocation.getOutlaws().contains(outlaw)) {
             Messaging.send(outlaw.getPlayer(),
-                Translate.fromPrefixed("error.outlaw.cannot-teleport-here", nationOfLocation.toString()));
-            Messaging.debug("Outlawed Player Teleport Canceled");
+                Translate.fromPrefixed("message.outlaw.bypass-outlaw-teleport-event", nationOfLocation.toString()));
+            Messaging.debug(String.format("Outlawed Player (%s) Teleport Canceled", outlaw.getName()));
             event.setCancelled(true);
         }
     }
