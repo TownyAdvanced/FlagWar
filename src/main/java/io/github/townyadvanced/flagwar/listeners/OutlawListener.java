@@ -19,12 +19,10 @@ package io.github.townyadvanced.flagwar.listeners;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.teleport.OutlawTeleportEvent;
 import com.palmergames.bukkit.towny.object.Nation;
-import com.palmergames.bukkit.towny.object.PlayerCache;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import io.github.townyadvanced.flagwar.FlagWarAPI;
 import io.github.townyadvanced.flagwar.util.Messaging;
-import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -57,8 +55,8 @@ public class OutlawListener implements Listener {
         if (townAtLocation != null) {
             nationOfLocation = townAtLocation.getNationOrNull();
         } else {
-            // Town is null, need to check if we're in a Nation Zone
-            if (!isNationZone(outlawLocation) || locTownBlock == null) {
+            // Town is null, return if not a NationZone or if the locTownBlock is null
+            if (!TownyAPI.getInstance().isNationZone(outlawLocation) || locTownBlock == null) {
                 return;
             }
             nationOfLocation = getClosestNation(locTownBlock);
@@ -99,24 +97,6 @@ public class OutlawListener implements Listener {
             return null;
         }
         return closestTown.getNationOrNull();
-    }
-
-    /**
-     * Checks the {@link com.palmergames.bukkit.towny.object.PlayerCache.TownBlockStatus} of a given {@link Location}
-     * and returns TRUE if that location would be considered a NATION_ZONE.
-     *
-     * Self-integrates an isWilderness check, which will return false on failure.
-     *
-     * @param location the Location needing to be checked.
-     * @return True, if the isWilderness check passes, and if the TownBlockStatus is equal to
-     *         {@link com.palmergames.bukkit.towny.object.PlayerCache.TownBlockStatus#NATION_ZONE}.
-     */
-    private boolean isNationZone(final Location location) {
-        if (!TownyAPI.getInstance().isWilderness(location)) {
-            return false;
-        }
-        var blockStatus = TownyAPI.getInstance().hasNationZone(location);
-        return blockStatus.equals(PlayerCache.TownBlockStatus.NATION_ZONE);
     }
 }
 
