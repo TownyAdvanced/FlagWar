@@ -44,6 +44,7 @@ import io.github.townyadvanced.flagwar.listeners.FlagWarBlockListener;
 import io.github.townyadvanced.flagwar.listeners.FlagWarCustomListener;
 import io.github.townyadvanced.flagwar.listeners.FlagWarEntityListener;
 import io.github.townyadvanced.flagwar.listeners.WarzoneListener;
+import io.github.townyadvanced.flagwar.listeners.OutlawListener;
 import io.github.townyadvanced.flagwar.objects.Cell;
 import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 
@@ -82,9 +83,9 @@ public class FlagWar extends JavaPlugin {
     /** FlagWar Copyright String. */
     private static final String FW_COPYRIGHT = "Copyright \u00a9 2021 TownyAdvanced";
     /** Version object for storing the minimum required version of Towny for compatibility. */
-    private static final Version MIN_TOWNY_VER = Version.fromString("0.97.0.5");
+    private static final Version MIN_TOWNY_VER = Version.fromString("0.97.0.17");
     /** Value of minimum configuration file version. Used for determining if file should be regenerated. */
-    private static final double MIN_CONFIG_VER = 1.2;
+    private static final double MIN_CONFIG_VER = 1.3;
     /** BStats Metrics ID. */
     public static final int METRICS_ID = 10325;
     /** Holds FlagWar's Bukkit-assigned JUL {@link Logger}. */
@@ -101,6 +102,8 @@ public class FlagWar extends JavaPlugin {
     private FlagWarEntityListener flagWarEntityListener;
     /** Holds instance of the {@link WarzoneListener}. */
     private WarzoneListener warzoneListener;
+    /** Holds instance of the {@link OutlawListener}. */
+    private OutlawListener outlawListener;
 
     /**
      * Operations to perform when called by {@link org.bukkit.plugin.PluginLoader#enablePlugin(Plugin)}.
@@ -200,6 +203,7 @@ public class FlagWar extends JavaPlugin {
         PLUGIN_MANAGER.registerEvents(flagWarCustomListener, this);
         PLUGIN_MANAGER.registerEvents(flagWarEntityListener, this);
         PLUGIN_MANAGER.registerEvents(warzoneListener, this);
+        PLUGIN_MANAGER.registerEvents(outlawListener, this);
         FW_LOGGER.log(Level.INFO, () -> Translate.from("startup.events.registered"));
     }
 
@@ -210,6 +214,7 @@ public class FlagWar extends JavaPlugin {
         flagWarCustomListener = new FlagWarCustomListener(this);
         flagWarEntityListener = new FlagWarEntityListener();
         warzoneListener = new WarzoneListener();
+        outlawListener = new OutlawListener();
         FW_LOGGER.log(Level.INFO, () -> Translate.from("startup.listeners.initialized"));
     }
 
