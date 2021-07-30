@@ -7,6 +7,8 @@ Latest first.
 ### Additions
 - Add `FlagWarAPI#isUnderAttack(Nation)`
   - Returns true if any town in the supplied nation contains a cell under attack.
+- Add `OutlawListener` and listen for the `OutlawTeleportEvent`
+  - Outlaws cannot teleport away during an attack while in enemy territory or enemy nation zone during a war.
 
 ### Misc. Changes
 - Bump Towny API dependency to 0.97.0.17; set as Min_Towny_Version

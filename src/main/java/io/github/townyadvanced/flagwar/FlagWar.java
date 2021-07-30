@@ -44,6 +44,7 @@ import io.github.townyadvanced.flagwar.listeners.FlagWarBlockListener;
 import io.github.townyadvanced.flagwar.listeners.FlagWarCustomListener;
 import io.github.townyadvanced.flagwar.listeners.FlagWarEntityListener;
 import io.github.townyadvanced.flagwar.listeners.WarzoneListener;
+import io.github.townyadvanced.flagwar.listeners.OutlawListener;
 import io.github.townyadvanced.flagwar.objects.Cell;
 import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 
@@ -101,6 +102,8 @@ public class FlagWar extends JavaPlugin {
     private FlagWarEntityListener flagWarEntityListener;
     /** Holds instance of the {@link WarzoneListener}. */
     private WarzoneListener warzoneListener;
+    /** Holds instance of the {@link OutlawListener}. */
+    private OutlawListener outlawListener;
 
     /**
      * Operations to perform when called by {@link org.bukkit.plugin.PluginLoader#enablePlugin(Plugin)}.
@@ -200,6 +203,7 @@ public class FlagWar extends JavaPlugin {
         PLUGIN_MANAGER.registerEvents(flagWarCustomListener, this);
         PLUGIN_MANAGER.registerEvents(flagWarEntityListener, this);
         PLUGIN_MANAGER.registerEvents(warzoneListener, this);
+        PLUGIN_MANAGER.registerEvents(outlawListener, this);
         FW_LOGGER.log(Level.INFO, () -> Translate.from("startup.events.registered"));
     }
 
@@ -210,6 +214,7 @@ public class FlagWar extends JavaPlugin {
         flagWarCustomListener = new FlagWarCustomListener(this);
         flagWarEntityListener = new FlagWarEntityListener();
         warzoneListener = new WarzoneListener();
+        outlawListener = new OutlawListener();
         FW_LOGGER.log(Level.INFO, () -> Translate.from("startup.listeners.initialized"));
     }
 
