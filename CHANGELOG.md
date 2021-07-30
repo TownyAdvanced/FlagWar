@@ -4,7 +4,13 @@ Latest first.
 
 ## STAGING
 
+### Additions
+- Add `FlagWarAPI#isUnderAttack(Nation)`
+  - Returns true if any town in the supplied nation contains a cell under attack.
+
 ### Misc. Changes
+- Bump Towny API dependency to 0.97.0.17; set as Min_Towny_Version
+- Bump Config Version to 1.3 (Post 0.3.0... Woopsie.)
 - Removed unnecessary deployment to GitHub Packages
 
 ## 0.3.0

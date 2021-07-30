@@ -17,6 +17,7 @@
 
 package io.github.townyadvanced.flagwar;
 
+import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.objects.Cell;
@@ -49,6 +50,21 @@ public final class FlagWarAPI {
      */
     public static boolean isUnderAttack(final Town town) {
         return FlagWar.isUnderAttack(town);
+    }
+
+    /**
+     * Check if a {@link Nation} is under attack by iterating over each of its member Towns.
+     * @param nation Target Nation to check.
+     * @return True if there is a {@link CellUnderAttack} in any of the supplied Nation's towns.
+     */
+    public static boolean isUnderAttack(final Nation nation) {
+        boolean nationUnderAttack = false;
+        for (Town town : nation.getTowns()) {
+            if (FlagWarAPI.isUnderAttack(town)) {
+                nationUnderAttack = true;
+            }
+        }
+        return nationUnderAttack;
     }
 
     /**
