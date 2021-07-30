@@ -22,6 +22,7 @@ import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import io.github.townyadvanced.flagwar.FlagWarAPI;
+import io.github.townyadvanced.flagwar.i18n.Translate;
 import io.github.townyadvanced.flagwar.util.Messaging;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -51,7 +52,7 @@ public class OutlawListener implements Listener {
         var townAtLocation = TownyAPI.getInstance().getTownOrNull(locTownBlock);
         Nation nationOfLocation;
 
-        // Assign nationOfLocation to either the Nation of the townAtLocation, or the next nearest Nation.
+        // Assign nationOfLocation to either the Nation of the townAtLocation, or the nearest Nation.
         if (townAtLocation != null) {
             nationOfLocation = townAtLocation.getNationOrNull();
         } else {
@@ -76,6 +77,8 @@ public class OutlawListener implements Listener {
 
         // Require location to be under attack, and for appropriate outlaw association.
         if (FlagWarAPI.isUnderAttack(nationOfLocation) && nationOfLocation.getOutlaws().contains(outlaw)) {
+            Messaging.send(outlaw.getPlayer(),
+                Translate.fromPrefixed("error.outlaw.cannot-teleport-here", nationOfLocation.toString()));
             Messaging.debug("Outlawed Player Teleport Canceled");
             event.setCancelled(true);
         }
