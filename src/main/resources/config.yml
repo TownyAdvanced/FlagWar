@@ -36,15 +36,16 @@ rules:
     # True: Attackers capture plots when they win. Disable if you prefer *not* dealing with that.
     flag_takes_ownership_of_town_blocks: true
 
-    # Will prevent players from performing certain actions while a town is flagged or is in cooldown.
+    # Will prevent players from performing certain actions while a town is flagged or is in cool-down.
     prevent_interaction_while_flagged:
-        # Will prevent towns from leaving nations, setting HomeBlocks, and unclaiming land; prevent players leaving town
+        # Will prevent Towns from leaving Nations, setting HomeBlocks, and un-claiming land; prevent player desertion.
         town: true
-        # Will prevent nations from withdrawing money while actively flagged.
+        # Will prevent Nations from withdrawing money while actively flagged.
         nation: true
 
-    # Cooldown period after a flag has been in play in milliseconds. (1000ms = 1s)
-    time_to_wait_after_flagged: 600000
+    # Cool-down period for prevented interactions after a flag has been placed.
+    # Recommended being equal or greater in value to the "flag.waiting_time".
+    prevented_interaction_cooldown: "10m"
 
 player_limits:
     min_online_in_town: 2
@@ -115,5 +116,5 @@ economy:
     attack_defended_reward: 10.0
 
 extra:
-    # If enabled, show additional debug messages as warnings. Recommended to keep these disabled unless requested.
+    # If enabled, show additional debug messages as warnings. Recommended keeping these disabled unless requested.
     debug: false

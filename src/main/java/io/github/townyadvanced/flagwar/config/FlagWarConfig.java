@@ -27,6 +27,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -73,7 +74,7 @@ public final class FlagWarConfig {
     static final List<Map.Entry<String, String>> HOLOGRAM_SETTINGS = isHologramEnabled()
         ? getHologramConfig() : null;
 
-    /** Holds whether or not a valid hologram timer line is supplied in the config. */
+    /** Holds whether a valid hologram timer line is supplied in the config. */
     private static boolean hasTimerLine;
 
     /** Holds the text of the hologram timer line, if it exists. */
@@ -174,7 +175,7 @@ public final class FlagWarConfig {
             LOGGER.severe("Hologram line settings not found!");
             LOGGER.severe("Disabling holograms.");
             isHologramEnabled = false;
-            return null;
+            return Collections.emptyList();
         }
         int maxIdx = holoLines.getKeys(false)
             .stream().mapToInt(Integer::valueOf).max().orElse(-1);
@@ -305,7 +306,7 @@ public final class FlagWarConfig {
 
     /**
      * Check if the beacon should be drawn.
-     * @return the result of beacon.draw, from the configuration file.
+     * @return the result of "beacon.draw", from the configuration file.
      */
     public static boolean isDrawingBeacon() {
         var beaconIsDrawn = PLUGIN.getConfig().getBoolean("beacon.draw");
@@ -336,7 +337,7 @@ public final class FlagWarConfig {
         return beaconWireFrameMaterial;
     }
 
-    /** @return the beacon radius as an integer, defined in the configuration file at the beacon.radius key. */
+    /** @return the beacon radius as an integer, defined in the configuration file at the "beacon.radius" key. */
     public static int getBeaconRadius() {
         return PLUGIN.getConfig().getInt("beacon.radius");
     }
@@ -351,9 +352,11 @@ public final class FlagWarConfig {
         return PLUGIN.getConfig().getInt("beacon.height_above_flag.min");
     }
 
-    /** @return the value of 'rules.time_to_wait_after_flag' as a long (ticks). */
+    /** @return the value of 'rules.prevented_interaction_cooldown' in milliseconds, or the default value (10 min.) */
     public static long getTimeToWaitAfterFlagged() {
-        return PLUGIN.getConfig().getLong("rules.time_to_wait_after_flagged");
+        String timeString = PLUGIN.getConfig().getString("rules.prevented_interaction_cooldown");
+        final long defValue = 600000;
+        return timeString != null ? TimeTools.getMillis(timeString) : defValue;
     }
 
     /** @return the value of 'rules.prevent_interaction_while_flagged.town'. */
