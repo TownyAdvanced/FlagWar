@@ -171,7 +171,7 @@ public final class FlagWarConfig {
     public static List<Map.Entry<String, String>> getHologramConfig() {
         ConfigurationSection holoLines = PLUGIN.getConfig().getConfigurationSection("holograms.lines");
         List<Map.Entry<String, String>> holoSettings = new ArrayList<>();
-        if (holoLines.getKeys(false).isEmpty()) {
+        if (holoLines == null || holoLines.getKeys(false).isEmpty()) {
             LOGGER.severe("Hologram line settings not found!");
             LOGGER.severe("Disabling holograms.");
             isHologramEnabled = false;
@@ -189,25 +189,28 @@ public final class FlagWarConfig {
             String lineType = holoLines.getString(i + ".type", "empty");
             String data = Colors.translateColorCodes(holoLines.getString(i + ".data", "null"));
             switch (lineType.toLowerCase()) {
-                case "item":
+                case "item" -> {
+                    final var nItem = i;
                     if (Material.matchMaterial(data) == null) {
-                        LOGGER.severe(String.format("Invalid hologram material %s for line %s!", data, i));
+                        LOGGER.severe(() -> String.format("Invalid hologram material %s for line %s!", data, nItem));
                         setEmpty(holoSettings, i);
                     } else {
                         holoSettings.add(new AbstractMap.SimpleEntry<>("item", data));
                     }
-                    break;
-                case "text":
+                }
+                case "text" -> {
+                    final var nText = i;
                     if (data.equals("null")) {
-                        LOGGER.severe(String.format("Missing hologram text for line %s!", i));
+                        LOGGER.severe(() -> String.format("Missing hologram text for line %s!", nText));
                         setEmpty(holoSettings, i);
                     } else {
                         holoSettings.add(new AbstractMap.SimpleEntry<>("text", data));
                     }
-                    break;
-                case "timer":
+                }
+                case "timer" -> {
+                    final var nTimer = i;
                     if (!data.contains("%")) {
-                        LOGGER.severe(String.format("Missing time placeholder for hologram line %s!", i));
+                        LOGGER.severe(() -> String.format("Missing time placeholder for hologram line %s!", nTimer));
                         setEmpty(holoSettings, i);
                     } else {
                         if (!hasTimerLine) {
@@ -215,18 +218,21 @@ public final class FlagWarConfig {
                             timerText = data;
                             holoSettings.add(new AbstractMap.SimpleEntry<>("timer", data));
                         } else {
-                            LOGGER.severe(String.format("Duplicate timer for hologram line %s!", i));
+                            LOGGER.severe(() -> String.format("Duplicate timer for hologram line %s!", nTimer));
                             setEmpty(holoSettings, i);
                         }
                     }
-                    break;
-                case "empty":
-                    LOGGER.severe(String.format("Missing hologram line type for line %s!", i));
+                }
+                case "empty" -> {
+                    final var nEmpty = i;
+                    LOGGER.severe(() -> String.format("Missing hologram line type for line %s!", nEmpty));
                     setEmpty(holoSettings, i);
-                    break;
-                default:
-                    LOGGER.severe(String.format("Invalid hologram line type %s for line %s!", lineType, i));
+                }
+                default -> {
+                    final var nDef = i;
+                    LOGGER.severe(() -> String.format("Invalid hologram line type %s for line %s!", lineType, nDef));
                     setEmpty(holoSettings, i);
+                }
             }
         }
         return holoSettings;
