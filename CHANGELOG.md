@@ -2,7 +2,7 @@
 
 Latest first.
 
-## STAGING
+## 0.4.0
 
 ### Additions
 - Add `FlagWarAPI#isUnderAttack(Nation)`
@@ -12,10 +12,21 @@ Latest first.
   war.
   - Add `error.outlaw.cannot-teleport-here` translation key, sent to the outlaw.
 
+### Major adjustments
+
+- Replace `rules.time_to_wait_after_flagged` with `rules.prevented_interaction_cooldown`, which uses DHMS formatting.
+  - The (long) `FlagWarConfig#getTimeToWaitAfterFlagged()` API endpoint remains, but will default to 10 minutes
+  (10m; `600000l`) if the node is missing or empty.
+  - This change should reflect the purpose of the node, which has never prevented follow-up attacks.
+
 ### Misc. Changes
-- Bump Towny API dependency to 0.97.0.17; set as Min_Towny_Version
+- Bump Towny API dependency to 0.97.0.22; set 0.97.0.17 as Min_Towny_Version
 - Bump Config Version to 1.3 (Post 0.3.0... Woopsie.)
 - Removed unnecessary deployment to GitHub Packages
+- Revert Bukkit API to 1.16 to support 1.16.5 (~40% Towny market share).
+  - Going forward, FlagWar will _try_ to support the two most recent API versions so long as compatibility is not broken
+    between versions. Conflicts will result in the newer API version being targeted for further development.
+  - Only the most recent version of FlagWar will be supported. Java 16 remains a runtime requirement.
 
 ## 0.3.0
 General Availability
