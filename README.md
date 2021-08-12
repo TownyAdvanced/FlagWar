@@ -82,12 +82,14 @@ Administrator Resources
 
 | FlagWar Release | 📅 Released On          | Requirements                                     |
 |:--------------: | :----------: | :----------------------------------------------: |
+| [v0.4.0][0.4.0]   | August 12, 2021 | Towny 0.97.0.17+, Paper 1.16.5<br> (Developed with Towny 0.97.0.22 and PaperAPI 1.17.1) |
 | [v0.3.0][0.3.0]    | July 17, 2021 | Towny 0.97.0.12+, Paper 1.17.1         |
 | _Pre-History_   | _2011_       | _Included in Towny until v0.97.1.0; Officially Deprecated in v0.97.0.0; no support._ |
 
 > FlagWar has adopted the use of Paper as an API provider. Spigot should however still be viable. Please
 > submit a ticket if you experience any issues.
 
+[0.4.0]: https://github.com/TownyAdvanced/FlagWar/releases/tag/0.4.0 "FlagWar Release 0.4.0"
 [0.3.0]: https://github.com/TownyAdvanced/FlagWar/releases/tag/0.3.0 "FlagWar Release 0.3.0"
 
 ### Staying up to Date
