@@ -1,114 +1,108 @@
 # Changelog
 
-Latest first.
+The format is based on [Keep a Changelog],
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.4.0
+## [Unreleased]
 
-### Additions
-- Add `FlagWarAPI#isUnderAttack(Nation)`
-  - Returns true if any town in the supplied nation contains a cell under attack.
-- Add `OutlawListener` and listen for the `OutlawTeleportEvent`
+### Changed
+- Updated Changelog, conforming to [Keep a Changelog]
+
+## [0.4.0] - 2021-08-12
+
+### Added
+- `FlagWarAPI#isUnderAttack(Nation)`, which returns true if any town in the supplied nation contains a cell under attack.
+- New `OutlawListener` to listen for the `OutlawTeleportEvent`
   - Outlaws cannot be teleported away during an attack while in enemy territory (or enemy nation zone) during an active
   war.
   - Add `error.outlaw.cannot-teleport-here` translation key, sent to the outlaw.
 
-### Major adjustments
+### Changed
+- Bumped Towny API dependency to 0.97.0.17; set as Min_Towny_Version
+- Bumped Config Version to 1.3 (Post 0.3.0... Woopsie.)
+- Set Bukkit API version flag to 1.16 (From 1.17)
+  - Reflects "Support API-1" policy.
 
-- Replace `rules.time_to_wait_after_flagged` with `rules.prevented_interaction_cooldown`, which uses DHMS formatting.
-  - The (long) `FlagWarConfig#getTimeToWaitAfterFlagged()` API endpoint remains, but will default to 10 minutes
-  (10m; `600000l`) if the node is missing or empty.
-  - This change should reflect the purpose of the node, which has never prevented follow-up attacks.
+### Removed
+- Deployment to GitHub Packages
 
-### Misc. Changes
-- Bump Towny API dependency to 0.97.0.22; set 0.97.0.17 as Min_Towny_Version
-- Bump Config Version to 1.3 (Post 0.3.0... Woopsie.)
-- Removed unnecessary deployment to GitHub Packages
-- Revert Bukkit API to 1.16 to support 1.16.5 (~40% Towny market share).
-  - Going forward, FlagWar will _try_ to support the two most recent API versions so long as compatibility is not broken
-    between versions. Conflicts will result in the newer API version being targeted for further development.
-  - Only the most recent version of FlagWar will be supported. Java 16 remains a runtime requirement.
+## [0.3.0] - 2021-07-17
 
-## 0.3.0
-General Availability
-
-### Additions
+### Added
 - Added Optional Holograms for War Flags (Courtesy of @gaffy00 with #58)
   - Requires HolographicDisplays to function.
 
-### Fixes
-- Restore WarZoneListener Functionality
+### Changed
+- Build Targets: Java 16 (was 8), Paper 1.17.1, Towny 0.97.0.12
 
-### Misc. Changes
-- API: Removed `CellUnderAttack#isFlag(Block)`, previously deprecated.
-  - Use `#isFlagTimer(Block)`, or `#isFlagPart(Block)`
-- Removed `alternatives` Maven profile
-- Update Build Targets: Java 16, Paper 1.17.1, Towny 0.97.0.12
+### Removed
+- `alternatives` Maven profile from the FlagWar pom file.
+- API: `CellUnderAttack#isFlag(Block)`
+  - Previously deprecated; use `#isFlagTimer(Block)` or `#isFlagPart(Block)` instead.
 
-## 0.2.0
-Development Release
+### Fixed
+- WarZoneListener Functionality
 
-### Additions
-- Added a Checkstyle configuration, based on traditional Sun style guidelines with some modified rules. (Non-Gameplay)
-- Added a Messaging utility class, with debug methods. Config option to enable debug messaging. (PR #40)
-- Rolling, viewer-friendly Changelog (this document).
-- Add ability to change War Flag timer materials. (PR #49, @gaffy00)
+## [0.2.0] - 2021-06-18
+
+### Added
+- Checkstyle configuration, based on traditional Sun style guidelines with some modified rules.
+- A Messaging utility class, with debug methods. Config option to enable debug messaging.
+([PR #40](https://github.com/TownyAdvanced/FlagWar/pull/40))
+- A viewer-friendly Changelog (this document).
+- The ability to change War Flag timer materials. ([Pull Request #49](https://github.com/TownyAdvanced/FlagWar/pull/49), [@gaffy00](https://github.com/gaffy00/))
     - Phase timing can be adjusted by increasing the ratio of specific materials.
     - Example: Using `matX, matX, matX, matY, matY, matZ` produces a flag with three phases, at a 3:2:1 timing ratio.
 
-### Fixes
-- Fix incorrect formatting of colored messages containing formatting characters. (PR #48, @gaffy00)
-- Fix Localization Issues with parsing Regions and Region Variants (PR #43, @Mrredstone5230)
-- Fix beacons not rendering (PR #40)
+### Changed
 - Change `config:flag.waiting_time` to work as expected. Now reflects total length of a flag, not of the flag phase.
-  (PR #38)
+  ([PR #38](https://github.com/TownyAdvanced/FlagWar/pull/38))
+- Bumped Dependencies: Towny 0.97.0.6, Java 11, Paper 1.16, Annotations (various), Checkstyle Configuration
 
-### Regressions
-- Disabled WarZoneListener, has some issues with how it's functioning that negatively affects gameplay.
+### Removed
+- WarZoneListener (Disabled)
+  - Had some issues with functionality negatively affecting gameplay.
+- Catches for Towny's `EconomyException` (Deprecated)
 
-### Misc. Changes
-- Bumped Dependancies
-    - Towny 0.96.7.4 >> 0.97.0.6 (0.97.0.5 Minimum Req.)
-    - Spotbugs-Annotations 4.2.1 >> 4.2.3 (Compile Only)
-    - Jetbrains' Annotations 20.1.0 >> 21.0.1
-    - Checkstyle >> 
-    
-- Upstream Deprecations
-    - Removed EconomyException (deprecated)
-    
-- Code Cleanup / Refactoring
-    - Make code CheckStyle compliant and enforce through Maven.
-    - Target Java 11 & MC 1.16+.
-    - Switched to PAPER as the Bukkit API provider.
-    
-### Trivia
-- Was initially to be 0.1.2, bumped due to introduction of debug messaging and alternate flag materials.
+### Fixed
+- Incorrect formatting of colored messages containing formatting characters. ([PR #48](https://github.com/TownyAdvanced/FlagWar/pull/48), [@gaffy00](https://github.com/gaffy00))
+- Localization Issues with parsing Regions and Region Variants ([PR #43](https://github.com/TownyAdvanced/FlagWar/pull/43), [@Mrredstone5230](https://github.com/Mrredstone5230))
+- Beacons not rendering ([PR #40](https://github.com/TownyAdvanced/FlagWar/pull/40))
 
-## 0.1.1
-Development Release (Broken)
+## [0.1.1] - 2021-03-03
 
-### Additions
-- Add Localization feature for supporting multiple languages. Uses ResourcePacks.
+### Added
+- Localization feature for supporting multiple languages, using ResourcePacks.
     - Adds `LocaleUtil` and `Translate` classes.
     - English (US) included as baseline translation.
+
+### Changed
+- Target Bukkit API 1.14, matching Towny.
+- Made logger calls "lazy"
     
-### Fixes
-- Fix issue with null listeners prefenting proper plugin loading.
-- Fix issue where certain settings would be loaded in from Towny's implementation, instead of FlagWar.
+### Fixed
+- Null listeners preventing plugin loading.
+- Certain setting being loaded from Towny's in-built implementation, instead of self-contained settings.
 
-### Misc. Changes
-- API target set to 1.14, in line with Towny.
-- Made Logger calls "lazy"
+## [0.1.0] - 2021-02-18
 
-## 0.1.0
-Development Release (Broken)
+### Added
+- FlagWarAPI wrapper class.
+- `.gitattributes` to enforce and preserve file formatting on Git operations.
+- Dependabot dependency tracking.
+- WarZoneListener specific to FlagWar (Broken)
+- Standalone Plugin Configuration (Not CommentedConfiguration based)
 
-### Initial Pre-Release
-- Split off from TownyAdvanced/Towny, adopting the Apache License (v2).
-- Changed package space to `io.github.townyadvanced.flagwar`
-- Added FlagWarAPI wrapper class.
-- Directly implement WarZoneListener (Broken)
-- Implemented standalone plugin configuration (CommentedConfiguration license was unknown.)
-- Implemented Dependabot dependency tracking.
-- Updated EditorConfig style guidelines for portability, enforced on `mvn verify`
-- Added .gitattributes to preserve files @ checkout & push.
+### Changed
+- Split off from [TownyAdvanced/Towny](https://github.com/TownyAdvanced/Towny),
+adopting the [Apache License (v2)](https://github.com/TownyAdvanced/FlagWar/blob/main/LICENSE).
+- Package space renamed to `io.github.townyadvanced.flagwar`
 - Un-ignored some `.idea/` files for better interoperability among developers using IDEA.
+
+[Keep a Changelog]: https://keepachangelog.com/en/1.0.0/
+[Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.4.0...HEAD
+[0.4.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.3.0...0.4.0
+[0.3.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.2.0-devel...0.3.0
+[0.2.0]: https://github.com/TownyAdvanced/FlagWar/compare/v0.1.1-devel...0.2.0-devel
+[0.1.1]: https://github.com/TownyAdvanced/FlagWar/compare/v0.1.0-devel...v0.1.1-devel
+[0.1.0]: https://github.com/TownyAdvanced/FlagWar/releases/tag/v0.1.0-devel
