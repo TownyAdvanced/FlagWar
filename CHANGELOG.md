@@ -18,7 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Add `error.outlaw.cannot-teleport-here` translation key, sent to the outlaw.
 
 ### Changed
-- Bumped Towny API dependency to 0.97.0.17; set as Min_Towny_Version
+- `rules.time_to_wait_after_flagged` replaced by `rules.prevented_interaction_cooldown, which uses DHMS formatting.
+  - The (long) `FlagWarConfig#getTimeToWaitAfterFlagged()` API endpoint remains, but will default to 10 minutes (10m; `600000l`)
+  if the node is missing or empty.
+  - This change should reflect the purpose of the node, which has never prevented follow-up attacks.
+- Bumped Towny API dependency to 0.97.0.22; set 0.97.0.17 as Min_Towny_Version
 - Bumped Config Version to 1.3 (Post 0.3.0... Woopsie.)
 - Set Bukkit API version flag to 1.16 (From 1.17)
   - Reflects "Support API-1" policy.
