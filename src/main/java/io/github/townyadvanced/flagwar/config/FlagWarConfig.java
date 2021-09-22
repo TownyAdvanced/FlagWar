@@ -444,4 +444,9 @@ public final class FlagWarConfig {
     public static boolean isFlaggedTownBlockTransferred() {
         return PLUGIN.getConfig().getBoolean("rules.flag_takes_ownership_of_town_blocks");
     }
+
+    /** @return the value of 'rules.flag_unclaims_townblocks'. */
+    public static boolean isFlaggedTownBlockUnclaimed() {
+        return PLUGIN.getConfig().getBoolean("rules.flag_unclaims_townblocks");
+    }
 }

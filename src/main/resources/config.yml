@@ -33,7 +33,11 @@ rules:
     # Force attackers to only attack edge plots.
     only_attack_borders: true
 
+    # False: Attackers capture plots when they win. Disable if you prefer *not* dealing with that.
+    flag_unclaims_townblocks: false
+
     # True: Attackers capture plots when they win. Disable if you prefer *not* dealing with that.
+    # This has no effect if flag_unclaims_townblocks is true.
     flag_takes_ownership_of_town_blocks: true
 
     # Will prevent players from performing certain actions while a town is flagged or is in cool-down.
