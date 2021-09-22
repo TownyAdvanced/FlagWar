@@ -426,9 +426,9 @@ public class FlagWarCustomListener implements Listener {
     }
 
     private void transferOrUnclaimOrKeepTownblock(final Town atkTown, final TownBlock townBlock, final Town defTown) {
-        if (FlagWarConfig.isFlaggedTownBlockUnclaimed())
+        if (FlagWarConfig.isFlaggedTownBlockUnclaimed()) {
             unclaimTownBlock(townBlock);
-        else if (FlagWarConfig.isFlaggedTownBlockTransferred()) {
+        } else if (FlagWarConfig.isFlaggedTownBlockTransferred()) {
             transferOwnership(atkTown, townBlock);
         } else {
             String message = Translate.fromPrefixed("area.won.defender-keeps-claims");
