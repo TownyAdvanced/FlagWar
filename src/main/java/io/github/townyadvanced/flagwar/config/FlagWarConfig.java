@@ -414,6 +414,16 @@ public final class FlagWarConfig {
         return PLUGIN.getConfig().getInt("player_limits.min_online_in_nation");
     }
 
+    /** @return the value of 'player_limits.min_online_in_town_to_attack'.*/
+    public static int getMinAttackingPlayersOnlineInTownForWar() {
+        return PLUGIN.getConfig().getInt("player_limits.min_online_in_town_to_attack");
+    }
+
+    /** @return the value of 'player_limits.min_online_in_nation_to_attack'. */
+    public static int getMinAttackingPlayersOnlineInNationForWar() {
+        return PLUGIN.getConfig().getInt("player_limits.min_online_in_nation_to_attack");
+    }
+
     /** @return the value of 'economy.town_block_captured'. */
     public static double getWonTownBlockReward() {
         return PLUGIN.getConfig().getDouble("economy.town_block_captured");

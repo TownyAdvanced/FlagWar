@@ -50,6 +50,8 @@ rules:
 player_limits:
     min_online_in_town: 2
     min_online_in_nation: 3
+    min_online_in_town_to_attack: 2
+    min_online_in_nation_to_attack: 3
     max_active_flags_per_player: 1
 
 # Defines the War Flag structure.
