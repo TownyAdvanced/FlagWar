@@ -5,9 +5,9 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 ## [Unreleased][Unreleased]
 
 ### Added
-- New Option to require a specific number of attackers to be online in the attacking Town and/or Nation. (#72, @LlmDl)
+- New Option to require a specific number of attackers to be online in the attacking Town and/or Nation. ([#72](https://github.com/TownyAdvanced/FlagWar/pull/72), [LlmDl](https://github.com/LlmDl))
     - Modifies behavior. Originally, this quota was determined by the same method used for defenders.
-- New Option to have conqured town blocks unclaimed instead of transferred to the attacker. (#73, @LlmDl)
+- New Option to have conqured town blocks unclaimed instead of transferred to the attacker. ([#73](https://github.com/TownyAdvanced/FlagWar/pull/73), [LlmDl](https://github.com/LlmDl))
 
 ### Changed
 - Updated Changelog, conforming to [Keep a Changelog]
