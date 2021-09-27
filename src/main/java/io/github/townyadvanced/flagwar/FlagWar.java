@@ -551,8 +551,8 @@ public class FlagWar extends JavaPlugin {
                                           final Nation attackingNation) throws TownyException {
         checkIfTownHasMinOnlineForWar(defendingTown);
         checkIfNationHasMinOnlineForWar(defendingNation);
-        checkIfTownHasMinOnlineForWar(attackingTown);
-        checkIfNationHasMinOnlineForWar(attackingNation);
+        checkIfAttackingTownHasMinOnlineForWar(attackingTown);
+        checkIfAttackingNationHasMinOnlineForWar(attackingNation);
     }
 
     private static void addWarzoneAndUpdateCache(final Towny towny,
@@ -679,12 +679,40 @@ public class FlagWar extends JavaPlugin {
     }
 
     /**
+     * Check if a {@link Town} meets the minimum requirement of {@link Player}s online to attack in a flag war.
+     * @param town Town to check for eligibility.
+     * @throws TownyException if there are not enough online players.
+     */
+    public static void checkIfAttackingTownHasMinOnlineForWar(final Town town) throws TownyException {
+        var requiredOnline = FlagWarConfig.getMinAttackingPlayersOnlineInTownForWar();
+        int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(town).size();
+        if (onlinePlayerCount < requiredOnline) {
+            throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players",
+                requiredOnline, town.getFormattedName()));
+        }
+    }
+
+    /**
      * Check if a {@link Nation} meets the minimum requirement of {@link Player}s online to participate in a flag war.
      * @param nation Nation to check for eligibility.
      * @throws TownyException if there are not enough online players.
      */
     public static void checkIfNationHasMinOnlineForWar(final Nation nation) throws TownyException {
         int requiredOnline = FlagWarConfig.getMinPlayersOnlineInNationForWar();
+        int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(nation).size();
+        if (onlinePlayerCount < requiredOnline) {
+            throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players",
+                requiredOnline, nation.getFormattedName()));
+        }
+    }
+
+    /**
+     * Check if a {@link Nation} meets the minimum requirement of {@link Player}s online to attack in a flag war.
+     * @param nation Nation to check for eligibility.
+     * @throws TownyException if there are not enough online players.
+     */
+    public static void checkIfAttackingNationHasMinOnlineForWar(final Nation nation) throws TownyException {
+        int requiredOnline = FlagWarConfig.getMinAttackingPlayersOnlineInNationForWar();
         int onlinePlayerCount = TownyAPI.getInstance().getOnlinePlayers(nation).size();
         if (onlinePlayerCount < requiredOnline) {
             throw new TownyException(Translate.fromPrefixed("error.not-enough-online-players",
