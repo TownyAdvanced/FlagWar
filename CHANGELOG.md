@@ -1,14 +1,18 @@
 # Changelog
 
-The format is based on [Keep a Changelog],
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog][Keep a Changelog], and this project adheres to [Semantic Versioning][semver].
 
-## [Unreleased]
+## [Unreleased][Unreleased]
+
+### Added
+- New Option to require a specific number of attackers to be online in the attacking Town and/or Nation. (#72, @LlmDl)
+    - Modifies behavior. Originally, this quota was determined by the same method used for defenders.
+- New Option to have conqured town blocks unclaimed instead of transferred to the attacker. (#73, @LlmDl)
 
 ### Changed
 - Updated Changelog, conforming to [Keep a Changelog]
 
-## [0.4.0] - 2021-08-12
+## [0.4.0][0.4.0] - 2021-08-12
 
 ### Added
 - `FlagWarAPI#isUnderAttack(Nation)`, which returns true if any town in the supplied nation contains a cell under attack.
@@ -30,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Deployment to GitHub Packages
 
-## [0.3.0] - 2021-07-17
+## [0.3.0][0.3.0] - 2021-07-17
 
 ### Added
 - Added Optional Holograms for War Flags (Courtesy of @gaffy00 with #58)
@@ -47,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - WarZoneListener Functionality
 
-## [0.2.0] - 2021-06-18
+## [0.2.0][0.2.0] - 2021-06-18
 
 ### Added
 - Checkstyle configuration, based on traditional Sun style guidelines with some modified rules.
@@ -73,7 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Localization Issues with parsing Regions and Region Variants ([PR #43](https://github.com/TownyAdvanced/FlagWar/pull/43), [@Mrredstone5230](https://github.com/Mrredstone5230))
 - Beacons not rendering ([PR #40](https://github.com/TownyAdvanced/FlagWar/pull/40))
 
-## [0.1.1] - 2021-03-03
+## [0.1.1][0.1.1] - 2021-03-03
 
 ### Added
 - Localization feature for supporting multiple languages, using ResourcePacks.
@@ -88,7 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Null listeners preventing plugin loading.
 - Certain setting being loaded from Towny's in-built implementation, instead of self-contained settings.
 
-## [0.1.0] - 2021-02-18
+## [0.1.0][0.1.0] - 2021-02-18
 
 ### Added
 - FlagWarAPI wrapper class.
@@ -98,15 +102,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Standalone Plugin Configuration (Not CommentedConfiguration based)
 
 ### Changed
-- Split off from [TownyAdvanced/Towny](https://github.com/TownyAdvanced/Towny),
-adopting the [Apache License (v2)](https://github.com/TownyAdvanced/FlagWar/blob/main/LICENSE).
+- Split off from [TownyAdvanced/Towny][towny], adopting the [Apache License (v2)][license].
+  - See the [NOTICE file][notice] for 3rd-party licenses.
 - Package space renamed to `io.github.townyadvanced.flagwar`
 - Un-ignored some `.idea/` files for better interoperability among developers using IDEA.
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0/
+[semver]: https://semver.org/spec/v2.0.0.html
 [Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.4.0...HEAD
 [0.4.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.2.0-devel...0.3.0
 [0.2.0]: https://github.com/TownyAdvanced/FlagWar/compare/v0.1.1-devel...0.2.0-devel
 [0.1.1]: https://github.com/TownyAdvanced/FlagWar/compare/v0.1.0-devel...v0.1.1-devel
 [0.1.0]: https://github.com/TownyAdvanced/FlagWar/releases/tag/v0.1.0-devel
+[towny]: https://github.com/TownyAdvanced/Towny
+[license]: https://github.com/TownyAdvanced/FlagWar/blob/main/LICENSE
+[notice]: https://github.com/TownyAdvnaced/FlagWar/blob/main/NOTICE
