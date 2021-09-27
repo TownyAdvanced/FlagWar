@@ -193,7 +193,7 @@ public class FlagWarCustomListener implements Listener {
             }
 
             // Defender loses townblock
-            transferOrKeepTownblock(attackingTown, townBlock, defendingTown);
+            transferOrUnclaimOrKeepTownblock(attackingTown, townBlock, defendingTown);
 
             // Cleanup
             towny.updateCache(worldCoord);
@@ -425,8 +425,10 @@ public class FlagWarCustomListener implements Listener {
             return total;
     }
 
-    private void transferOrKeepTownblock(final Town atkTown, final TownBlock townBlock, final Town defTown) {
-        if (FlagWarConfig.isFlaggedTownBlockTransferred()) {
+    private void transferOrUnclaimOrKeepTownblock(final Town atkTown, final TownBlock townBlock, final Town defTown) {
+        if (FlagWarConfig.isFlaggedTownBlockUnclaimed()) {
+            unclaimTownBlock(townBlock);
+        } else if (FlagWarConfig.isFlaggedTownBlockTransferred()) {
             transferOwnership(atkTown, townBlock);
         } else {
             String message = Translate.fromPrefixed("area.won.defender-keeps-claims");
@@ -464,6 +466,10 @@ public class FlagWarCustomListener implements Listener {
         } else {
             return "Townblock";
         }
+    }
+
+    private void unclaimTownBlock(final TownBlock townBlock) {
+        TownyUniverse.getInstance().getDataSource().removeTownBlock(townBlock);
     }
 
     private void transferOwnership(final Town attackingTown, final TownBlock townBlock) {
