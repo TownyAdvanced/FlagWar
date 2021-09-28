@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 
 ### Changed
 - Updated Changelog, conforming to [Keep a Changelog]
+- FlagWar will now respect Towny's per-world settings for allowing war. Originally used for Towny's EventWar. ([#69](https://github.com/TownyAdvanced/FlagWar/pull/69) _nice..._, [LlmDl](https://github.com/LlmDl))
 
 ## [0.4.0][0.4.0] - 2021-08-12
 
