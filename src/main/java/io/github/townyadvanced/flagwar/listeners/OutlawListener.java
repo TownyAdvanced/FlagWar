@@ -51,7 +51,7 @@ public class OutlawListener implements Listener {
         var outlawNation = outlaw.getNationOrNull();
         var outlawLocation = event.getOutlawLocation();
         var locTownBlock = TownyAPI.getInstance().getTownBlock(outlawLocation);
-        var townAtLocation = TownyAPI.getInstance().getTownOrNull(locTownBlock);
+        var townAtLocation = TownyAPI.getInstance().getTown(outlawLocation);
         Nation nationOfLocation;
 
         // Assign nationOfLocation to either the Nation of the townAtLocation, or the nearest Nation.
