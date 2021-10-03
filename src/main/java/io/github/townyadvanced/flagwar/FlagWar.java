@@ -482,8 +482,8 @@ public class FlagWar extends JavaPlugin {
             return false;
         }
 
-        if (attackingTown != null && attackingTown.hasNation()) {
-            attackingNation = attackingResident.getTown().getNation();
+        if (attackingResident.hasNation()) {
+            attackingNation = attackingResident.getNation();
         } else {
             return false;
         }
