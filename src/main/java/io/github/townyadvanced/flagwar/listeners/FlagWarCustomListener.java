@@ -111,7 +111,7 @@ public class FlagWarCustomListener implements Listener {
      * @param cellDefendedEvent the CellDefendedEvent.
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "deprecation"})
     public void onCellDefendedEvent(final CellDefendedEvent cellDefendedEvent) {
         if (cellDefendedEvent.isCancelled()) {
             return;

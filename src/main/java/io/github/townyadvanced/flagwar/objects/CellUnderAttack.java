@@ -64,7 +64,7 @@ public class CellUnderAttack extends Cell {
     private List<Block> beaconFlagBlocks;
     /** {@link List} of {@link Block}s used for the war beacon's wireframe. */
     private List<Block> beaconWireframeBlocks;
-    /** Identifies the phase the warflag is in. **/
+    /** Identifies the phase the war flag is in. **/
     private int flagPhaseID;
     /** A thread used to update the state of the {@link CellUnderAttack} using the scheduleSyncRepeatingTask. */
     private int thread;
@@ -288,24 +288,31 @@ public class CellUnderAttack extends Cell {
         for (Map.Entry<String, String> holoSetting : holoSettings) {
             var type = holoSetting.getKey();
             var data = holoSetting.getValue();
+
             switch (type) {
-                case "item":
-                    hologram.appendItemLine(new ItemStack(Material.matchMaterial(data)));
-                    break;
-                case "text":
-                    hologram.appendTextLine(data);
-                    break;
-                case "timer":
-                    timerLine = hologram.appendTextLine(formatTime(time, data));
-                    break;
-                default:
-                    hologram.appendTextLine("");
+                case "item" -> {
+                    Material material = Material.matchMaterial(data);
+                    if (material != null) {
+                        hologram.appendItemLine(new ItemStack(material));
+                    }
+                }
+                case "text" -> hologram.appendTextLine(data);
+                case "timer" -> setTimerLine(data);
+                default -> hologram.appendTextLine("");
             }
         }
         final double hOffset = 0.5d;
         final double vOffset = 0.9d;
         hologram.teleport(loc.add(hOffset, vOffset + hologram.getHeight(), hOffset));
         hologram.getVisibilityManager().setVisibleByDefault(true);
+    }
+
+    /**
+     * Simple expression to set the timerLine for the hologram.
+     * @param data the value of a hologram setting (defined in {@link #drawHologram()}
+     */
+    private void setTimerLine(final String data) {
+        timerLine = hologram.appendTextLine(formatTime(time, data));
     }
 
     /**
@@ -328,7 +335,7 @@ public class CellUnderAttack extends Cell {
      * {@link FlagWarConfig#getTimerText()}.
      * @param timeIn Time, in seconds.
      * @param toFormat The string to format. Should contain one or more format specifiers with argument indexes
-     *                 corresponding to seconds, minutes, and hours, respectively.
+     *                 corresponding with seconds, minutes, and hours, respectively.
      * @return The formatted string.
      * */
     public String formatTime(final int timeIn, final String toFormat) {
@@ -417,6 +424,7 @@ public class CellUnderAttack extends Cell {
      * @param block the supplied Block.
      * @return TRUE if the supplied block matches any of the conditions.
      */
+    @SuppressWarnings("unused")
     public boolean isFlagPart(final Block block) {
         return isFlagTimer(block) || isFlagLight(block) || isFlagBase(block);
     }
