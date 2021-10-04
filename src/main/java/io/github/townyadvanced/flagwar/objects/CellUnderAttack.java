@@ -33,6 +33,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class CellUnderAttack extends Cell {
     /** Holds the {@link Block} representing the light-emitting top of a war flag. */
     private final Block flagLightBlock;
     /** Holds the value between timer phases for both the war flag and the beacon. */
-    private final long flagPhaseInterval;
+    private final long flagPhaseClock;
     /** {@link List} of {@link Block}s used in the war beacon's body. */
     private List<Block> beaconFlagBlocks;
     /** {@link List} of {@link Block}s used for the war beacon's wireframe. */
@@ -67,9 +68,9 @@ public class CellUnderAttack extends Cell {
     /** Identifies the phase the war flag is in. **/
     private int flagPhaseID;
     /** A thread used to update the state of the {@link CellUnderAttack} using the scheduleSyncRepeatingTask. */
-    private int thread;
+    private BukkitTask thread;
     /** A thread used to update the {@link #hologram}'s {@link #timerLine}. */
-    private int hologramThread;
+    private BukkitTask hologramThread;
     /** Holds the war flag hologram. */
     private Hologram hologram;
     /** Holds the time, in seconds, assuming 20 ticks is 1 second, of the war flag. */
@@ -92,8 +93,6 @@ public class CellUnderAttack extends Cell {
         this.nameOfFlagOwner = flagOwner;
         this.flagBaseBlock = flagBase;
         this.flagPhaseID = 0;
-        this.thread = -1;
-        hologramThread = -1;
         final long ticksInSecond = 20L;
         this.time = (int) (FlagWarConfig.getFlagWaitingTime() / ticksInSecond);
 
@@ -101,7 +100,7 @@ public class CellUnderAttack extends Cell {
         this.flagTimerBlock = world.getBlockAt(flagBase.getX(), flagBase.getY() + 1, flagBase.getZ());
         this.flagLightBlock = world.getBlockAt(flagBase.getX(), flagBase.getY() + 2, flagBase.getZ());
 
-        this.flagPhaseInterval = phaseTime;
+        this.flagPhaseClock = phaseTime;
     }
 
     /** @return if {@link CellUnderAttack} equals a given {@link Object}. (Defers to {@link Cell#equals(Object)}.) */
@@ -349,25 +348,21 @@ public class CellUnderAttack extends Cell {
 
     /**
      * {@link #drawFlag()}, then schedule a {@link CellAttackThread} synchronously on the main thread, using the
-     * {@link #flagPhaseInterval} as both the repeat delay and runtime timer.
+     * {@link #flagPhaseClock} as both the repeat delay and runtime timer.
      * If {@link FlagWarConfig#isHologramEnabled()} returns true, also {@link #drawHologram()}, and if
      * {@link FlagWarConfig#hasTimerLine()} returns true, also start a {@link #hologramThread}, with
      * 20 ticks as both the repeat delay and runtime timer.
      */
     public void beginAttack() {
         drawFlag();
-        thread = towny.getServer().getScheduler().scheduleSyncRepeatingTask(towny,
-            new CellAttackThread(this),
-            this.flagPhaseInterval,
-            this.flagPhaseInterval);
+        thread = towny.getServer().getScheduler()
+            .runTaskTimer(towny, new CellAttackThread(this), this.flagPhaseClock, this.flagPhaseClock);
         final long ticksInSecond = 20L;
         if (FlagWarConfig.isHologramEnabled()) {
             drawHologram();
             if (FlagWarConfig.hasTimerLine()) {
-                hologramThread = towny.getServer().getScheduler().scheduleSyncRepeatingTask(towny,
-                    new HologramUpdateThread(this),
-                    ticksInSecond,
-                    ticksInSecond);
+                hologramThread = towny.getServer().getScheduler()
+                    .runTaskTimer(towny, new HologramUpdateThread(this), ticksInSecond, ticksInSecond);
             }
         }
     }
@@ -378,12 +373,8 @@ public class CellUnderAttack extends Cell {
      * exists, using {@link #destroyHologram()}.
      */
     public void cancel() {
-        if (thread != -1) {
-            towny.getServer().getScheduler().cancelTask(thread);
-        }
-        if (hologramThread != -1) {
-            towny.getServer().getScheduler().cancelTask(hologramThread);
-        }
+        thread.cancel();
+        hologramThread.cancel();
         destroyFlag();
         if (hologram != null) {
             destroyHologram();
