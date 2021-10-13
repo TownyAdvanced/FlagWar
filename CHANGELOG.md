@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 
 <!--## [Unreleased][Unreleased]-->
 
-## [0.5.0][0.5.0] - 2021-10-13
+## [0.5.0][0.5.0] - _2021-10-13_
 
 > Note: This release is lacking in the testing department. Please report any regressions ASAP.
 
@@ -20,10 +20,8 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 ### Changed
 
 - **Towny Target:**
-  - Minimum version required is _**0.97.2.0**_ - though it is recommended to use the latest version available to you.
-
-- Updated Changelog, conforming to [Keep a Changelog][Keep a Changelog]
-
+  - Minimum version required is _**0.97.2.0**_. It is recommended to use the latest version available to you.
+  
 - FlagWar will now respect Towny's per-world settings for allowing war.
   ([#69](https://github.com/TownyAdvanced/FlagWar/pull/69) _nice..._, [@LlmDl][LlmDl])
   - Originally used exclusively for Towny's EventWar.
@@ -32,8 +30,8 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
   - Now tests against Eclipse Temurin, from [Adoptium][adoptium].
   - Tests against both JDK 16 and JDK 17.
 
-- In `CellUnderAttack.class`, replace uses of `scheduelSyncRepeatingTask()` with `runTaskTimer()`.
-  - Should be purely asthetic, but also removes a deprecation warning. SSRT simply calls RTT under the hood.
+- In `CellUnderAttack.class`, replace uses of `scheduleSyncRepeatingTask()` with `runTaskTimer()`.
+  - Should be purely aesthetic, but also removes a deprecation warning. SSRT simply calls RTT under the hood.
 
 ### Fixed
 
@@ -44,7 +42,7 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
   - Specifically uses Microsoft's build of OpenJDK 17, and Maven 3.8.3 (As opposed to Oracle JDK 8, Maven 3.6.1)
   - [Tested Working](https://jitpack.io/com/github/TownyAdvanced/FlagWar/main-7d7ba1c80e-1/build.log) 
 
-## [0.4.0][0.4.0] - 2021-08-12
+## [0.4.0][0.4.0] - _2021-08-12_
 
 ### Added
 
@@ -73,7 +71,7 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 
 - Deployment to GitHub Packages
 
-## [0.3.0][0.3.0] - 2021-07-17
+## [0.3.0][0.3.0] - _2021-07-17_
 
 ### Added
 
@@ -95,7 +93,7 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 
 - WarZoneListener Functionality
 
-## [0.2.0][0.2.0] - 2021-06-18
+## [0.2.0][0.2.0] - _2021-06-18_
 
 ### Added
 
@@ -135,7 +133,7 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 
 - Beacons not rendering ([PR #40](https://github.com/TownyAdvanced/FlagWar/pull/40))
 
-## [0.1.1][0.1.1] - 2021-03-03
+## [0.1.1][0.1.1] - _2021-03-03_
 
 ### Added
 
@@ -155,7 +153,7 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 
 - Certain setting being loaded from Towny's in-built implementation, instead of self-contained settings.
 
-## [0.1.0][0.1.0] - 2021-02-18
+## [0.1.0][0.1.0] - _2021-02-18_
 
 ### Added
 
