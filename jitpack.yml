@@ -1,4 +1,10 @@
 # Use Microsoft's OpenJDK builds
+# Resolve "sdk: command not found" with workaround (https://github.com/jitpack/jitpack.io/issues/4506)
+
 before_install:
+    - source "$HOME/.sdkman/bin/sdkman-init.sh"
+    - sdk update
     - sdk install java 17.0.0-ms
     - sdk use java 17.0.0-ms
+    - sdk install maven 3.8.3
+    - sdk use maven 3.8.3
