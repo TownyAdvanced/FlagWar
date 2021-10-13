@@ -3,7 +3,7 @@
 
  Copyright © 2011-2012 Chris Holland (Aka. Shade [Bukkit], Zren [GitHub])
  Copyright © 2012-2021 TownyAdvanced
- Copyright © 2020-2021 FlagWar Contributors
+ Copyright © 2020-2021 TownyAdvanced, Various Contributors
 --------------------------------------------------
 
 FlagWar is licensed under the Apache License, Version 2.0. The full legal text is available to
@@ -20,7 +20,8 @@ Towny's Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License
 [CC BY-ND-NC 3.0] (https://creativecommons.org/licenses/by-nc-nd/3.0/).
 
 Portions of code submitted under Towny's Contributor License Agreement remain copyright TownyAdvanced.
-Contributors to the FlagWar repository retain their copyright, subject to the terms of the Apache License.
+Contributors to the FlagWar repository retain copyright over their submissions, subject to the terms of the project's
+aforementioned License (Apache-2.0).
 
 ==================================================
 3rd Party Libraries and Works
@@ -28,7 +29,13 @@ Notices for libraries and other works not belonging to the contributors of FlagW
 --------------------------------------------------
 
 // Functionality //
-/ Towny (Hard Dependency) /
+
+/ Paper API (API, Hard Dependency) /
+Paper, as a grandchild fork of the Bukkit API, is primarily licensed under the terms of the GNU General Public License,
+version 3. Patches made by the Paper team may be licensed either under the GPL or the more permissive MIT license.
+See: https://github.com/PaperMC/Paper/blob/master/LICENSE.md
+
+/ Towny (API, Hard Dependency) /
 Towny is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
 Full License: https://github.com/TownyAdvanced/Towny/blob/master/LICENSE.MD
 Source Code: https://github.com/TownyAdvanced/Towny/
@@ -40,7 +47,6 @@ HolographicDisplays is licensed under the GNU General Public License Version 3.0
 Full License: https://github.com/filoghost/HolographicDisplays/blob/master/LICENSE.txt
 Source Code: https://github.com/filoghost/HolographicDisplays/
 Copyright © 2014-2021 filoghost
-
 
 // Annotations //
 / JetBrains Java Annotations (compile-only) /
@@ -57,7 +63,7 @@ Source Code: https://github.com/spotbugs/spotbugs/tree/master/spotbugs-annotatio
 Copyright © 2005, University of Maryland (as part of FindBugs)
 
 // Metrics //
-/ bStats /
+/ bStats (optional) /
 bStats metrics are provided as a service to the plugin community.
 Versions <= 1.x are licensed under the GPL v3.0, while versions >= 2.x are
 unlicensed and are assumed to be "ALL RIGHTS RESERVED". FlagWar presently makes use
