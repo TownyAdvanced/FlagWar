@@ -375,7 +375,7 @@ public class CellUnderAttack extends Cell {
     public void cancel() {
         thread.cancel();
         if (FlagWarConfig.isHologramEnabled()) {
-        	hologramThread.cancel();
+            hologramThread.cancel();
         }
         destroyFlag();
         if (hologram != null) {
