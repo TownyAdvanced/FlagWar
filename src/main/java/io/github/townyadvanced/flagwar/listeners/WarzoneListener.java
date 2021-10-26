@@ -94,8 +94,8 @@ public class WarzoneListener implements Listener {
     }
 
     /**
-     * When Towny reports an item has been used: check if {@link TownBlockStatus#ENEMY} is accurate and that the item being
-     * used is in the allowed items list in the WarZone section of the Towny Configuration.
+     * When Towny reports an item has been used: check if {@link TownBlockStatus#ENEMY} is accurate and that the item
+     * being used is in the allowed items list in the WarZone section of the Towny Configuration.
      *
      * @param townyItemuseEvent the {@link TownyItemuseEvent}.
      */
@@ -117,8 +117,8 @@ public class WarzoneListener implements Listener {
     }
 
     /**
-     * When Towny reports a switch has been used:  check if {@link TownBlockStatus#ENEMY} is accurate and that the use of
-     * switches is enabled in the WarZone section of the Towny Configuration.
+     * When Towny reports a switch has been used:  check if {@link TownBlockStatus#ENEMY} is accurate and that the use
+     * of switches is enabled in the WarZone section of the Towny Configuration.
      *
      * @param townySwitchEvent the {@link TownySwitchEvent}.
      */
