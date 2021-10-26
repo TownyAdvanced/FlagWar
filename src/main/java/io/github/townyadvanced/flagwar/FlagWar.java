@@ -523,7 +523,7 @@ public class FlagWar extends JavaPlugin {
         }
 
         setAttackerAsEnemy(landOwnerNation, attackingNation);
-        addWarzoneAndUpdateCache(towny, worldCoord, townyUniverse);
+        towny.updateCache(worldCoord);
 
         TownyMessaging.sendGlobalMessage(Translate.fromPrefixed("broadcast.area.under_attack",
             landOwnerTown.getFormattedName(), worldCoord.toString(), attackingResident.getFormattedName()));
@@ -553,13 +553,6 @@ public class FlagWar extends JavaPlugin {
         checkIfNationHasMinOnlineForWar(defendingNation);
         checkIfAttackingTownHasMinOnlineForWar(attackingTown);
         checkIfAttackingNationHasMinOnlineForWar(attackingNation);
-    }
-
-    private static void addWarzoneAndUpdateCache(final Towny towny,
-                                                 final WorldCoord worldCoord,
-                                                 final TownyUniverse townyUniverse) {
-        townyUniverse.addWarZone(worldCoord);
-        towny.updateCache(worldCoord);
     }
 
     private static void payForWarFlag(final Resident attackRes, final double cost) throws TownyException {

@@ -25,8 +25,10 @@ import com.palmergames.bukkit.towny.event.actions.TownyItemuseEvent;
 import com.palmergames.bukkit.towny.event.actions.TownySwitchEvent;
 import com.palmergames.bukkit.towny.object.PlayerCache.TownBlockStatus;
 import com.palmergames.bukkit.towny.war.common.WarZoneConfig;
+import io.github.townyadvanced.flagwar.FlagWarAPI;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.i18n.Translate;
+import io.github.townyadvanced.flagwar.objects.Cell;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -45,13 +47,12 @@ public class WarzoneListener implements Listener {
     }
 
     /**
-     * When the {@link TownyDestroyEvent} is fired, check if {@link TownBlockStatus#WARZONE} is accurate and that the
+     * When the {@link TownyDestroyEvent} is fired, check if {@link TownBlockStatus#ENEMY} is accurate and that the
      * expression {@link WarZoneConfig#isEditableMaterialInWarZone(Material)} is true.
      *
      * @param townyDestroyEvent the {@link TownyDestroyEvent}.
      */
     @EventHandler
-    @SuppressWarnings("unused")
     public void onDestroy(final TownyDestroyEvent townyDestroyEvent) {
         var player = townyDestroyEvent.getPlayer();
         TownBlockStatus status = towny.getCache(player).getStatus();
@@ -69,13 +70,12 @@ public class WarzoneListener implements Listener {
     }
 
     /**
-     * When the {@link TownyBuildEvent} is fired, check if {@link TownBlockStatus#WARZONE} is accurate and that the
+     * When the {@link TownyBuildEvent} is fired, check if {@link TownBlockStatus#ENEMY} is accurate and that the
      * expression {@link WarZoneConfig#isEditableMaterialInWarZone(Material)} is true.
      *
      * @param townyBuildEvent the {@link TownyBuildEvent}.
      */
     @EventHandler
-    @SuppressWarnings("unused")
     public void onBuild(final TownyBuildEvent townyBuildEvent) {
         var player = townyBuildEvent.getPlayer();
         var mat = townyBuildEvent.getMaterial();
@@ -94,13 +94,12 @@ public class WarzoneListener implements Listener {
     }
 
     /**
-     * When Towny reports an item has been used: check if the TownBlock (Plot) is in a WarZone and that the item being
+     * When Towny reports an item has been used: check if {@link TownBlockStatus#ENEMY} is accurate and that the item being
      * used is in the allowed items list in the WarZone section of the Towny Configuration.
      *
      * @param townyItemuseEvent the {@link TownyItemuseEvent}.
      */
     @EventHandler
-    @SuppressWarnings("unused")
     public void onItemUse(final TownyItemuseEvent townyItemuseEvent) {
         var player = townyItemuseEvent.getPlayer();
         TownBlockStatus status = towny.getCache(player).getStatus();
@@ -118,13 +117,12 @@ public class WarzoneListener implements Listener {
     }
 
     /**
-     * When Towny reports a switch has been used: check if the {@link TownBlockStatus} is a WARZONE, and that the use of
+     * When Towny reports a switch has been used:  check if {@link TownBlockStatus#ENEMY} is accurate and that the use of
      * switches is enabled in the WarZone section of the Towny Configuration.
      *
      * @param townySwitchEvent the {@link TownySwitchEvent}.
      */
     @EventHandler
-    @SuppressWarnings("unused")
     public void onSwitchUse(final TownySwitchEvent townySwitchEvent) {
         var player = townySwitchEvent.getPlayer();
         TownBlockStatus status = towny.getCache(player).getStatus();
@@ -144,9 +142,10 @@ public class WarzoneListener implements Listener {
     /**
      * Tell the calling method to fail fast if any of the following expressions are true:
      * <ul>
-     *     <li>The {@link TownBlockStatus} is not {@link TownBlockStatus#WARZONE},</li>
+     *     <li>The {@link TownBlockStatus} is not {@link TownBlockStatus#ENEMY},</li>
      *     <li>FlagWar is not allowing attacks (effectively disabled), or</li>
-     *     <li>{@link TownyActionEvent#isInWilderness()} is true.</li>
+     *     <li>{@link TownyActionEvent#isInWilderness()} is true, or</li>
+     *     <li>The {@link Cell} is not under attack.</li>
      * </ul>
      *
      * @param townBlockStatus The {@link TownBlockStatus} passed to, or established by, the original method.
@@ -154,18 +153,21 @@ public class WarzoneListener implements Listener {
      * @return True if any of the conditions are met.
      */
     private boolean isFastFailing(final TownBlockStatus townBlockStatus, final TownyActionEvent townyActionEvent) {
-        return !townBlockStatus.equals(TownBlockStatus.WARZONE)
+        return !townBlockStatus.equals(TownBlockStatus.ENEMY)
             || !FlagWarConfig.isAllowingAttacks()
-            || townyActionEvent.isInWilderness();
+            || townyActionEvent.isInWilderness()
+            || !FlagWarAPI.isUnderAttack(Cell.parse(townyActionEvent.getLocation()));
     }
 
     /**
-     * Helper function constructing the cancellation messages for {@link #onBuild(TownyBuildEvent)} and
-     * {@link #onDestroy(TownyDestroyEvent)}.
+     * Helper function constructing the cancellation messages for
+     * {@link #onBuild(TownyBuildEvent)} and {@link #onDestroy(TownyDestroyEvent)}.
      *
-     * @param args or if the cancellation message is related to 'build' or 'destroy'
+     * @param args     or if the cancellation message is related to 'build' or
+     *                 'destroy'
      * @param material the {@link Material} that cannot be modified.
-     * @return The cancellation string for the calling method, translated from the 'error.warzone.cannot-edit' key.
+     * @return The cancellation string for the calling method, translated from the
+     *         'error.warzone.cannot-edit' key.
      */
     private String msgCannotEdit(final String args, final Material material) {
         return Translate.fromPrefixed("error.warzone.cannot-edit", args, material.toString().toLowerCase());
