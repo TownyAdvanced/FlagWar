@@ -82,14 +82,14 @@ Administrator Resources
 
 | FlagWar Release | 📅 Released On   | Requirements                                                                |
 | :-------------: | :--------------: | :-------------------------------------------------------------------------: |
-| [v0.5.0][0.5.0] | October 13, 2021 | Towny (_0.97.2.0_+), Bukkit API-based&ast; server (_1.16.5_, _1.17.1_)      |
+| [v0.5.1][0.5.1] | October 27, 2021 | Towny (_0.97.2.0_+), Bukkit API-based&ast; server (_1.16.5_, _1.17.1_)      |
 | [v0.4.0][0.4.0] | August 12, 2021  | Towny (_0.97.0.17+_), Bukkit API-based&ast; server (_1.16.5_, _1.17.1_)     |
 | _Pre-History_   | _2011 - 2021_    | Deprecated & Removed in Towny versions 0.97.0.0 and 0.97.1.0, respectively. | 
 
 > FlagWar has adopted the use of Paper as an API provider. Spigot should however still be viable. Please
 > submit a ticket if you experience any issues.
 
-[0.5.0]: https://github.com/TownyAdvanced/FlagWar/releases/tag/0.5.0 "FlagWar Release 0.5.0"
+[0.5.1]: https://github.com/TownyAdvanced/FlagWar/releases/tag/0.5.1 "FlagWar Release 0.5.1"
 [0.4.0]: https://github.com/TownyAdvanced/FlagWar/releases/tag/0.4.0 "FlagWar Release 0.4.0"
 
 ### Staying up to Date
