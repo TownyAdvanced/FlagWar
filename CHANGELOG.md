@@ -4,9 +4,22 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 
 <!--## [Unreleased][Unreleased]-->
 
-## [0.5.0][0.5.0] - _2021-10-13_
+## [0.5.1][0.5.1] _2021-10-27_
 
-> Note: This release is lacking in the testing department. Please report any regressions ASAP.
+### Added
+
+- French Translation (`fr_FR`)
+  ([#83](https://github.com/TownyAdvanced/FlagWar/pull/83), [@Bibithom][Bibithom])
+
+### Fixed
+
+- An issue with canceling `null` hologramThreads.
+  ([#85](https://github.com/TownyAdvanced/FlagWar/pull/85), [@LlmDl][LlmDl])
+
+- Implementation of WarZoneListener, and how FlagWar utilizes WarZones.
+  ([#86](https://github.com/TownyAdvanced/FlagWar/pull/86), [@LlmDl][LlmDl])
+
+## [0.5.0][0.5.0] - _2021-10-13_
 
 ### Added
 
@@ -186,7 +199,8 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 <!---------------------------->
 
 <!-- Links to Tagged Changes -->
-[Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.1...HEAD
+[0.5.1]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.2.0-devel...0.3.0
@@ -205,6 +219,7 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 [adoptium]: https://adoptium.net
 
 <!-- Recognized Contributors (Non-exhaustive) -->
+[Bibithom]: https://github.com/Bibithom
 [Zren]: https://github.com/zren/
 [LlmDl]: https://github.com/LlmDl/
 [gaffy00]: https://github.com/gaffy00/

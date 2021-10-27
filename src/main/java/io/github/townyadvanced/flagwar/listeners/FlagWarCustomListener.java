@@ -122,7 +122,7 @@ public class FlagWarCustomListener implements Listener {
             Translate.fromPrefixed("broadcast.area.defended", getPlayerOrGF(player), cell.getCellString());
 
         tryTownFlagged(cell);
-        removeWarZone(cell);
+        updateTownyCache(cell);
         towny.getServer().broadcastMessage(broadcast);
 
         calculateDefenderReward(player, cell);
@@ -156,7 +156,7 @@ public class FlagWarCustomListener implements Listener {
             var attackingNation = attackingTown.getNation();
 
             var worldCoord = FlagWar.cellToWorldCoordinate(cell);
-            removeWarZone(cell);
+            updateTownyCache(cell);
 
             var townBlock = worldCoord.getTownBlock();
             var defendingTown = townBlock.getTown();
@@ -225,7 +225,7 @@ public class FlagWarCustomListener implements Listener {
         }
         CellUnderAttack cell = cellAttackCanceledEvent.getCell();
         tryTownFlagged(cell);
-        removeWarZone(cell);
+        updateTownyCache(cell);
         logger.info(cell.getCellString());
     }
 
@@ -502,14 +502,13 @@ public class FlagWarCustomListener implements Listener {
     }
 
     /**
-     * Removes a WarZone associated with a given {@link CellUnderAttack}, then updates the Towny cache.
+     * Updates the Towny cache for a given {@link CellUnderAttack}, which is no longer
+     * under attack.
      *
      * @param cell the given CellUnderAttack related to the WarZone.
      */
-    private void removeWarZone(final CellUnderAttack cell) {
-        var worldCoord = new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ());
-        universe.removeWarZone(worldCoord);
-        towny.updateCache(worldCoord);
+    private void updateTownyCache(final CellUnderAttack cell) {
+        towny.updateCache(new WorldCoord(cell.getWorldName(), cell.getX(), cell.getZ()));
     }
 
     /**
