@@ -11,12 +11,22 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 - French Translation (`fr_FR`)
   ([#83](https://github.com/TownyAdvanced/FlagWar/pull/83), [@Bibithom][Bibithom])
 
+- Expansion of the WarZoneListener
+  ([#87](https://github.com/TownyAdvanced/FlagWar/pull/87), [@LlmDl][LlmDl])
+  - Now implements listeners for the following Towny Events:
+    - `TownyBurnEvent`
+    - `TownyExplodingBlocksEvent`
+    - `TownyExplosionDamagesEntityEvent`
+    - `TownBlockPVPTestEvent`
+  - Follows the Towny WarZoneConfig like the Build/Destroy/Switch/ItemUse events do.
+  - Also adds `Cell#parse(WorldCoord)` method for convenience.
+
 ### Fixed
 
 - An issue with canceling `null` hologramThreads.
   ([#85](https://github.com/TownyAdvanced/FlagWar/pull/85), [@LlmDl][LlmDl])
 
-- Implementation of WarZoneListener, and how FlagWar utilizes WarZones.
+- Adjust implementation of the WarZoneListener, and how FlagWar utilizes WarZones.
   ([#86](https://github.com/TownyAdvanced/FlagWar/pull/86), [@LlmDl][LlmDl])
 
 ## [0.5.0][0.5.0] - _2021-10-13_
@@ -199,8 +209,8 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 <!---------------------------->
 
 <!-- Links to Tagged Changes -->
-[Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.1...HEAD
-[0.5.1]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.0...0.5.1
+[Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.1b...HEAD
+[0.5.1]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.0...0.5.1b
 [0.5.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.2.0-devel...0.3.0

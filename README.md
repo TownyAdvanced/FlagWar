@@ -89,7 +89,7 @@ Administrator Resources
 > FlagWar has adopted the use of Paper as an API provider. Spigot should however still be viable. Please
 > submit a ticket if you experience any issues.
 
-[0.5.1]: https://github.com/TownyAdvanced/FlagWar/releases/tag/0.5.1 "FlagWar Release 0.5.1"
+[0.5.1]: https://github.com/TownyAdvanced/FlagWar/releases/tag/0.5.1b "FlagWar Release 0.5.1"
 [0.4.0]: https://github.com/TownyAdvanced/FlagWar/releases/tag/0.4.0 "FlagWar Release 0.4.0"
 
 ### Staying up to Date
