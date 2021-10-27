@@ -218,8 +218,8 @@ public class WarzoneListener implements Listener {
     }
 
     /**
-     * When Towny asks if PVP should be enabled in a {@link TownBlock}, if it is a {@link Cell} which is under attack,
-     * we will tell Towny that PVP should be enabled, overriding any {@link Town} or {@link TownBlock} setting.
+     * When Towny asks if PVP should be enabled in a TownBlock, if it is a {@link Cell} which is under attack,
+     * we will tell Towny that PVP should be enabled, overriding any Town or TownBlock setting.
      *
      * @param townBlockPVPTestEvent the {@link TownBlockPVPTestEvent}.
      */
