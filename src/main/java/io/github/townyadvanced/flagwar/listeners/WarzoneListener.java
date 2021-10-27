@@ -26,6 +26,7 @@ import com.palmergames.bukkit.towny.event.actions.TownyDestroyEvent;
 import com.palmergames.bukkit.towny.event.actions.TownyExplodingBlocksEvent;
 import com.palmergames.bukkit.towny.event.actions.TownyItemuseEvent;
 import com.palmergames.bukkit.towny.event.actions.TownySwitchEvent;
+import com.palmergames.bukkit.towny.event.damage.TownBlockPVPTestEvent;
 import com.palmergames.bukkit.towny.event.damage.TownyExplosionDamagesEntityEvent;
 import com.palmergames.bukkit.towny.object.PlayerCache.TownBlockStatus;
 import com.palmergames.bukkit.towny.war.common.WarZoneConfig;
@@ -214,6 +215,20 @@ public class WarzoneListener implements Listener {
 
         // Return the list of allowed blocks for this block explosion event.
         event.setBlockList(toAllow);
+    }
+
+    /**
+     * When Towny asks if PVP should be enabled in a {@link TownBlock}, if it is a {@link Cell} which is under attack,
+     * we will tell Towny that PVP should be enabled, overriding any {@link Town} or {@link TownBlock} setting.
+     * 
+     * @param townBlockPVPTestEvent the {@link TownBlockPVPTestEvent}.
+     */
+    @EventHandler
+    public void onTownBlockPVPTestEvent(final TownBlockPVPTestEvent townBlockPVPTestEvent) {
+        if (!FlagWarConfig.isAllowingAttacks()
+        || !Cell.parse(townBlockPVPTestEvent.getTownBlock().getWorldCoord()).isUnderAttack())
+            return;
+        townBlockPVPTestEvent.setPvp(true);
     }
 
     /**
