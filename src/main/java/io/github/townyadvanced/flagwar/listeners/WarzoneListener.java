@@ -158,7 +158,7 @@ public class WarzoneListener implements Listener {
      * @param townyBurnEvent the {@link TownyBurnEvent}.
      */
     @EventHandler
-    public void onBurn(TownyBurnEvent townyBurnEvent) {
+    public void onBurn(final TownyBurnEvent townyBurnEvent) {
         if (!FlagWarConfig.isAllowingAttacks()
         || townyBurnEvent.isInWilderness()
         || !WarZoneConfig.isAllowingFireInWarZone()
@@ -176,7 +176,7 @@ public class WarzoneListener implements Listener {
      * @param townyExplosionDamagesEntityEvent the {@link TownyExplosionDamagesEntityEvent}
      */
     @EventHandler
-    public void onExplosionDamagingEntity(TownyExplosionDamagesEntityEvent townyExplosionDamagesEntityEvent) {
+    public void onExplosionDamagingEntity(final TownyExplosionDamagesEntityEvent townyExplosionDamagesEntityEvent) {
         if (!FlagWarConfig.isAllowingAttacks()
         || townyExplosionDamagesEntityEvent.isInWilderness()
         || !WarZoneConfig.isAllowingExplosionsInWarZone()
@@ -194,7 +194,7 @@ public class WarzoneListener implements Listener {
      * @param event the {@link TownyExplodingBlocksEvent}.
      */
     @EventHandler
-    public void onExplosionDamagingBlocks(TownyExplodingBlocksEvent event) {
+    public void onExplosionDamagingBlocks(final TownyExplodingBlocksEvent event) {
         if (!FlagWarConfig.isAllowingAttacks()
         || !WarZoneConfig.isAllowingExplosionsInWarZone()) {
             return;
