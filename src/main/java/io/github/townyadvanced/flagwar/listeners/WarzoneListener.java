@@ -226,8 +226,9 @@ public class WarzoneListener implements Listener {
     @EventHandler
     public void onTownBlockPVPTestEvent(final TownBlockPVPTestEvent townBlockPVPTestEvent) {
         if (!FlagWarConfig.isAllowingAttacks()
-        || !Cell.parse(townBlockPVPTestEvent.getTownBlock().getWorldCoord()).isUnderAttack())
+        || !Cell.parse(townBlockPVPTestEvent.getTownBlock().getWorldCoord()).isUnderAttack()) {
             return;
+        }
         townBlockPVPTestEvent.setPvp(true);
     }
 
