@@ -154,7 +154,7 @@ public class WarzoneListener implements Listener {
     /**
      * When Towny reports a burn event, check if this is a {@link TownBlockStatus} which corresponds to a Cell which
      * is under attack, and the Towny WarZoneConfig is configured to allow fires in WarZones.
-     * 
+     *
      * @param townyBurnEvent the {@link TownyBurnEvent}.
      */
     @EventHandler
@@ -169,10 +169,10 @@ public class WarzoneListener implements Listener {
     }
 
     /**
-     * When Towny reports an explosion damaging an entity event, check if this is a {@link TownBlockStatus} which 
-     * corresponds to a Cell which is under attack, and the Towny WarZoneConfig is configured to allow those 
+     * When Towny reports an explosion damaging an entity event, check if this is a {@link TownBlockStatus} which
+     * corresponds to a Cell which is under attack, and the Towny WarZoneConfig is configured to allow those
      * explosions in WarZones.
-     * 
+     *
      * @param townyExplosionDamagesEntityEvent the {@link TownyExplosionDamagesEntityEvent}
      */
     @EventHandler
@@ -187,10 +187,10 @@ public class WarzoneListener implements Listener {
     }
 
     /**
-     * When Towny reports an explosion damaging some blocks, check if this is a {@link TownBlockStatus} which 
-     * corresponds to a Cell which is under attack, and the Towny WarZoneConfig is configured to allow those 
+     * When Towny reports an explosion damaging some blocks, check if this is a {@link TownBlockStatus} which
+     * corresponds to a Cell which is under attack, and the Towny WarZoneConfig is configured to allow those
      * explosions in WarZones.
-     * 
+     *
      * @param event the {@link TownyExplodingBlocksEvent}.
      */
     @EventHandler
