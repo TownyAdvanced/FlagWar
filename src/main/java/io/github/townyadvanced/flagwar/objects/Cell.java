@@ -22,6 +22,7 @@ import java.util.Objects;
 import org.bukkit.Location;
 
 import com.palmergames.bukkit.towny.object.Coord;
+import com.palmergames.bukkit.towny.object.WorldCoord;
 
 /**
  * Representation of a Towny plot, based on it's {@link Coord}, used for manipulation in FlagWar.
@@ -102,6 +103,15 @@ public class Cell {
         boolean xNeedFix = x % cellSize != 0;
         boolean zNeedFix = z % cellSize != 0;
         return new Cell(worldName, xResult - (x < 0 && xNeedFix ? 1 : 0), zResult - (z < 0 && zNeedFix ? 1 : 0));
+    }
+
+    /**
+     * Parse a Towny {@link WorldCoord} into a {@link Cell}.
+     * @param worldCoord the {@link WorldCoord}.
+     * @return a new Cell from the given {@link WorldCoord}.
+     */
+    public static Cell parse(final WorldCoord worldCoord) {
+        return parse(worldCoord.getWorldName(), worldCoord.getX(), worldCoord.getZ());
     }
 
     /**

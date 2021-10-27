@@ -18,18 +18,28 @@
 package io.github.townyadvanced.flagwar.listeners;
 
 import com.palmergames.bukkit.towny.Towny;
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.actions.TownyActionEvent;
 import com.palmergames.bukkit.towny.event.actions.TownyBuildEvent;
+import com.palmergames.bukkit.towny.event.actions.TownyBurnEvent;
 import com.palmergames.bukkit.towny.event.actions.TownyDestroyEvent;
+import com.palmergames.bukkit.towny.event.actions.TownyExplodingBlocksEvent;
 import com.palmergames.bukkit.towny.event.actions.TownyItemuseEvent;
 import com.palmergames.bukkit.towny.event.actions.TownySwitchEvent;
+import com.palmergames.bukkit.towny.event.damage.TownBlockPVPTestEvent;
+import com.palmergames.bukkit.towny.event.damage.TownyExplosionDamagesEntityEvent;
 import com.palmergames.bukkit.towny.object.PlayerCache.TownBlockStatus;
 import com.palmergames.bukkit.towny.war.common.WarZoneConfig;
 import io.github.townyadvanced.flagwar.FlagWarAPI;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.i18n.Translate;
 import io.github.townyadvanced.flagwar.objects.Cell;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -137,6 +147,86 @@ public class WarzoneListener implements Listener {
             return;
         }
         townySwitchEvent.setCancelled(false);
+    }
+
+    /**
+     * When Towny reports a burn event, check if this is a {@link TownBlockStatus} which corresponds to a Cell which
+     * is under attack, and the Towny WarZoneConfig is configured to allow fires in WarZones.
+     *
+     * @param townyBurnEvent the {@link TownyBurnEvent}.
+     */
+    @EventHandler
+    public void onBurn(final TownyBurnEvent townyBurnEvent) {
+        if (!FlagWarConfig.isAllowingAttacks()
+        || townyBurnEvent.isInWilderness()
+        || !WarZoneConfig.isAllowingFireInWarZone()
+        || !Cell.parse(townyBurnEvent.getLocation()).isUnderAttack()) {
+            return;
+        }
+        townyBurnEvent.setCancelled(false);
+    }
+
+    /**
+     * When Towny reports an explosion damaging an entity event, check if this is a {@link TownBlockStatus} which
+     * corresponds to a Cell which is under attack, and the Towny WarZoneConfig is configured to allow those
+     * explosions in WarZones.
+     *
+     * @param townyExplosionDamagesEntityEvent the {@link TownyExplosionDamagesEntityEvent}
+     */
+    @EventHandler
+    public void onExplosionDamagingEntity(final TownyExplosionDamagesEntityEvent townyExplosionDamagesEntityEvent) {
+        if (!FlagWarConfig.isAllowingAttacks()
+        || townyExplosionDamagesEntityEvent.isInWilderness()
+        || !WarZoneConfig.isAllowingExplosionsInWarZone()
+        || !Cell.parse(townyExplosionDamagesEntityEvent.getLocation()).isUnderAttack()) {
+            return;
+        }
+        townyExplosionDamagesEntityEvent.setCancelled(false);
+    }
+
+    /**
+     * When Towny reports an explosion damaging some blocks, check if this is a {@link TownBlockStatus} which
+     * corresponds to a Cell which is under attack, and the Towny WarZoneConfig is configured to allow those
+     * explosions in WarZones.
+     *
+     * @param event the {@link TownyExplodingBlocksEvent}.
+     */
+    @EventHandler
+    public void onExplosionDamagingBlocks(final TownyExplodingBlocksEvent event) {
+        if (!FlagWarConfig.isAllowingAttacks()
+        || !WarZoneConfig.isAllowingExplosionsInWarZone()) {
+            return;
+        }
+        List<Block> toAllow = new ArrayList<Block>();
+        for (Block block : event.getVanillaBlockList()) {
+            // Wilderness or not located inside of a Cell which is under attack, skip it.
+            if (TownyAPI.getInstance().isWilderness(block)
+            || !Cell.parse(block.getLocation()).isUnderAttack()) {
+                continue;
+            }
+            // This is an allowed explosion, so add it to our War-allowed list.
+            toAllow.add(block);
+        }
+        // Add all TownyFilteredBlocks to our list, since our list will be used.
+        toAllow.addAll(event.getTownyFilteredBlockList());
+
+        // Return the list of allowed blocks for this block explosion event.
+        event.setBlockList(toAllow);
+    }
+
+    /**
+     * When Towny asks if PVP should be enabled in a TownBlock, if it is a {@link Cell} which is under attack,
+     * we will tell Towny that PVP should be enabled, overriding any Town or TownBlock setting.
+     *
+     * @param townBlockPVPTestEvent the {@link TownBlockPVPTestEvent}.
+     */
+    @EventHandler
+    public void onTownBlockPVPTestEvent(final TownBlockPVPTestEvent townBlockPVPTestEvent) {
+        if (!FlagWarConfig.isAllowingAttacks()
+        || !Cell.parse(townBlockPVPTestEvent.getTownBlock().getWorldCoord()).isUnderAttack()) {
+            return;
+        }
+        townBlockPVPTestEvent.setPvp(true);
     }
 
     /**
