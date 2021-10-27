@@ -111,7 +111,7 @@ public class Cell {
      * @return a new Cell from the given {@link WorldCoord}.
      */
     public static Cell parse(final WorldCoord worldCoord) {
-        return parse(worldCoord.getWorldName(), worldCoord.getX(), worldCoord.getZ());
+        return new Cell(worldCoord.getWorldName(), worldCoord.getX(), worldCoord.getZ());
     }
 
     /**

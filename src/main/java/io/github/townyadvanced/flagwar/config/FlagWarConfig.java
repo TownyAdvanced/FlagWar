@@ -28,8 +28,10 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -53,6 +55,8 @@ public final class FlagWarConfig {
     private static Material flagLightMaterial = null;
     /** Beacon wireframe {@link Material}, forming the borders of a beacon. */
     private static Material beaconWireFrameMaterial = null;
+    /** Set of EditableMaterials which can be built/destroyed in attacked cells. */
+    private static Set<Material> editableMaterialsInWarZone = null;
     /** {@link Plugin} instance, used internally. */
     private static final Plugin PLUGIN = FlagWar.getInstance();
     /** Holds an instance of FlagWar's logger. */
@@ -124,6 +128,25 @@ public final class FlagWarConfig {
             LOGGER.severe("Timer blocks list was null! Using default list.");
             return DEFAULT_TIMER_MATERIALS;
         }
+    }
+
+    /**
+     * Sets the editableMaterialsInWarZone.
+     */
+    public static void setEditableMaterials() {
+        Set<Material> allowedMaterials = new HashSet<Material>();
+        String[] matArray = PLUGIN.getConfig().getString("warzone.editable_materials").split(",");
+        List<String> list = Arrays.stream(matArray).toList();
+        for (String material : list) {
+            if (material.equals("*")) {
+                allowedMaterials.addAll(Arrays.asList(Material.values()));
+            } else if (material.startsWith("-")) {
+                allowedMaterials.remove(Material.matchMaterial(material));
+            } else {
+                allowedMaterials.add(Material.matchMaterial(material));
+            }
+        }
+        editableMaterialsInWarZone = allowedMaterials;
     }
 
     /**
@@ -458,5 +481,38 @@ public final class FlagWarConfig {
     /** @return the value of 'rules.flag_unclaims_townblocks'. */
     public static boolean isFlaggedTownBlockUnclaimed() {
         return PLUGIN.getConfig().getBoolean("rules.flag_unclaims_townblocks");
+    }
+
+    /** @return the value of 'warzone.explosions'. */
+    public static boolean isAllowingExplosionsInWarZone() {
+        return PLUGIN.getConfig().getBoolean("warzone.explosions");
+    }
+
+    /** @return the value of 'warzone.explosions_break_blocks'. */
+    public static boolean isAllowingExplosionsToBreakBlocksInWarZone() {
+        return PLUGIN.getConfig().getBoolean("warzone.explosions_break_blocks");
+    }
+
+    /** @return the value of 'warzone.fire'. */
+    public static boolean isAllowingFireInWarZone() {
+        return PLUGIN.getConfig().getBoolean("warzone.fire");
+    }
+
+    /** @return the value of 'warzone.switch'. */
+    public static boolean isAllowingSwitchInWarZone() {
+        return PLUGIN.getConfig().getBoolean("warzone.switch");
+    }
+
+    /** @return the value of 'warzone.item_use'. */
+    public static boolean isAllowingItemUseInWarZone() {
+        return PLUGIN.getConfig().getBoolean("warzone.item_use");
+    }
+
+    /**
+     * @return whether this is a material which can be built or destroyed in an attacked Cell.
+     * @param material the {@link Material}.
+     */
+    public static boolean isEditableMaterialInWarZone(final Material material) {
+        return editableMaterialsInWarZone.contains(material);
     }
 }

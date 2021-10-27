@@ -85,7 +85,7 @@ public class FlagWar extends JavaPlugin {
     /** Version object for storing the minimum required version of Towny for compatibility. */
     private static final Version MIN_TOWNY_VER = Version.fromString("0.97.2.0");
     /** Value of minimum configuration file version. Used for determining if file should be regenerated. */
-    private static final double MIN_CONFIG_VER = 1.4;
+    private static final double MIN_CONFIG_VER = 1.5;
     /** BStats Metrics ID. */
     public static final int METRICS_ID = 10325;
     /** Holds FlagWar's Bukkit-assigned JUL {@link Logger}. */
@@ -302,6 +302,8 @@ public class FlagWar extends JavaPlugin {
             FW_LOGGER.log(Level.WARNING,
                 () -> Translate.from("startup.load-materials.invalid-beacon-wireframe"));
         }
+
+        FlagWarConfig.setEditableMaterials();
     }
 
     static int getNumActiveFlags(final String playerName) {

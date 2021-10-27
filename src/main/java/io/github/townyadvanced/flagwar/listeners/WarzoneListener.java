@@ -29,7 +29,6 @@ import com.palmergames.bukkit.towny.event.actions.TownySwitchEvent;
 import com.palmergames.bukkit.towny.event.damage.TownBlockPVPTestEvent;
 import com.palmergames.bukkit.towny.event.damage.TownyExplosionDamagesEntityEvent;
 import com.palmergames.bukkit.towny.object.PlayerCache.TownBlockStatus;
-import com.palmergames.bukkit.towny.war.common.WarZoneConfig;
 import io.github.townyadvanced.flagwar.FlagWarAPI;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.i18n.Translate;
@@ -58,7 +57,7 @@ public class WarzoneListener implements Listener {
 
     /**
      * When the {@link TownyDestroyEvent} is fired, check if {@link TownBlockStatus#ENEMY} is accurate and that the
-     * expression {@link WarZoneConfig#isEditableMaterialInWarZone(Material)} is true.
+     * item being used is in the allowed items list in the WarZone section of the FlagWar Configuration.
      *
      * @param townyDestroyEvent the {@link TownyDestroyEvent}.
      */
@@ -72,7 +71,7 @@ public class WarzoneListener implements Listener {
             return;
         }
 
-        if (!WarZoneConfig.isEditableMaterialInWarZone(mat)) {
+        if (!FlagWarConfig.isEditableMaterialInWarZone(mat)) {
             townyDestroyEvent.setCancelled(true);
             townyDestroyEvent.setMessage(msgCannotEdit("destroy", mat));
         }
@@ -80,8 +79,8 @@ public class WarzoneListener implements Listener {
     }
 
     /**
-     * When the {@link TownyBuildEvent} is fired, check if {@link TownBlockStatus#ENEMY} is accurate and that the
-     * expression {@link WarZoneConfig#isEditableMaterialInWarZone(Material)} is true.
+     * When the {@link TownyBuildEvent} is fired, check if {@link TownBlockStatus#ENEMY} is accurate and that the item
+     * being used is in the allowed items list in the WarZone section of the FlagWar Configuration.
      *
      * @param townyBuildEvent the {@link TownyBuildEvent}.
      */
@@ -95,7 +94,7 @@ public class WarzoneListener implements Listener {
             return;
         }
 
-        if (!WarZoneConfig.isEditableMaterialInWarZone(mat)) {
+        if (!FlagWarConfig.isEditableMaterialInWarZone(mat)) {
             townyBuildEvent.setCancelled(true);
             townyBuildEvent.setMessage(msgCannotEdit("build", mat));
             return;
@@ -105,7 +104,7 @@ public class WarzoneListener implements Listener {
 
     /**
      * When Towny reports an item has been used: check if {@link TownBlockStatus#ENEMY} is accurate and that the item
-     * being used is in the allowed items list in the WarZone section of the Towny Configuration.
+     * being used is in the allowed items list in the WarZone section of the FlagWar Configuration.
      *
      * @param townyItemuseEvent the {@link TownyItemuseEvent}.
      */
@@ -118,7 +117,7 @@ public class WarzoneListener implements Listener {
             return;
         }
 
-        if (!WarZoneConfig.isAllowingItemUseInWarZone()) {
+        if (!FlagWarConfig.isAllowingItemUseInWarZone()) {
             townyItemuseEvent.setCancelled(true);
             townyItemuseEvent.setMessage(Translate.from("error.warzone.cannot-use-item"));
             return;
@@ -128,7 +127,7 @@ public class WarzoneListener implements Listener {
 
     /**
      * When Towny reports a switch has been used:  check if {@link TownBlockStatus#ENEMY} is accurate and that the use
-     * of switches is enabled in the WarZone section of the Towny Configuration.
+     * of switches is enabled in the WarZone section of the FlagWar Configuration.
      *
      * @param townySwitchEvent the {@link TownySwitchEvent}.
      */
@@ -141,7 +140,7 @@ public class WarzoneListener implements Listener {
             return;
         }
 
-        if (!WarZoneConfig.isAllowingSwitchesInWarZone()) {
+        if (!FlagWarConfig.isAllowingSwitchInWarZone()) {
             townySwitchEvent.setCancelled(true);
             townySwitchEvent.setMessage(Translate.from("error.warzone.cannot-use-switch"));
             return;
@@ -151,7 +150,7 @@ public class WarzoneListener implements Listener {
 
     /**
      * When Towny reports a burn event, check if this is a {@link TownBlockStatus} which corresponds to a Cell which
-     * is under attack, and the Towny WarZoneConfig is configured to allow fires in WarZones.
+     * is under attack, and the FlagWar Config is configured to allow fires in WarZones.
      *
      * @param townyBurnEvent the {@link TownyBurnEvent}.
      */
@@ -159,7 +158,7 @@ public class WarzoneListener implements Listener {
     public void onBurn(final TownyBurnEvent townyBurnEvent) {
         if (!FlagWarConfig.isAllowingAttacks()
         || townyBurnEvent.isInWilderness()
-        || !WarZoneConfig.isAllowingFireInWarZone()
+        || !FlagWarConfig.isAllowingFireInWarZone()
         || !Cell.parse(townyBurnEvent.getLocation()).isUnderAttack()) {
             return;
         }
@@ -168,7 +167,7 @@ public class WarzoneListener implements Listener {
 
     /**
      * When Towny reports an explosion damaging an entity event, check if this is a {@link TownBlockStatus} which
-     * corresponds to a Cell which is under attack, and the Towny WarZoneConfig is configured to allow those
+     * corresponds to a Cell which is under attack, and the FlagWar Config is configured to allow those
      * explosions in WarZones.
      *
      * @param townyExplosionDamagesEntityEvent the {@link TownyExplosionDamagesEntityEvent}
@@ -177,7 +176,7 @@ public class WarzoneListener implements Listener {
     public void onExplosionDamagingEntity(final TownyExplosionDamagesEntityEvent townyExplosionDamagesEntityEvent) {
         if (!FlagWarConfig.isAllowingAttacks()
         || townyExplosionDamagesEntityEvent.isInWilderness()
-        || !WarZoneConfig.isAllowingExplosionsInWarZone()
+        || !FlagWarConfig.isAllowingExplosionsInWarZone()
         || !Cell.parse(townyExplosionDamagesEntityEvent.getLocation()).isUnderAttack()) {
             return;
         }
@@ -186,7 +185,7 @@ public class WarzoneListener implements Listener {
 
     /**
      * When Towny reports an explosion damaging some blocks, check if this is a {@link TownBlockStatus} which
-     * corresponds to a Cell which is under attack, and the Towny WarZoneConfig is configured to allow those
+     * corresponds to a Cell which is under attack, and the FlagWar Config is configured to allow those
      * explosions in WarZones.
      *
      * @param event the {@link TownyExplodingBlocksEvent}.
@@ -194,7 +193,7 @@ public class WarzoneListener implements Listener {
     @EventHandler
     public void onExplosionDamagingBlocks(final TownyExplodingBlocksEvent event) {
         if (!FlagWarConfig.isAllowingAttacks()
-        || !WarZoneConfig.isAllowingExplosionsInWarZone()) {
+        || !FlagWarConfig.isAllowingExplosionsToBreakBlocksInWarZone()) {
             return;
         }
         List<Block> toAllow = new ArrayList<Block>();
