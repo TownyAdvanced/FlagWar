@@ -22,6 +22,8 @@ import com.palmergames.bukkit.towny.object.Town;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.objects.Cell;
 import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
+
+import java.time.Instant;
 import java.util.List;
 import org.bukkit.entity.Player;
 
@@ -124,8 +126,21 @@ public final class FlagWarAPI {
      * Get a timestamp for when a {@link Town} was last flagged.
      * @param town The town to check.
      * @return the previous timestamp for when the town was flagged, in milliseconds.
+     *         Note that it is possible to return the value of the Epoch, zero,
+     *         when the town is not in the last-flagged hash map privately defined by {@link FlagWar}.
+     * @deprecated Superseded by the {@link #getFlaggedInstant(Town)} method.
      */
+    @Deprecated (since = "0.5.2", forRemoval = true)
     public static long getFlaggedTimestamp(final Town town) {
+        return getFlaggedInstant(town).toEpochMilli();
+    }
+
+    /**
+     * Get the Instant for when a {@link Town} was last flagged.
+     * @param town Target Town.
+     * @return Instant of last flag.
+     */
+    public static Instant getFlaggedInstant(final Town town) {
         return FlagWar.lastFlagged(town);
     }
 
