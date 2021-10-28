@@ -25,6 +25,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NonNls;
 
+import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -403,11 +404,23 @@ public final class FlagWarConfig {
         return PLUGIN.getConfig().getInt("beacon.height_above_flag.min");
     }
 
-    /** @return the value of 'rules.prevented_interaction_cooldown' in milliseconds, or the default value (10 min.) */
+    /** Get the value of 'rules.prevented_interaction_cooldown' in milliseconds, or the default value. (10 min)
+     * @return the value, or 600000(ms)
+     * @deprecated Method superceded by {@link #getFlaggedInteractCooldown()}
+     */
+    @Deprecated (since = "0.5.2", forRemoval = true)
     public static long getTimeToWaitAfterFlagged() {
         String timeString = PLUGIN.getConfig().getString("rules.prevented_interaction_cooldown");
         final long defValue = 600000;
         return timeString != null ? TimeTools.getMillis(timeString) : defValue;
+    }
+
+    /**
+     * Calculates the {@link Duration} from the value (in ms) from <code>rules.prevented_interaction_cooldown</code>.
+     * @return The calculated Duration.
+     */
+    public static Duration getFlaggedInteractCooldown() {
+        return Duration.ofMillis(PLUGIN.getConfig().getLong("rules.prevented_interaction_cooldown"));
     }
 
     /** @return the value of 'rules.prevent_interaction_while_flagged.town'. */
