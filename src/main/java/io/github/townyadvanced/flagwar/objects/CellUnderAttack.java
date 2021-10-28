@@ -20,7 +20,6 @@ package io.github.townyadvanced.flagwar.objects;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
-import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.object.Coord;
 import io.github.townyadvanced.flagwar.CellAttackThread;
 import io.github.townyadvanced.flagwar.FlagWar;
@@ -33,8 +32,10 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class CellUnderAttack extends Cell {
     /** Holds an instance of FlagWar's logger. */
     private static final Logger LOGGER = FlagWar.getInstance().getLogger();
     /** Holds an instance of Towny. */
-    private final Towny towny;
+    private final Plugin plugin;
 
     /** Holds the name of the war flag owner. */
     private final String nameOfFlagOwner;
@@ -60,7 +61,7 @@ public class CellUnderAttack extends Cell {
     /** Holds the {@link Block} representing the light-emitting top of a war flag. */
     private final Block flagLightBlock;
     /** Holds the value between timer phases for both the war flag and the beacon. */
-    private final long flagPhaseClock;
+    private final Duration flagPhaseDuration;
     /** {@link List} of {@link Block}s used in the war beacon's body. */
     private List<Block> beaconFlagBlocks;
     /** {@link List} of {@link Block}s used for the war beacon's wireframe. */
@@ -74,33 +75,32 @@ public class CellUnderAttack extends Cell {
     /** Holds the war flag hologram. */
     private Hologram hologram;
     /** Holds the time, in seconds, assuming 20 ticks is 1 second, of the war flag. */
-    private int time;
+    private Duration flagLifeTime;
     /** Holds the {@link TextLine} of the hologram timer line. */
     private TextLine timerLine;
 
     /**
      * Prepares the CellUnderAttack.
      *
-     * @param townyInst Instance of {@link Towny}
+     * @param instance A plugin instance. Preferably of Towny or FlagWar.
      * @param flagOwner Name of the Resident that placed the flag
-     * @param flagBase {@link Block} representing the "flag pole" of the block
-     * @param phaseTime Time (as a long) between Material shifting the flag and beacon.
+     * @param base {@link Block} representing the "flag pole" of the block
+     * @param timerPhase Time (as a long) between Material shifting the flag and beacon.
      */
-    public CellUnderAttack(final Towny townyInst, final String flagOwner, final Block flagBase, final long phaseTime) {
+    public CellUnderAttack(final Plugin instance, final String flagOwner, final Block base, final Duration timerPhase) {
 
-        super(flagBase.getLocation());
-        this.towny = townyInst;
+        super(base.getLocation());
+        this.plugin = instance;
         this.nameOfFlagOwner = flagOwner;
-        this.flagBaseBlock = flagBase;
+        this.flagBaseBlock = base;
         this.flagPhaseID = 0;
-        final long ticksInSecond = 20L;
-        this.time = (int) (FlagWarConfig.getFlagWaitingTime() / ticksInSecond);
+        this.flagLifeTime = FlagWarConfig.getFlagLifeTime();
 
-        var world = flagBase.getWorld();
-        this.flagTimerBlock = world.getBlockAt(flagBase.getX(), flagBase.getY() + 1, flagBase.getZ());
-        this.flagLightBlock = world.getBlockAt(flagBase.getX(), flagBase.getY() + 2, flagBase.getZ());
+        var world = base.getWorld();
+        this.flagTimerBlock = world.getBlockAt(base.getX(), base.getY() + 1, base.getZ());
+        this.flagLightBlock = world.getBlockAt(base.getX(), base.getY() + 2, base.getZ());
 
-        this.flagPhaseClock = phaseTime;
+        this.flagPhaseDuration = timerPhase;
     }
 
     /** @return if {@link CellUnderAttack} equals a given {@link Object}. (Defers to {@link Cell#equals(Object)}.) */
@@ -311,17 +311,17 @@ public class CellUnderAttack extends Cell {
      * @param data the value of a hologram setting (defined in {@link #drawHologram()}
      */
     private void setTimerLine(final String data) {
-        timerLine = hologram.appendTextLine(formatTime(time, data));
+        timerLine = hologram.appendTextLine(formatTime(flagLifeTime, data));
     }
 
     /**
-     * Decreases {@link #time} by 1, and sets the {@link #hologram} {@link #timerLine} text using
-     * {@link #formatTime(int, String)} with {@link #time} and {@link FlagWarConfig#getTimerText()}
-     * as the parameters.
-     * */
+     * Decreases {@link #flagLifeTime} by 1, and sets the {@link #hologram} {@link #timerLine} text using
+     * {@link #formatTime(Duration, String)} with the updated {@link #flagLifeTime} and
+     * {@link FlagWarConfig#getTimerText()} as the parameters.
+     */
     public void updateHologram() {
-        time -= 1;
-        timerLine.setText(formatTime(time, FlagWarConfig.getTimerText()));
+        this.flagLifeTime = flagLifeTime.minusSeconds(1);
+        timerLine.setText(formatTime(flagLifeTime, FlagWarConfig.getTimerText()));
     }
 
     /** Deletes the {@link #hologram}. */
@@ -330,13 +330,15 @@ public class CellUnderAttack extends Cell {
     }
 
     /**
-     * Function used to format the hologram {@link #time} according to the timer text defined in
+     * Function used to format the hologram {@link #flagLifeTime} according to the timer text defined in
      * {@link FlagWarConfig#getTimerText()}.
      * @param timeIn Time, in seconds.
      * @param toFormat The string to format. Should contain one or more format specifiers with argument indexes
      *                 corresponding with seconds, minutes, and hours, respectively.
      * @return The formatted string.
-     * */
+     * @deprecated Using {@link #formatTime(Duration, String)} instead.
+     */
+    @Deprecated (since = "0.5.2", forRemoval = true)
     public String formatTime(final int timeIn, final String toFormat) {
         final int secondsInMinute = 60;
         final int secondsInHour = 3600;
@@ -347,22 +349,46 @@ public class CellUnderAttack extends Cell {
     }
 
     /**
-     * {@link #drawFlag()}, then schedule a {@link CellAttackThread} synchronously on the main thread, using the
-     * {@link #flagPhaseClock} as both the repeat delay and runtime timer.
-     * If {@link FlagWarConfig#isHologramEnabled()} returns true, also {@link #drawHologram()}, and if
-     * {@link FlagWarConfig#hasTimerLine()} returns true, also start a {@link #hologramThread}, with
-     * 20 ticks as both the repeat delay and runtime timer.
+     * Function used to format a {@link Duration} according to the formatting defined in
+     * {@link FlagWarConfig#getTimerText()}.
+     * @param duration Duration to extrapolate the hours, minutes, and seconds from.
+     * @param formatString The string to format. Should contain one or more format specifiers with argument indexes
+     *                 corresponding with seconds, minutes, and hours, respectively.
+     * @return The formatted string.
+     */
+    public String formatTime(final Duration duration, final String formatString) {
+        final int hoursInDay = 24;
+        final long hours = duration.toHoursPart() + (duration.toDaysPart() * hoursInDay);
+        final int minutes = duration.toMinutesPart();
+        final int seconds = duration.toSecondsPart();
+        return String.format(formatString, seconds, minutes, hours);
+    }
+
+    /**
+     * Draw the initial phase of the flag and jumpstart both the {@link #thread} and {@link #hologramThread}.
+     * <p>
+     *     Uses the {@link #flagPhaseDuration} as both the repeat delay and runtime period for the {@link #thread}.
+     *     The delay and period are derived from the phase duration in milliseconds, divided by 50.
+     *     This value is floored to the last tick, and is not rounded.
+     * </p>
+     * <p>
+     *     If {@link FlagWarConfig#isHologramEnabled()} returns true, execute {@link #drawHologram()}, and if
+     *     {@link FlagWarConfig#hasTimerLine()} returns true, also start a {@link #hologramThread}, with
+     *     20 ticks as both the repeat delay and runtime timer.
+     * </p>
      */
     public void beginAttack() {
         drawFlag();
-        thread = towny.getServer().getScheduler()
-            .runTaskTimer(towny, new CellAttackThread(this), this.flagPhaseClock, this.flagPhaseClock);
-        final long ticksInSecond = 20L;
+        final int tps = 20;
+        final int milliTicks = 50;
+        final long ticksFromMs = this.flagPhaseDuration.toMillis() / milliTicks;
+        thread = plugin.getServer().getScheduler()
+            .runTaskTimer(plugin, new CellAttackThread(this), ticksFromMs, ticksFromMs);
         if (FlagWarConfig.isHologramEnabled()) {
             drawHologram();
             if (FlagWarConfig.hasTimerLine()) {
-                hologramThread = towny.getServer().getScheduler()
-                    .runTaskTimer(towny, new HologramUpdateThread(this), ticksInSecond, ticksInSecond);
+                hologramThread = plugin.getServer().getScheduler()
+                    .runTaskTimer(plugin, new HologramUpdateThread(this), tps, tps);
             }
         }
     }
