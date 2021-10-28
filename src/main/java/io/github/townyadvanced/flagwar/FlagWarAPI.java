@@ -145,11 +145,19 @@ public final class FlagWarAPI {
     }
 
     /**
-     * Gets the time between when a flag and it's beacon shifts colors.
-     * @return a {@link Long} value of the total time between a flag's color shift.
+     * Gets the time in ticks between when a Flag shifts phases.
+     * <p>
+     *     This is achieved by dividing the time in milliseconds by 50 to get tick count.
+     *     Calculations are done without rounding; so while 450 ms would be 9 ticks, so too would 499 ms.
+     * </p>
+     * @return Expected ticks of a war flag timer phase.
+     * @deprecated Lack of documentation may have lead to confusion on which unit was used for measuring the time.
+     * Use {@link FlagWarConfig#getFlagPhasesDuration()} if possible. It can be converted as needed.
      */
+    @Deprecated(since = "0.5.2", forRemoval = true)
     public static long getMaterialShiftTime() {
-        return FlagWarConfig.getTimeBetweenFlagColorChange();
+        final int millisPerTick = 50;
+        return FlagWarConfig.getFlagPhasesDuration().toMillis() / millisPerTick;
     }
 
 }

@@ -17,7 +17,7 @@
 
 package io.github.townyadvanced.flagwar.events;
 
-import io.github.townyadvanced.flagwar.FlagWarAPI;
+import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -27,6 +27,8 @@ import org.bukkit.event.HandlerList;
 
 import com.palmergames.bukkit.towny.Towny;
 import org.jetbrains.annotations.NotNull;
+
+import java.time.Duration;
 
 /**
  * Event fired when a Towny Cell is being attacked.
@@ -46,7 +48,7 @@ public class CellAttackEvent extends Event implements Cancellable {
     /** Holds the reason for the cancellation, if the cancellation state is set. Defaults to "None". */
     private String reason = "None";
     /** Holds the time of the attack, as a {@link Long} value. */
-    private long time;
+    private Duration phaseDuration;
 
     /** Return the event's {@link HandlerList}. */
     @Override
@@ -70,7 +72,7 @@ public class CellAttackEvent extends Event implements Cancellable {
         this.plugin = townyInstance;
         this.player = attacker;
         this.flagBlock = flagBaseBlock;
-        setTime(FlagWarAPI.getMaterialShiftTime());
+        setPhaseDuration(FlagWarConfig.getFlagPhasesDuration());
     }
 
     /** @return the attacking {@link Player}. */
@@ -85,20 +87,46 @@ public class CellAttackEvent extends Event implements Cancellable {
 
     /** @return a new {@link CellUnderAttack} with the Towny instance, attacker, flag base, and attack time stored.  */
     public CellUnderAttack getData() {
-        return new CellUnderAttack(plugin, player.getName(), flagBlock, time);
-    }
-
-    /** @return the time of the attack (when the event was constructed.) */
-    public long getTime() {
-        return time;
+        return new CellUnderAttack(plugin, player.getName(), flagBlock, phaseDuration);
     }
 
     /**
-     * Sets the time of the attack.
-     * @param timeOfAttack the time for when the attack started.
+     * @return The duration of an attack phase, as a long representing milliseconds.
+     * @deprecated Use {@link #getPhaseDuration()}.
      */
-    public void setTime(final long timeOfAttack) {
-        this.time = timeOfAttack;
+    @Deprecated (since = "0.5.2", forRemoval = true)
+    public long getTime() {
+        final int milliMultiplier = 50;
+        return phaseDuration.toMillis() / milliMultiplier;
+    }
+
+    /**
+     * Get the {@link Duration} of each phase of a war flag.
+     * @return The Duration.
+     */
+    public Duration getPhaseDuration() {
+        return phaseDuration;
+    }
+
+    /**
+     * Sets the duration of the attack phases in ticks.
+     * @param ticks the time, in ticks, for when the attack started.
+     * @deprecated Use {@link #setPhaseDuration(Duration)}. Formerly, it was unclear at first glance if this method used
+     * ticks or milliseconds to store the time. Use of {@link Duration} provides up-to nanosecond accuracy, and can be
+     * converted to a number of ticks as-needed.
+     */
+    @Deprecated (since = "0.5.2", forRemoval = true)
+    public void setTime(final long ticks) {
+        final int milliMultiplier = 50; // 1 tick == 50ms
+        setPhaseDuration(Duration.ofMillis(ticks * milliMultiplier));
+    }
+
+    /**
+     * Set the {@link Duration} of each timer-material phase of a war flag.
+     * @param duration The parent Duration.
+     */
+    public void setPhaseDuration(final Duration duration) {
+        this.phaseDuration = duration;
     }
 
     /**
