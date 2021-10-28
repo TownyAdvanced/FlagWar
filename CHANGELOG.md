@@ -4,10 +4,43 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 
 ## [Unreleased][Unreleased]
 
+### Added
+
+- WarZone Configuration Section and Enhancements 
+  ([#88](https://github.com/TownyAdvanced/FlagWar/pull/88), [@LlmDl][LlmDl])
+  - Bumps Config version to 1.5 
+  - New Config section 'warzone' containing the following keys:
+    - `warzone.editable_materials` (list)
+      - List of materials that can be interacted with in war zones; Or, alternatively, cannot be interacted with.
+      - Accepts wildcards `*` and negations `-{material}`.
+    - `warzone.item_use` (boolean)
+      - Enables / Disables item usage in war_zones.
+    - `warzone.switch` (boolean)
+      - Enables / Disables use of switches in war zones.
+    - `warzone.fire` (boolean)
+      - Enables / Disables fire in war zones, add `-fire` to `warzone.editable_materials` for complete fire protection
+        when this is false.
+    - `warzone.explosions` (boolean)
+      - Enables / Disables explosions in war zones.
+    - `warzone.explosions_break_blocks` (boolean)
+      - Enables / Disables explosions effecting Blocks.
+  - API: Enhanced FlagWarConfig
+    - Add `#setEditableMaterials()` (void)
+    - Add `#isAllowingExplosionsInWarZone()` (bool)
+    - Add `#isAllowingExplosionsToBreakBlocks()` (bool)
+    - Add `#isAllowingFireInWarZone()` (bool)
+    - Add `#isAllowingSwitchInWarZone()` (bool)
+    - Add `#isAllowingItemUseInWarZone()` (bool)
+    - Add `#isEditableMaterialInWarZone(Material)` (bool)
+
 ### Changed
 
 - Refactored Holograph line population methods to reduce complexity. (commit: b08e1fa41a74019a2559d1dac7c2430f78ef22fc)
   - This is a code-quality change, and should have no bearing on server operations.
+
+### Fixed
+
+- Fix `Cell#parse(WorldCoord)` (Also from [#88](https://github.com/TownyAdvanced/FlagWar/pull/88))
 
 ## [0.5.1][0.5.1] - _2021-10-27_
 
