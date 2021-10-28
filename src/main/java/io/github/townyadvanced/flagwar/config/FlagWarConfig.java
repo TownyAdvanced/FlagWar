@@ -70,8 +70,8 @@ public final class FlagWarConfig {
     static final Material[] TIMER_MATERIALS = isUsingDefaultTimerBlocks()
         ? DEFAULT_TIMER_MATERIALS : getCustomTimerBlocks();
 
-    /** Holds the result of {@link #isHologramEnabled(boolean)}. */
-    private static boolean isHologramEnabled = isHologramEnabled(true);
+    /** Holds the result of {@link #isHologramConfigured()}. */
+    private static boolean isHologramEnabled = isHologramConfigured();
 
     /**
      * Holds the hologram settings. First checks {@link #isHologramEnabled()}, and if true retrieves the
@@ -168,10 +168,9 @@ public final class FlagWarConfig {
     /**
      * Check if Holograms are enabled in the config, and if HolographicDisplays is present. Also, if Holograms are
      * enabled, but HolographicDisplays is missing, log an error and return false.
-     * @param checkConfig Overload parameter, not used for anything else
      * @return True if both conditions are true.
      */
-    private static boolean isHologramEnabled(final boolean checkConfig) {
+    private static boolean isHologramConfigured() {
         if (PLUGIN.getConfig().getBoolean("holograms.enabled")) {
             if (PLUGIN.getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
                 return true;
@@ -184,7 +183,7 @@ public final class FlagWarConfig {
         }
     }
 
-    /** @return {@link #isHologramEnabled}, the cached result of {@link #isHologramEnabled(boolean)}. */
+    /** @return {@link #isHologramEnabled}, the cached result of {@link #isHologramConfigured()}. */
     public static boolean isHologramEnabled() {
         return isHologramEnabled;
     }
@@ -326,8 +325,11 @@ public final class FlagWarConfig {
     /**
      * Gets the time (seconds) for flag.waiting_time in the configuration file, and stores it as ticks.
      * If null, assume 30 seconds.
-     * @return the time in ticks.
+     * @return the time in seconds.
+     * @deprecated Use {@link #getFlagLifeTime()} instead. This method is no longer used internally as ticks are now
+     * calculated when they are needed - such as starting a BukkitTask.
      */
+    @Deprecated (since = "0.5.2", forRemoval = true)
     public static long getFlagWaitingTime() {
         var waitingTime = PLUGIN.getConfig().getString("flag.waiting_time");
         if (waitingTime == null) {
@@ -335,6 +337,19 @@ public final class FlagWarConfig {
         }
         return TimeTools.convertToTicks(
             TimeTools.getSeconds(waitingTime));
+    }
+
+    /**
+     * Gets the {@link Duration} for the <code>flag.waiting_time</code> in the configuration file.
+     * If null, 30 seconds is the assumed default duration.
+     * @return A Duration.
+     */
+    public static Duration getFlagLifeTime() {
+        var lifeTime = PLUGIN.getConfig().getString("flag.waiting_time");
+        if (lifeTime == null) {
+            lifeTime = "30s";
+        }
+        return Duration.ofSeconds(TimeTools.getSeconds(lifeTime));
     }
 
     /**
@@ -348,12 +363,28 @@ public final class FlagWarConfig {
     }
 
     /**
-     * Gets the time between iterations though the {@link #TIMER_MATERIALS}; a fraction of {@link #getFlagWaitingTime()}
-     * over the length of the array.
+     * Gets the time, in ticks, between iteration phases though the {@link #TIMER_MATERIALS}.
+     * <p>
+     *     This is done by calculating the Flag lifetime in ticks, then dividing by the array length.
+     *     Note that both the base lifetime tick count, as well as the resulting ticks-per-phase, are always rounded
+     *     down due to the integer math.
+     * </p>
      * @return the temporal difference between color changes, in ticks.
+     * @deprecated Switching to use of {@link Duration}, please use {@link #getFlagPhasesDuration()}. This method is no
+     * longer used internally.
      */
+    @Deprecated (since = "0.5.2", forRemoval = true)
     public static long getTimeBetweenFlagColorChange() {
-        return getFlagWaitingTime() / getTimerBlocks().length;
+        final int milliPerTick = 50;
+        return (getFlagLifeTime().toMillis() / milliPerTick) / getTimerBlocks().length;
+    }
+
+    /**
+     * Get the {@link Duration} of each timer-material phase in a war flag's lifecycle.
+     * @return The Flag Life-time, divided by the length of {@link #getTimerBlocks()}.
+     */
+    public static Duration getFlagPhasesDuration() {
+        return getFlagLifeTime().dividedBy(getTimerBlocks().length);
     }
 
     /**
