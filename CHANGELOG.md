@@ -2,9 +2,17 @@
 
 The format is based on [Keep a Changelog][Keep a Changelog], and this project adheres to [Semantic Versioning][semver].
 
-<!--## [Unreleased][Unreleased]-->
+## [Unreleased][Unreleased]
 
-## [0.5.1][0.5.1] _2021-10-27_
+### Changed
+
+- Refactored Holograph line population methods to reduce complexity. (commit: b08e1fa41a74019a2559d1dac7c2430f78ef22fc)
+  - This is a code-quality change, and should have no bearing on server operations.
+
+## [0.5.1][0.5.1] - _2021-10-27_
+
+> Note, two editions of 0.5.1 exist: Git Tag `0.5.1` and Git Tag `0.5.1b`. This changelog represents the latter, which 
+> is an amended release.
 
 ### Added
 
