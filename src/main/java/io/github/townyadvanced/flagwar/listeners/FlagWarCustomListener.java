@@ -51,6 +51,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.logging.Logger;
 
 /**
@@ -491,14 +493,14 @@ public class FlagWarCustomListener implements Listener {
 
     /**
      * Determines if the given {@link Town} is still in the cooldown period defined by
-     * {@link FlagWarConfig#getTimeToWaitAfterFlagged()}.
+     * {@link FlagWarConfig#getFlaggedInteractCooldown()}.
      *
-     * @param town the Town to inspect for cooldown.
+     * @param town The Town to inspect for cooldown.
      * @return TRUE if the cooldown is still active.
      */
     private boolean isAfterFlaggedCooldownActive(final Town town) {
-        long timeToWait = FlagWarConfig.getTimeToWaitAfterFlagged();
-        return System.currentTimeMillis() - FlagWarAPI.getFlaggedTimestamp(town) < timeToWait;
+        Duration timeToWait = FlagWarConfig.getFlaggedInteractCooldown();
+        return Instant.now().isAfter(FlagWarAPI.getFlaggedInstant(town).plus(timeToWait));
     }
 
     /**
