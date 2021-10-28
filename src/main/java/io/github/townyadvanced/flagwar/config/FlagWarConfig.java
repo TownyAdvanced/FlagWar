@@ -23,6 +23,7 @@ import io.github.townyadvanced.flagwar.util.Messaging;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NonNls;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -185,58 +186,73 @@ public final class FlagWarConfig {
             LOGGER.severe("Hologram line indexes cannot be less than zero!");
             LOGGER.severe("Ignoring invalid lines.");
         }
-        for (int i = 0; i < maxIdx + 1; i++) {
-            String lineType = holoLines.getString(i + ".type", "empty");
-            String data = Colors.translateColorCodes(holoLines.getString(i + ".data", "null"));
+        populateHolo(holoLines, holoSettings, maxIdx);
+        return holoSettings;
+    }
+
+    private static void populateHolo(final ConfigurationSection hLines,
+                                     final List<Map.Entry<String, String>> holoSettings, final int maxIndex) {
+        for (int index = 0; index < maxIndex + 1; index++) {
+            String lineType = hLines.getString(index + ".type", "empty");
+            String data = Colors.translateColorCodes(hLines.getString(index + ".data", "null"));
             switch (lineType.toLowerCase()) {
-                case "item" -> {
-                    final var nItem = i;
-                    if (Material.matchMaterial(data) == null) {
-                        LOGGER.severe(() -> String.format("Invalid hologram material %s for line %s!", data, nItem));
-                        setEmpty(holoSettings, i);
-                    } else {
-                        holoSettings.add(new AbstractMap.SimpleEntry<>("item", data));
-                    }
-                }
-                case "text" -> {
-                    final var nText = i;
-                    if (data.equals("null")) {
-                        LOGGER.severe(() -> String.format("Missing hologram text for line %s!", nText));
-                        setEmpty(holoSettings, i);
-                    } else {
-                        holoSettings.add(new AbstractMap.SimpleEntry<>("text", data));
-                    }
-                }
-                case "timer" -> {
-                    final var nTimer = i;
-                    if (!data.contains("%")) {
-                        LOGGER.severe(() -> String.format("Missing time placeholder for hologram line %s!", nTimer));
-                        setEmpty(holoSettings, i);
-                    } else {
-                        if (!hasTimerLine) {
-                            hasTimerLine = true;
-                            timerText = data;
-                            holoSettings.add(new AbstractMap.SimpleEntry<>("timer", data));
-                        } else {
-                            LOGGER.severe(() -> String.format("Duplicate timer for hologram line %s!", nTimer));
-                            setEmpty(holoSettings, i);
-                        }
-                    }
-                }
+                case "item" -> addHoloItem(index, data, holoSettings);
+                case "text" -> addHoloText(index, data, holoSettings);
+                case "timer" -> addHoloTimer(index, data, holoSettings);
                 case "empty" -> {
-                    final var nEmpty = i;
+                    final var nEmpty = index;
                     LOGGER.severe(() -> String.format("Missing hologram line type for line %s!", nEmpty));
-                    setEmpty(holoSettings, i);
+                    setEmpty(holoSettings, index);
                 }
                 default -> {
-                    final var nDef = i;
+                    final var nDef = index;
                     LOGGER.severe(() -> String.format("Invalid hologram line type %s for line %s!", lineType, nDef));
-                    setEmpty(holoSettings, i);
+                    setEmpty(holoSettings, index);
                 }
             }
         }
-        return holoSettings;
     }
+
+    @NonNls
+    private static void addHoloItem(final int index, final String data,
+                                    final List<Map.Entry<String, String>> holoSettings) {
+        if (Material.matchMaterial(data) == null) {
+            LOGGER.severe(() -> String.format("Invalid hologram material %s for line %s!", data, index));
+            setEmpty(holoSettings, index);
+        } else {
+            holoSettings.add(new AbstractMap.SimpleEntry<>("item", data));
+        }
+    }
+
+    @NonNls
+    private static void addHoloText(final int index, final String data,
+                                    final List<Map.Entry<String, String>> holoSettings) {
+        if (data.equals("null")) {
+            LOGGER.severe(() -> String.format("Missing hologram text for line %s!", index));
+            setEmpty(holoSettings, index);
+        } else {
+            holoSettings.add(new AbstractMap.SimpleEntry<>("text", data));
+        }
+    }
+
+    @NonNls
+    private static void addHoloTimer(final int index, final String data,
+                                     final List<Map.Entry<String, String>> holoSettings) {
+        if (!data.contains("%")) {
+            LOGGER.severe(() -> String.format("Missing time placeholder for hologram line %s!", index));
+            setEmpty(holoSettings, index);
+        } else {
+            if (!hasTimerLine) {
+                hasTimerLine = true;
+                timerText = data;
+                holoSettings.add(new AbstractMap.SimpleEntry<>("timer", data));
+            } else {
+                LOGGER.severe(() -> String.format("Duplicate timer for hologram line %s!", index));
+                setEmpty(holoSettings, index);
+            }
+        }
+    }
+
 
     /**
      * Helper function for {@link #getHologramConfig()}. If the supplied line is the first line (i == 0), log that it
