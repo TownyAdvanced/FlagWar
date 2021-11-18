@@ -16,7 +16,7 @@
 ################################################################################
 
 # Note: Do not modify config_version, unless you want to regenerate your config
-config_version: 1.4
+config_version: 1.5
 
 # Please see https://github.com/TownyAdvanced/FlagWar/tree/main/src/main/resources/
 # for available translations. Custom translations are only supported if they are merged.
@@ -124,3 +124,18 @@ economy:
 extra:
     # If enabled, show additional debug messages as warnings. Recommended keeping these disabled unless requested.
     debug: false
+
+# Define block interactions allowed by players in warzones.
+warzone:
+    # List of materials that can be modified in a warzone.
+    # '*' = Allow all materials.
+    # Prepend a '-' in front of a material to remove it. Used in conjunction with when you use '*'.
+    # Eg: '*,-chest,-furnace'
+    editable_materials: tnt,oak_fence,birch_fence,spruce_fence,jungle_fence,dark_oak_fence,acacia_fence,ladder,oak_door,birch_door,spruce_door,jungle_door,dark_oak_door,acacia_fence,iron_door,fire
+    item_use: 'true'
+    switch: 'true'
+ 
+    # Add '-fire' to editable materials for complete protection when setting is false. This prevents fire to be created and spread.
+    fire: 'true'
+    explosions: 'true'
+    explosions_break_blocks: 'true'

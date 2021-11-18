@@ -28,8 +28,10 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -53,6 +55,8 @@ public final class FlagWarConfig {
     private static Material flagLightMaterial = null;
     /** Beacon wireframe {@link Material}, forming the borders of a beacon. */
     private static Material beaconWireFrameMaterial = null;
+    /** Set of {@link Material} which can be built/destroyed in flagged areas. */
+    public static Set<Material> editableMaterialsInWarZone = null;
     /** {@link Plugin} instance, used internally. */
     private static final Plugin PLUGIN = FlagWar.getInstance();
     /** Holds an instance of FlagWar's logger. */
@@ -458,5 +462,70 @@ public final class FlagWarConfig {
     /** @return the value of 'rules.flag_unclaims_townblocks'. */
     public static boolean isFlaggedTownBlockUnclaimed() {
         return PLUGIN.getConfig().getBoolean("rules.flag_unclaims_townblocks");
+    }
+
+    /** Sets the {@link #editableMaterialsInWarZone} to the given Set of {@link Material}
+     * @param _editableMaterialsInWarZone Set of {@link Material}
+     */
+    public static void setEditableMaterialsInWarZone(Set<Material> _editableMaterialsInWarZone) {
+        editableMaterialsInWarZone = _editableMaterialsInWarZone;
+    }
+
+    /** @return true if the {@link Material} is in the {@link #editableMaterialsInWarZone} 
+     * @param material {@link Material}
+     */
+    public static boolean isEditableMaterialInWarZone(Material material) {
+        return editableMaterialsInWarZone.contains(material);
+    }
+
+    /** @return the value of 'warzone.switch'. */
+    public static boolean isAllowingSwitchesInWarZone() {
+        return PLUGIN.getConfig().getBoolean("warzone.switch");
+    }
+
+    /** @return the value of 'warzone.fire'. */
+    public static boolean isAllowingFireInWarZone() {
+        return PLUGIN.getConfig().getBoolean("warzone.fire");
+    }
+
+    /** @return the value of 'warzone.item_use'. */
+    public static boolean isAllowingItemUseInWarZone() {
+        return PLUGIN.getConfig().getBoolean("warzone.item_use");
+    }
+
+    /** @return the value of 'warzone.explosions'. */
+    public static boolean isAllowingExplosionsInWarZone() {
+        return PLUGIN.getConfig().getBoolean("warzone.explosions");
+    }
+
+    /** @return the value of 'warzone.explosions_break_blocks'. */
+    public static boolean explosionsBreakBlocksInWarZone() {
+        return PLUGIN.getConfig().getBoolean("warzone.explosions_break_blocks");
+    }
+
+    /** @return the allowedMaterials as a Set, using the given configPath.
+     * @param configValue {@link String}
+     */
+    public static Set<Material> getAllowedMaterials(String configValue) {
+        Set<Material> allowedMaterials = new HashSet<Material>();
+        String[] materialsArray = configValue.split(",");
+        List<String> list = new ArrayList<>();
+        if (materialsArray != null) {
+            for (String aStrArray : materialsArray) {
+                if (aStrArray != null) {
+                    list.add(aStrArray.trim());
+                }
+            }
+        }
+        for (String material : list) {
+            if (material.equals("*")) {
+                allowedMaterials.addAll(Arrays.asList(Material.values()));
+            } else if (material.startsWith("-")) {
+                allowedMaterials.remove(Material.matchMaterial(material));
+            } else {
+                allowedMaterials.add(Material.matchMaterial(material));
+            }
+        }
+        return allowedMaterials;
     }
 }
