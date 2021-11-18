@@ -471,7 +471,7 @@ public final class FlagWarConfig {
         editableMaterialsInWarZone = _editableMaterialsInWarZone;
     }
 
-    /** @return true if the {@link Material} is in the {@link #editableMaterialsInWarZone} 
+    /** @return true if the {@link Material} is in the {@link #editableMaterialsInWarZone}
      * @param material {@link Material}
      */
     public static boolean isEditableMaterialInWarZone(Material material) {

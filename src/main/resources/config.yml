@@ -134,7 +134,7 @@ warzone:
     editable_materials: tnt,oak_fence,birch_fence,spruce_fence,jungle_fence,dark_oak_fence,acacia_fence,ladder,oak_door,birch_door,spruce_door,jungle_door,dark_oak_door,acacia_fence,iron_door,fire
     item_use: 'true'
     switch: 'true'
- 
+
     # Add '-fire' to editable materials for complete protection when setting is false. This prevents fire to be created and spread.
     fire: 'true'
     explosions: 'true'
