@@ -51,6 +51,9 @@ rules:
     # Recommended being equal or greater in value to the "flag.waiting_time".
     prevented_interaction_cooldown: "10m"
 
+    # Are nations able to toggle on their neutrality, when FlagWar's allow_attacks is true?
+    nations_can_toggle_neutral: false
+
 player_limits:
     min_online_in_town: 2
     min_online_in_nation: 3
