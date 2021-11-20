@@ -728,13 +728,13 @@ public class FlagWar extends JavaPlugin {
     /**
      * Returns an {@link Instant} for which a {@link Town} was flagged, if it is within appropriate HashMap.
      * @param town Target Town
-     * @return An Instant
+     * @return An Instant which the town was last flagged. Otherwise, returns the value of {@link Instant#MAX}.
      */
     static Instant lastFlagged(final Town town) {
         if (TOWN_LAST_FLAGGED_HASH_MAP.containsKey(town)) {
             return TOWN_LAST_FLAGGED_HASH_MAP.get(town);
         }
-        return Instant.EPOCH;
+        return Instant.MAX;
     }
 
     /**
