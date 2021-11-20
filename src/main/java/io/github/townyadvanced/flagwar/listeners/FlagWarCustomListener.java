@@ -19,7 +19,6 @@ package io.github.townyadvanced.flagwar.listeners;
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownyMessaging;
-import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.event.NationPreTransactionEvent;
 import com.palmergames.bukkit.towny.event.TownPreTransactionEvent;
@@ -336,7 +335,7 @@ public class FlagWarCustomListener implements Listener {
     @SuppressWarnings("unused")
     public void onNationToggleNeutral(final NationToggleNeutralEvent nationToggleNeutralEvent) {
         if (FlagWarConfig.isAllowingAttacks()) {
-            if (!TownySettings.isDeclaringNeutral() && nationToggleNeutralEvent.getFutureState()) {
+            if (!FlagWarConfig.isDeclaringNeutralAllowed() && nationToggleNeutralEvent.getFutureState()) {
                 nationToggleNeutralEvent.setCancelled(true);
                 nationToggleNeutralEvent.setCancelMessage(Translate.fromPrefixed("error.cannot-toggle-peaceful"));
             } else if (nationToggleNeutralEvent.getFutureState() && !FlagWarAPI.getCellsUnderAttack().isEmpty()) {

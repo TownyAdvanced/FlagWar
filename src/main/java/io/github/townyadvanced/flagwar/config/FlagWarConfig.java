@@ -537,4 +537,9 @@ public final class FlagWarConfig {
     public static boolean isEditableMaterialInWarZone(final Material material) {
         return editableMaterialsInWarZone.contains(material);
     }
+
+    /** @return whether nations are allowed to toggle neutral.*/
+    public static boolean isDeclaringNeutralAllowed() {
+        return PLUGIN.getConfig().getBoolean("rules.nations_can_toggle_neutral");
+    }
 }
