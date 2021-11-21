@@ -83,8 +83,10 @@ public class FlagWar extends JavaPlugin {
     private static final Map<Town, Instant> TOWN_LAST_FLAGGED_HASH_MAP = new HashMap<>();
     /** FlagWar Copyright String. */
     private static final String FW_COPYRIGHT = "Copyright \u00a9 2021 TownyAdvanced";
-    /** Version object for storing the minimum required version of Towny for compatibility. */
-    private static final Version MIN_TOWNY_VER = Version.fromString("0.97.2.0");
+    /** Version for storing the minimum required version of Towny, for compatibility. */
+    private static final Version MIN_TOWNY_VER = Version.fromString("0.97.3.0");
+    /** Version for storing the latest supported version of Towny, for validation. */
+    private static final Version VALID_TOWNY_VER = Version.fromString("0.97.3.0");
     /** Value of minimum configuration file version. Used for determining if file should be regenerated. */
     private static final double MIN_CONFIG_VER = 1.5;
     /** BStats Metrics ID. */
@@ -192,6 +194,12 @@ public class FlagWar extends JavaPlugin {
             FW_LOGGER.log(Level.SEVERE,
                 () -> Translate.from("startup.check-towny.outdated", MIN_TOWNY_VER.toString()));
             onDisable();
+        } else if (townyVersion.compareTo(VALID_TOWNY_VER) > 0 && MIN_TOWNY_VER.compareTo(VALID_TOWNY_VER) <= 0 ) {
+            if (townyVersion.isPreRelease()) {
+                FW_LOGGER.log(Level.WARNING, () -> Translate.from("startup.check-towny.new.pre-release"));
+            } else {
+                FW_LOGGER.log(Level.WARNING, () -> Translate.from("startup.check-towny.new.stable-release"));
+            }
         } else {
             FW_LOGGER.log(Level.INFO, () -> Translate.from("startup.check-towny.good-to-go"));
         }
