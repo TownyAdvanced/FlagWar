@@ -50,6 +50,8 @@ import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 
 import java.io.IOException;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +60,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import io.github.townyadvanced.flagwar.util.Messaging;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -194,7 +198,7 @@ public class FlagWar extends JavaPlugin {
             FW_LOGGER.log(Level.SEVERE,
                 () -> Translate.from("startup.check-towny.outdated", MIN_TOWNY_VER.toString()));
             onDisable();
-        } else if (townyVersion.compareTo(VALID_TOWNY_VER) > 0 && MIN_TOWNY_VER.compareTo(VALID_TOWNY_VER) <= 0 ) {
+        } else if (townyVersion.compareTo(VALID_TOWNY_VER) > 0 && MIN_TOWNY_VER.compareTo(VALID_TOWNY_VER) <= 0) {
             if (townyVersion.isPreRelease()) {
                 FW_LOGGER.log(Level.WARNING, () -> Translate.from("startup.check-towny.new.pre-release"));
             } else {
@@ -521,7 +525,7 @@ public class FlagWar extends JavaPlugin {
             throw new TownyException(Translate.fromPrefixed("error.border-attack-only"));
         }
 
-        double costToPlaceWarFlag = FlagWarConfig.getCostToPlaceWarFlag();
+        BigDecimal costToPlaceWarFlag = BigDecimal.valueOf(FlagWarConfig.getCostToPlaceWarFlag());
         if (TownyEconomyHandler.isActive()) {
             calculateFeesAndFines(attackingResident, townBlock, costToPlaceWarFlag);
         }
@@ -529,8 +533,8 @@ public class FlagWar extends JavaPlugin {
         if (!kickstartCellAttackEvent(towny, player, block)) {
             return false;
         }
-        if (TownyEconomyHandler.isActive() && costToPlaceWarFlag > 0) {
-            payForWarFlag(attackingResident, costToPlaceWarFlag);
+        if (TownyEconomyHandler.isActive() && costToPlaceWarFlag.compareTo(BigDecimal.ZERO) > 0) {
+            payForWarFlag(attackingResident.getPlayer(), costToPlaceWarFlag);
         }
 
         setAttackerAsEnemy(landOwnerNation, attackingNation);
@@ -566,10 +570,17 @@ public class FlagWar extends JavaPlugin {
         checkIfAttackingNationHasMinOnlineForWar(attackingNation);
     }
 
-    private static void payForWarFlag(final Resident attackRes, final double cost) throws TownyException {
-        attackRes.getAccount().withdraw(cost, "War - WarFlag Cost");
-        TownyMessaging.sendResidentMessage(attackRes, Translate.fromPrefixed("warflag-purchased",
-                TownyEconomyHandler.getFormattedBalance(cost)));
+    private static void payForWarFlag(final Player atkPlayer, final BigDecimal cost) {
+        Resident atkRes = TownyAPI.getInstance().getResident(atkPlayer);
+        if (atkRes == null) {
+            Messaging.debug("Resident for Player %s was NULL.", atkPlayer);
+            return;
+        }
+        double costAdj = cost.setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+        atkRes.getAccount().withdraw(costAdj, "War - WarFlagCost");
+
+        String paid = Translate.fromPrefixed("warflag-purchased", TownyEconomyHandler.getFormattedBalance(costAdj));
+        Messaging.send(atkPlayer, paid);
     }
 
     /**
@@ -596,59 +607,62 @@ public class FlagWar extends JavaPlugin {
 
     private static void calculateFeesAndFines(final Resident attackRes,
                                               final TownBlock townBlock,
-                                              final double costToPlaceWarFlag) throws TownyException {
-            double requiredAmount = costToPlaceWarFlag;
-            double balance = attackRes.getAccount().getHoldingBalance();
+                                              final BigDecimal costToPlaceWarFlag) throws TownyException {
+            BigDecimal requiredAmount = costToPlaceWarFlag;
+            BigDecimal balance = BigDecimal.valueOf(attackRes.getAccount().getHoldingBalance());
 
             // Check that the user can pay for the war flag.
-            if (balance < costToPlaceWarFlag) {
+            if (balance.compareTo(requiredAmount) < 0) {
                 throw new TownyException(Translate.fromPrefixed("error.flag.insufficient-funds",
-                    TownyEconomyHandler.getFormattedBalance(costToPlaceWarFlag)));
+                    TownyEconomyHandler.getFormattedBalance(requiredAmount.doubleValue())));
             }
 
             // Check that the user can pay the fines from losing/winning all future war flags.
             int activeFlagCount = getNumActiveFlags(attackRes.getName());
-            double defendedAttackCost = FlagWarConfig.getDefendedAttackReward() * (activeFlagCount + 1);
-            double attackWinCost;
+            BigDecimal defendedAttackCost = BigDecimal.valueOf(FlagWarConfig.getDefendedAttackReward())
+                .multiply(BigDecimal.valueOf(activeFlagCount).add(BigDecimal.ONE));
+            BigDecimal attackWinCost;
 
-            double amount;
-            amount = FlagWarConfig.getWonHomeBlockReward();
-            double homeBlockFine = amount < 0 ? -amount : 0;
-            amount = FlagWarConfig.getWonTownBlockReward();
-            double townBlockFine = amount < 0 ? -amount : 0;
+            BigDecimal amount = BigDecimal.valueOf(FlagWarConfig.getWonHomeBlockReward());
+            BigDecimal homeBlockFine = amount.compareTo(BigDecimal.ZERO) < 0
+                ? amount.multiply(BigDecimal.valueOf(-1)) : BigDecimal.ZERO;
+
+            amount = BigDecimal.valueOf(FlagWarConfig.getWonTownBlockReward());
+            BigDecimal townBlockFine = amount.compareTo(BigDecimal.ZERO) < 0
+                ? amount.multiply(BigDecimal.valueOf(-1)) : BigDecimal.ZERO;
 
             attackWinCost = homeOrTownBlock(townBlock, activeFlagCount, homeBlockFine, townBlockFine);
 
-            if (defendedAttackCost > 0 && attackWinCost > 0) {
+            if (defendedAttackCost.compareTo(BigDecimal.ZERO) > 0 && attackWinCost.compareTo(BigDecimal.ZERO) > 0) {
                 String reason;
-                double cost;
-                if (defendedAttackCost > attackWinCost) {
+                BigDecimal cost;
+                if (defendedAttackCost.compareTo(attackWinCost) > 0) {
                     // Worst case scenario that all attacks are defended.
-                    requiredAmount += defendedAttackCost;
+                    requiredAmount = requiredAmount.add(defendedAttackCost);
                     cost = defendedAttackCost;
                     reason = Translate.from("name_defended_attack");
                 } else {
                     // Worst case scenario that all attacks go through, but is forced to pay a rebuilding fine.
-                    requiredAmount += attackWinCost;
+                    requiredAmount = requiredAmount.add(attackWinCost);
                     cost = attackWinCost;
                     reason = Translate.from("name_rebuilding");
                 }
 
                 // Check if player can pay in worst case scenario.
-                if (balance < requiredAmount) {
+                if (balance.compareTo(requiredAmount) < 0) {
                     throw new TownyException(Translate.fromPrefixed("error.insufficient-future-funds",
-                        TownyEconomyHandler.getFormattedBalance(cost), activeFlagCount + 1, reason));
+                        TownyEconomyHandler.getFormattedBalance(cost.doubleValue()), activeFlagCount + 1, reason));
                 }
             }
     }
 
-    private static double homeOrTownBlock(final TownBlock townBlock, final int activeFlags, final double homeBlockFine,
-                                          final double townBlockFine) {
-        double attackWinCost;
+    private static BigDecimal homeOrTownBlock(final TownBlock townBlock, final int activeFlags,
+                                              final BigDecimal homeBlockFine, final BigDecimal townBlockFine) {
+        BigDecimal attackWinCost;
         if (townBlock.isHomeBlock()) {
-            attackWinCost = homeBlockFine + activeFlags * townBlockFine;
+            attackWinCost = homeBlockFine.add(BigDecimal.valueOf(activeFlags).multiply(townBlockFine));
         } else {
-            attackWinCost = (activeFlags + 1) * townBlockFine;
+            attackWinCost = BigDecimal.valueOf(activeFlags).add(BigDecimal.ONE).multiply(townBlockFine);
         }
         return attackWinCost;
     }

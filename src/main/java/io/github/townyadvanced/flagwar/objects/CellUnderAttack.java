@@ -135,8 +135,7 @@ public class CellUnderAttack extends Cell {
         var minHeight = (getTopOfFlagBlock().getY() + FlagWarConfig.getBeaconMinHeightAboveFlag());
         if (minHeight <= getTopOfFlagBlock().getY()) {
             Messaging.debug("loadBeacon() returned. Minimum Y-height <= top of flag.");
-            Messaging.debug("Top-of-flag: %d, Beacon Min-Height: %d",
-                new Object[]{getTopOfFlagBlock().getY(), minHeight});
+            Messaging.debug("Top-of-flag: %d, Beacon Min-Height: %d", getTopOfFlagBlock().getY(), minHeight);
             return;
         }
 
@@ -148,7 +147,7 @@ public class CellUnderAttack extends Cell {
                     var block = flagBaseBlock.getWorld().getBlockAt(minBlock.getX() + x,
                         minBlock.getY() + y, minBlock.getZ() + z);
                     if (block.isEmpty()) {
-                        Messaging.debug("(Beacon) Spawning %s at %d, %d, %d", new Object[] {block.toString(), x, y, z});
+                        Messaging.debug("(Beacon) Spawning %s at %d, %d, %d", block.toString(), x, y, z);
                         drawBeaconOrWireframe(outerEdge, y, z, x, block);
                     }
                 }

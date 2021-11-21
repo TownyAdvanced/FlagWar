@@ -21,6 +21,7 @@ import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Formatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,13 +59,17 @@ public final class Messaging {
     }
 
     /**
-     * Send a debugMessage (FW_DEBUG: [{@link String}]) over the WARN channel, passing the supplied baseMessage and
-     * arguments to {@link String#format(String, Object...)}.
+     * Send a debugMessage (FW_DEBUG: [{@link String}]) over the WARN channel, passing the supplied messageFormat and
+     * arguments to a {@link Formatter}.
      *
-     * @param baseMessage A String, compatible with {@link java.util.Formatter#format(String, Object...)}.
+     * @param messageFormat A String, compatible with {@link Formatter#format(String, Object...)}.
      * @param args Arguments to pass to the String for formatting.
      */
-    public static void debug(@NotNull final String baseMessage, @NotNull final Object[] args) {
-        debug((String.format(baseMessage, args)));
+    public static void debug(@NotNull final String messageFormat, @NotNull final Object... args) {
+        String debugString;
+        try (Formatter formatter = new Formatter()) {
+            debugString = formatter.format(messageFormat, args).toString();
+        }
+        debug(debugString);
     }
 }

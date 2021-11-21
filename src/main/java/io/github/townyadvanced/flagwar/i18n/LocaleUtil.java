@@ -75,16 +75,16 @@ public final class LocaleUtil {
                 variant = parseVariant(region);
                 region = parseRegion(region);
                 locale = new Locale(language, region, variant);
-                Messaging.debug("Lang: %s, Region: %s, Variant: %s", new Object[]{language, region, variant});
+                Messaging.debug("Lang: %s, Region: %s, Variant: %s", language, region, variant);
             } else if (localeString.matches(regionRegEx)) {
                 locale = new Locale(language, region);
-                Messaging.debug("Lang: %s, Region: %s", new Object[]{language, region});
+                Messaging.debug("Lang: %s, Region: %s", language, region);
             } else {
                 Messaging.debug("Defaulting: Unable to match an appropriate Region or Variant.");
                 locale = defaultLocale;
             }
         } else if (localeString.matches(localeRegEx)) {
-            Messaging.debug("Regex matched for generic Locale. Using %s", new Object[]{localeString});
+            Messaging.debug("Regex matched for generic Locale. Using %s", localeString);
             locale = new Locale(localeString);
         } else {
             logger.severe("Defaulting Locale! File exists, but does not match a valid regular expression.");
@@ -115,7 +115,7 @@ public final class LocaleUtil {
             variant = "";
             Messaging.debug("Variant regex contained neither '_' nor '-' and is therefore null.");
         }
-        Messaging.debug("Variant = %s", new Object[]{variant});
+        Messaging.debug("Variant = %s", variant);
         return variant;
     }
 
@@ -124,10 +124,10 @@ public final class LocaleUtil {
         String newRegion;
         if (region.contains("_")) {
             newRegion = region.substring(0, region.lastIndexOf("_"));
-            Messaging.debug("Region set to '%s', using '_' to lint.", new Object[]{newRegion});
+            Messaging.debug("Region set to '%s', using '_' to lint.", newRegion);
         } else if (region.contains("-")) {
             newRegion = region.substring(0, region.lastIndexOf("-"));
-            Messaging.debug("Region set to '%s', using '-' to lint.", new Object[]{newRegion});
+            Messaging.debug("Region set to '%s', using '-' to lint.", newRegion);
         } else {
             newRegion = region;
             Messaging.debug("Region set to equal 'region'");

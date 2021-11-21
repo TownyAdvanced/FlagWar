@@ -393,7 +393,7 @@ public final class FlagWarConfig {
      */
     public static boolean isDrawingBeacon() {
         var beaconIsDrawn = PLUGIN.getConfig().getBoolean("beacon.draw");
-        Messaging.debug("(Config) Should beacons be drawn: %s", new Object[] {beaconIsDrawn});
+        Messaging.debug("(Config) Should beacons be drawn: %s", beaconIsDrawn);
         return beaconIsDrawn;
     }
 
