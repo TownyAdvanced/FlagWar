@@ -80,6 +80,16 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 
 - Fix `Cell#parse(WorldCoord)` (Also from [#88](https://github.com/TownyAdvanced/FlagWar/pull/8))
 
+### Deprecated API
+
+- `CellAttackEvent#getTime()` (long)
+- `CellAttackEvent#setTime(long)`
+- `CellUnderAttack#formatTime(int, string)` (String)
+- `FlagWarAPI#getFlaggedTimestamp(Town)` (long)
+- `FlagWarConfig#getFlagWaitingTime()` (long)
+- `FlagWarConfig#getTimeBetweenFlagColorChange()` (long)
+- `FlagWarConfig#getTimeToWaitAfterFlagged()` (long)
+
 ## [0.5.1][0.5.1] - _2021-10-27_
 
 > Note, two editions of 0.5.1 exist: Git Tag `0.5.1` and Git Tag `0.5.1b`. This changelog represents the latter, which 
