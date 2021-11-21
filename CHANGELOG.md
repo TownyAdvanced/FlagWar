@@ -2,9 +2,34 @@
 
 The format is based on [Keep a Changelog][Keep a Changelog], and this project adheres to [Semantic Versioning][semver].
 
-## [Unreleased][Unreleased]
+<!--## [Unreleased][Unreleased]-->
+
+## [0.5.2][0.5.2] - 21/11/21
+
+### Known-Issues
+- Impossible to attack plots that have
+[blocks placed at world build height](https://github.com/TownyAdvanced/FlagWar/issues/84). Marked as release-blocker for
+the next release (0.5.3, or, 0.6.0)
 
 ### Added
+
+- `VALIDATED_TOWNY_VER` version field:
+  - Stores a manually-updated version string, containing the highest tested version of Towny that we've validated
+  FlagWar for.
+  - If a newer version of Towny is run, a startup warning is issued from either of the following translation keys.
+    - `startup.check-towny.new.stable-release`
+      - "Running Version of Towny released after FlagWar version. Are you up-to-date?"
+    - `startup.check-towny.new.pre-release`
+      - "This Towny Pre-Release is newer than what we've tested. Please report any issues."
+    - _French and Spanish (MX) keys were machine-translated using [bing translate](https://translate.bing.com/). If you
+    are familiar with either, feel free to drop in and make sure that the translation is appropriate._
+
+- `rules.nations_can_toggle_neutral` config setting. _Default: `FALSE`_
+  ([#96](https://github.com/TownyAdvnaced/FlagWar/pull/#96), [@LlmDl][LlmDl])
+  - Replaces the now removed option that was in Towny. If False, prevents Towny from
+  allowing Nations to become neutral. 
+  - ℹ️It is important for users to not run FlagWar 0.5.1, or older, with Towny 0.97.2.15, or newer. The required API
+    used for determining player-set neutrality in older releases is no longer present in newer Towny versions.
 
 - WarZone Configuration Section and Enhancements 
   ([#88](https://github.com/TownyAdvanced/FlagWar/pull/88), [@LlmDl][LlmDl])
@@ -35,12 +60,25 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 
 ### Changed
 
+- Build System
+  - Bumped SpotBugs-Annotations, Checkstyle, and IntelliJ Java Annotations
+  - Bumped Minimum Towny Version to 0.97.3.0. Same as validated version.
+
 - Refactored Holograph line population methods to reduce complexity. (commit: b08e1fa41a74019a2559d1dac7c2430f78ef22fc)
   - This is a code-quality change, and should have no bearing on server operations.
 
+- Changed how time is tracked and calculated: ([#89](https://github.com/))
+  - FlagWar will now use Duration and Instant instead of the primitive `long` when storing cool-downs and timestamps.
+
+- Changed how payments / fees are calculated: Using BigDecimal to avoid IEEE754 floating-point inconsistencies.
+Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
+
+- Refactored how Messaging.debug(string, args) functions: Use `Object...` over `Object[]`, mimicking String.format().
+  - Avoids passing args as `new Object[]{arg1,arg2,etc}`
+
 ### Fixed
 
-- Fix `Cell#parse(WorldCoord)` (Also from [#88](https://github.com/TownyAdvanced/FlagWar/pull/88))
+- Fix `Cell#parse(WorldCoord)` (Also from [#88](https://github.com/TownyAdvanced/FlagWar/pull/8))
 
 ## [0.5.1][0.5.1] - _2021-10-27_
 
@@ -250,7 +288,8 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 <!---------------------------->
 
 <!-- Links to Tagged Changes -->
-[Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.1b...HEAD
+[Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.2...HEAD
+[0.5.2]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.1b...0.5.2
 [0.5.1]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.0...0.5.1b
 [0.5.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.3.0...0.4.0
