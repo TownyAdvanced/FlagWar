@@ -7,7 +7,7 @@
     <groupId>io.github.townyadvanced.flagwar</groupId>
     <artifactId>FlagWar</artifactId>
     <packaging>jar</packaging>
-    <version>0.5.2</version>
+    <version>0.5.3-SNAPSHOT</version>
     <description>An OG war system for TownyAdvanced. Celebrating a decade of Flag-based Towny Warfare.</description>
 
     <properties>
