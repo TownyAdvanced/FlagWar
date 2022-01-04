@@ -398,7 +398,8 @@ public class CellUnderAttack extends Cell {
      * exists, using {@link #destroyHologram()}.
      */
     public void cancel() {
-        thread.cancel();
+        if (thread != null)
+            thread.cancel();
         if (FlagWarConfig.isHologramEnabled()) {
             hologramThread.cancel();
         }
@@ -453,7 +454,7 @@ public class CellUnderAttack extends Cell {
      * {@link #beaconWireframeBlocks} lists.
      */
     public boolean isPartOfBeacon(final Block block) {
-        return beaconFlagBlocks.contains(block) || beaconWireframeBlocks.contains(block);
+        return beaconFlagBlocks != null && beaconFlagBlocks.contains(block) || beaconWireframeBlocks.contains(block);
     }
 
     /**
