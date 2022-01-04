@@ -398,8 +398,9 @@ public class CellUnderAttack extends Cell {
      * exists, using {@link #destroyHologram()}.
      */
     public void cancel() {
-        if (thread != null)
+        if (thread != null) {
             thread.cancel();
+        }
         if (FlagWarConfig.isHologramEnabled()) {
             hologramThread.cancel();
         }
