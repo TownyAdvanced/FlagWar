@@ -28,7 +28,6 @@ import com.palmergames.bukkit.towny.event.town.TownLeaveEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreSetHomeBlockEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreUnclaimCmdEvent;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
-import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -578,29 +577,20 @@ public class FlagWarCustomListener implements Listener {
     }
 
     private void messageResident(final Resident resident, final String message) {
-        try {
-            TownyMessaging.sendResidentMessage(resident, message);
-        } catch (TownyException e) {
-            logger.warning("Unable to send resident a message.");
-            logger.warning(e.getMessage());
+        if (resident.isOnline()) {
+            resident.getPlayer().sendMessage(message);
         }
     }
 
     private void msgAttackDefended(final Resident atkRes, final Resident defRes, final String formattedMoney) {
         String message;
-        try {
-            message = Translate.fromPrefixed("area.defended.attacker", defRes.getFormattedName(), formattedMoney);
-            TownyMessaging.sendResidentMessage(atkRes, message);
-        } catch (TownyException e) {
-            logger.warning("Unable to message an attacker about a defended attack!");
-            logger.warning(e.getMessage());
+        message = Translate.fromPrefixed("area.defended.attacker", defRes.getFormattedName(), formattedMoney);
+        if (atkRes.isOnline()) {
+            atkRes.getPlayer().sendMessage(message);
         }
-        try {
-            message = Translate.fromPrefixed("area.defended.defender", atkRes.getFormattedName(), formattedMoney);
-            TownyMessaging.sendResidentMessage(defRes, message);
-        } catch (TownyException e) {
-            logger.warning("Unable to message a defender about a defended attack!");
-            logger.warning(e.getMessage());
+        message = Translate.fromPrefixed("area.defended.defender", atkRes.getFormattedName(), formattedMoney);
+        if (defRes.isOnline()) {
+            defRes.getPlayer().sendMessage(message);
         }
     }
 }
