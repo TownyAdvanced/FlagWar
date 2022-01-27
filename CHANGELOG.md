@@ -2,7 +2,51 @@
 
 The format is based on [Keep a Changelog][Keep a Changelog], and this project adheres to [Semantic Versioning][semver].
 
-<!--## [Unreleased][Unreleased]-->
+## [Unreleased][Unreleased]
+
+### Known-Issues
+- Impossible to attack plots that have
+  [blocks placed at world build height](https://github.com/TownyAdvanced/FlagWar/issues/84). Marked as release-blocker.
+- Use JitPack is not reliable for builds > 0.5.2 due to issues fetching from `apache.snapshots`. This is being looked into.
+
+### Added
+
+- Russian Translation ([#101](https://github.com/TownyAdvanced/FlagWar/pull/101), [@HighError][HighError])
+
+### Changed
+
+- Update usages of the deprecated `TownyMessaging#sendResidentMessage` calls to use Spigot's `Player#sendMessage`.
+  ([#108](https://github.com/TownyAdvanced/FlagWar/pull/108), [@LlmDl][LlmDl])
+- Updated Dependencies ([Dependabot][Dependabot])
+  - Towny 0.97.3.0 to 0.97.5.1
+    - Updated manually to 0.97.5.15, using Glaremaster's Repository (Jitpack having issues.)
+  - bstats-bukkit 2.2.1 to 3.0.0
+  - maven-compiler-plugin 3.8.1 to 3.9.0
+  - spotbugs-annotations 4.5.2 to 4.5.3
+  - holographicdisplays-api 2.4.5 to 2.4.9
+- Switch Towny repository from JitPack to Glare's Repository.
+
+### Fixed
+
+- War Beacon blocks are no longer checked against when War Beacons are disabled.
+([#107](https://github.com/TownyAdvanced/FlagWar/pull/107), [@LlmDl][LlmDl])
+
+### Removed
+
+- Removed deprecated time methods.
+  - CellUnderAttack
+    - `formatTime(int, String)`
+  - CellAttackEvent
+    - `getTime()` \[long\]
+    - `setTime(long)`
+  - FlagWarAPI
+    - `getFlaggedTimestamp(Town)`
+  - FlagWar
+    - `getMaterialShiftTime()` \[long\]
+  - FlagWarConfig
+    - `getFlagWaitingTime()` \[long\]
+    - `getTimeBetweenFlagColorChange()` \[long\]
+    - `getTimeToWaitAfterFlagged()` \[long\]
 
 ## [0.5.2][0.5.2] - 21/11/21
 
@@ -319,8 +363,10 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 [adoptium]: https://adoptium.net
 
 <!-- Recognized Contributors (Non-exhaustive) -->
-[Bibithom]: https://github.com/Bibithom
+[Bibithom]: https://github.com/Bibithom/
 [Zren]: https://github.com/zren/
 [LlmDl]: https://github.com/LlmDl/
 [gaffy00]: https://github.com/gaffy00/
 [Mrredstone5230]: https://github.com/Mrredstone5230/
+[HighError]: https://github.com/HighError/
+[Dependabot]: https://github.com/Dependabot/
