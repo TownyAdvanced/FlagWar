@@ -323,23 +323,6 @@ public final class FlagWarConfig {
     }
 
     /**
-     * Gets the time (seconds) for flag.waiting_time in the configuration file, and stores it as ticks.
-     * If null, assume 30 seconds.
-     * @return the time in seconds.
-     * @deprecated Use {@link #getFlagLifeTime()} instead. This method is no longer used internally as ticks are now
-     * calculated when they are needed - such as starting a BukkitTask.
-     */
-    @Deprecated (since = "0.5.2", forRemoval = true)
-    public static long getFlagWaitingTime() {
-        var waitingTime = PLUGIN.getConfig().getString("flag.waiting_time");
-        if (waitingTime == null) {
-            waitingTime = "30s";
-        }
-        return TimeTools.convertToTicks(
-            TimeTools.getSeconds(waitingTime));
-    }
-
-    /**
      * Gets the {@link Duration} for the <code>flag.waiting_time</code> in the configuration file.
      * If null, 30 seconds is the assumed default duration.
      * @return A Duration.
@@ -360,23 +343,6 @@ public final class FlagWarConfig {
      */
     public static boolean isDebugging() {
         return PLUGIN.getConfig().getBoolean("extra.debug");
-    }
-
-    /**
-     * Gets the time, in ticks, between iteration phases though the {@link #TIMER_MATERIALS}.
-     * <p>
-     *     This is done by calculating the Flag lifetime in ticks, then dividing by the array length.
-     *     Note that both the base lifetime tick count, as well as the resulting ticks-per-phase, are always rounded
-     *     down due to the integer math.
-     * </p>
-     * @return the temporal difference between color changes, in ticks.
-     * @deprecated Switching to use of {@link Duration}, please use {@link #getFlagPhasesDuration()}. This method is no
-     * longer used internally.
-     */
-    @Deprecated (since = "0.5.2", forRemoval = true)
-    public static long getTimeBetweenFlagColorChange() {
-        final int milliPerTick = 50;
-        return (getFlagLifeTime().toMillis() / milliPerTick) / getTimerBlocks().length;
     }
 
     /**
@@ -433,17 +399,6 @@ public final class FlagWarConfig {
     /** @return the beacon's minimum y-value above the flag, as defined by the 'beacon.height_above_flag.min' key. */
     public static int getBeaconMinHeightAboveFlag() {
         return PLUGIN.getConfig().getInt("beacon.height_above_flag.min");
-    }
-
-    /** Get the value of 'rules.prevented_interaction_cooldown' in milliseconds, or the default value. (10 min)
-     * @return the value, or 600000(ms)
-     * @deprecated Method superceded by {@link #getFlaggedInteractCooldown()}
-     */
-    @Deprecated (since = "0.5.2", forRemoval = true)
-    public static long getTimeToWaitAfterFlagged() {
-        String timeString = PLUGIN.getConfig().getString("rules.prevented_interaction_cooldown");
-        final long defValue = 600000;
-        return timeString != null ? TimeTools.getMillis(timeString) : defValue;
     }
 
     /**

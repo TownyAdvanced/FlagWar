@@ -329,25 +329,6 @@ public class CellUnderAttack extends Cell {
     }
 
     /**
-     * Function used to format the hologram {@link #flagLifeTime} according to the timer text defined in
-     * {@link FlagWarConfig#getTimerText()}.
-     * @param timeIn Time, in seconds.
-     * @param toFormat The string to format. Should contain one or more format specifiers with argument indexes
-     *                 corresponding with seconds, minutes, and hours, respectively.
-     * @return The formatted string.
-     * @deprecated Using {@link #formatTime(Duration, String)} instead.
-     */
-    @Deprecated (since = "0.5.2", forRemoval = true)
-    public String formatTime(final int timeIn, final String toFormat) {
-        final int secondsInMinute = 60;
-        final int secondsInHour = 3600;
-        final int seconds = (timeIn % secondsInMinute);
-        final int minutes = (timeIn % secondsInHour) / secondsInMinute;
-        final int hours = timeIn / secondsInHour;
-        return String.format(toFormat, seconds, minutes, hours);
-    }
-
-    /**
      * Function used to format a {@link Duration} according to the formatting defined in
      * {@link FlagWarConfig#getTimerText()}.
      * @param duration Duration to extrapolate the hours, minutes, and seconds from.

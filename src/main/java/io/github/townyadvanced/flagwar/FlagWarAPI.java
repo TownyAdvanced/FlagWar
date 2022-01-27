@@ -123,41 +123,12 @@ public final class FlagWarAPI {
     }
 
     /**
-     * Get a timestamp for when a {@link Town} was last flagged.
-     * @param town The town to check.
-     * @return the previous timestamp for when the town was flagged, in milliseconds.
-     *         Note that it is possible to return the value of the Epoch, zero,
-     *         when the town is not in the last-flagged hash map privately defined by {@link FlagWar}.
-     * @deprecated Superseded by the {@link #getFlaggedInstant(Town)} method.
-     */
-    @Deprecated (since = "0.5.2", forRemoval = true)
-    public static long getFlaggedTimestamp(final Town town) {
-        return getFlaggedInstant(town).toEpochMilli();
-    }
-
-    /**
      * Get the Instant for when a {@link Town} was last flagged.
      * @param town Target Town.
      * @return Instant of last flag.
      */
     public static Instant getFlaggedInstant(final Town town) {
         return FlagWar.lastFlagged(town);
-    }
-
-    /**
-     * Gets the time in ticks between when a Flag shifts phases.
-     * <p>
-     *     This is achieved by dividing the time in milliseconds by 50 to get tick count.
-     *     Calculations are done without rounding; so while 450 ms would be 9 ticks, so too would 499 ms.
-     * </p>
-     * @return Expected ticks of a war flag timer phase.
-     * @deprecated Lack of documentation may have lead to confusion on which unit was used for measuring the time.
-     * Use {@link FlagWarConfig#getFlagPhasesDuration()} if possible. It can be converted as needed.
-     */
-    @Deprecated(since = "0.5.2", forRemoval = true)
-    public static long getMaterialShiftTime() {
-        final int millisPerTick = 50;
-        return FlagWarConfig.getFlagPhasesDuration().toMillis() / millisPerTick;
     }
 
 }

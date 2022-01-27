@@ -91,34 +91,11 @@ public class CellAttackEvent extends Event implements Cancellable {
     }
 
     /**
-     * @return The duration of an attack phase, as a long representing milliseconds.
-     * @deprecated Use {@link #getPhaseDuration()}.
-     */
-    @Deprecated (since = "0.5.2", forRemoval = true)
-    public long getTime() {
-        final int milliMultiplier = 50;
-        return phaseDuration.toMillis() / milliMultiplier;
-    }
-
-    /**
      * Get the {@link Duration} of each phase of a war flag.
      * @return The Duration.
      */
     public Duration getPhaseDuration() {
         return phaseDuration;
-    }
-
-    /**
-     * Sets the duration of the attack phases in ticks.
-     * @param ticks the time, in ticks, for when the attack started.
-     * @deprecated Use {@link #setPhaseDuration(Duration)}. Formerly, it was unclear at first glance if this method used
-     * ticks or milliseconds to store the time. Use of {@link Duration} provides up-to nanosecond accuracy, and can be
-     * converted to a number of ticks as-needed.
-     */
-    @Deprecated (since = "0.5.2", forRemoval = true)
-    public void setTime(final long ticks) {
-        final int milliMultiplier = 50; // 1 tick == 50ms
-        setPhaseDuration(Duration.ofMillis(ticks * milliMultiplier));
     }
 
     /**
