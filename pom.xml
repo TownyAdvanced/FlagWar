@@ -74,17 +74,13 @@
             <id>glaremasters repo</id>
             <url>https://repo.glaremasters.me/repository/towny/</url>
         </repository>
-        <repository> <!-- For HolographicDisplays - namespace will change for HD-APIv3 -->
+        <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.io/repository/maven-public/</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>daily</updatePolicy>
             </snapshots>
-        </repository>
-        <repository> <!-- Still used by HolographicDisplays - HD-APIv2 has been removed from old namespace on codemc-repo -->
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -119,7 +115,7 @@
             <version>3.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.github.filoghost.HolographicDisplays</groupId>
+            <groupId>com.gmail.filoghost.holographicdisplays</groupId>
             <artifactId>holographicdisplays-api</artifactId>
             <version>2.4.9</version>
             <scope>provided</scope>
