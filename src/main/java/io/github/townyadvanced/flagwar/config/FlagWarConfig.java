@@ -140,8 +140,8 @@ public final class FlagWarConfig {
         Set<Material> allowedMaterials = new HashSet<>();
         String editableMaterials = PLUGIN.getConfig().getString("warzone.editable_materials");
         if (editableMaterials == null || editableMaterials.isEmpty()) {
-            editableMaterials = "*";
-            LOGGER.severe("Editable Materials Configuration Missing Or Empty! Assuming All Materials Allowed!");
+            editableMaterialsInWarZone = allowedMaterials;
+            return;
         }
         String[] matArray = editableMaterials.split(",");
         List<String> list = Arrays.stream(matArray).toList();
