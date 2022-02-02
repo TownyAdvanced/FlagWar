@@ -406,7 +406,9 @@ public final class FlagWarConfig {
      * @return The calculated Duration.
      */
     public static Duration getFlaggedInteractCooldown() {
-        return Duration.ofMillis(PLUGIN.getConfig().getLong("rules.prevented_interaction_cooldown"));
+        String timeString = PLUGIN.getConfig().getString("rules.prevented_interaction_cooldown");
+        final long defValue = 600000;
+        return Duration.ofMillis(timeString != null ? TimeTools.getSeconds(timeString) : defValue);
     }
 
     /** @return the value of 'rules.prevent_interaction_while_flagged.town'. */
