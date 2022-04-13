@@ -98,6 +98,8 @@ public class FlagWar extends JavaPlugin {
     public static final int METRICS_ID = 10325;
     /** Holds FlagWar's Bukkit-assigned JUL {@link Logger}. */
     private static final Logger FW_LOGGER = Logger.getLogger("FlagWar");
+    /** The number of cardinal directions. */
+    private static final int DIRECTIONS = 4;
 
     /** Stores instance of Plugin, for easy operations. */
     private static Plugin plugin;
@@ -553,12 +555,11 @@ public class FlagWar extends JavaPlugin {
         return true;
     }
 
-    private static boolean isThisPlotProtectedByNeighbours(WorldCoord attackedCoord) {
+    private static boolean isThisPlotProtectedByNeighbours(final WorldCoord attackedCoord) {
         UUID townUUID = attackedCoord.getTownOrNull().getUUID();
         int friendlyPlots = 0;
-        int directions = 4;
         int[][] offset = {{-1, 0 }, {1, 0 }, {0, -1 }, {0, 1 } };
-        for (int i = 0; i < directions; i++) {
+        for (int i = 0; i < DIRECTIONS; i++) {
             WorldCoord wc = new WorldCoord(attackedCoord.getWorldName(), attackedCoord.getX() + offset[i][0],
                     attackedCoord.getZ() + offset[i][1]);
             if (wc.hasTownBlock() && wc.getTownOrNull().getUUID().equals(townUUID)) {
