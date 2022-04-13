@@ -24,6 +24,7 @@ import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
+import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -58,6 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -525,6 +527,13 @@ public class FlagWar extends JavaPlugin {
             throw new TownyException(Translate.fromPrefixed("error.border-attack-only"));
         }
 
+        // Check if the attack can be cancelled due to neighbouring plots.
+        if (FlagWarConfig.isAttackingLimitedByNeighbouringPlots()
+            && isThisPlotProtectedByNeighbours(worldCoord)) {
+            throw new TownyException(Translate.fromPrefixed("error.neighbouring-plots-protect-this-townblock",
+                FlagWarConfig.numberOfNeighbouringPlotsToPreventAttack()));
+        }
+
         BigDecimal costToPlaceWarFlag = BigDecimal.valueOf(FlagWarConfig.getCostToPlaceWarFlag());
         if (TownyEconomyHandler.isActive()) {
             calculateFeesAndFines(attackingResident, townBlock, costToPlaceWarFlag);
@@ -543,6 +552,19 @@ public class FlagWar extends JavaPlugin {
         TownyMessaging.sendGlobalMessage(Translate.fromPrefixed("broadcast.area.under_attack",
             landOwnerTown.getFormattedName(), worldCoord.toString(), attackingResident.getFormattedName()));
         return true;
+    }
+
+    private static boolean isThisPlotProtectedByNeighbours(WorldCoord attackedCoord) {
+        UUID townUUID = attackedCoord.getTownOrNull().getUUID();
+        int friendlyPlots = 0;
+        int[][] offset = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+        for (int i = 0; i < 4; i++) {
+            WorldCoord wc = new WorldCoord(attackedCoord.getWorldName(), attackedCoord.getX() + offset[i][0], attackedCoord.getZ() + offset[i][1]);
+            if (wc.hasTownBlock() && wc.getTownOrNull().getUUID().equals(townUUID)) {
+                friendlyPlots++;
+            }
+        }
+        return friendlyPlots >= FlagWarConfig.numberOfNeighbouringPlotsToPreventAttack();
     }
 
     private static void checkFlagHeight(final Block block) throws TownyException {

@@ -496,6 +496,16 @@ public final class FlagWarConfig {
         return PLUGIN.getConfig().getBoolean("rules.only_attack_borders");
     }
 
+    /** @return the value of 'rules.limit_attacks_based_on_neighbouring_plots'. */
+    public static boolean isAttackingLimitedByNeighbouringPlots() {
+        return PLUGIN.getConfig().getBoolean("rules.limit_attacks_based_on_neighbouring_plots");
+    }
+
+    /** @return the value of 'rules.only_attack_borders'. */
+    public static int numberOfNeighbouringPlotsToPreventAttack() {
+        return PLUGIN.getConfig().getInt("rules.neighbouring_plots_required_to_prevent_attack");
+    }
+
     /** @return the value of 'rules.flag_takes_ownership_of_town_blocks'. */
     public static boolean isFlaggedTownBlockTransferred() {
         return PLUGIN.getConfig().getBoolean("rules.flag_takes_ownership_of_town_blocks");
