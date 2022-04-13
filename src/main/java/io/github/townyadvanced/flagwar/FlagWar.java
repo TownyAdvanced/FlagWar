@@ -24,7 +24,6 @@ import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
-import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -557,9 +556,11 @@ public class FlagWar extends JavaPlugin {
     private static boolean isThisPlotProtectedByNeighbours(WorldCoord attackedCoord) {
         UUID townUUID = attackedCoord.getTownOrNull().getUUID();
         int friendlyPlots = 0;
-        int[][] offset = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
-        for (int i = 0; i < 4; i++) {
-            WorldCoord wc = new WorldCoord(attackedCoord.getWorldName(), attackedCoord.getX() + offset[i][0], attackedCoord.getZ() + offset[i][1]);
+        int directions = 4;
+        int[][] offset = {{-1, 0 }, {1, 0 }, {0, -1 }, {0, 1 } };
+        for (int i = 0; i < directions; i++) {
+            WorldCoord wc = new WorldCoord(attackedCoord.getWorldName(), attackedCoord.getX() + offset[i][0],
+                    attackedCoord.getZ() + offset[i][1]);
             if (wc.hasTownBlock() && wc.getTownOrNull().getUUID().equals(townUUID)) {
                 friendlyPlots++;
             }
