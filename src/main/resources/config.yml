@@ -16,7 +16,7 @@
 ################################################################################
 
 # Note: Do not modify config_version, unless you want to regenerate your config
-config_version: 1.5
+config_version: 1.6
 
 # Please see https://github.com/TownyAdvanced/FlagWar/tree/main/src/main/resources/
 # for available translations. Custom translations are only supported if they are merged.
@@ -32,6 +32,16 @@ rules:
 
     # Force attackers to only attack edge plots.
     only_attack_borders: true
+
+    # Prevent attacks on townblocks with x neighbouring plots.
+    # When enabled plots will be protected from attack by neighbouring plots. Flag war will check North,
+    # East, South and West of the plot under attack. By default this requires 2 plots for protection,
+    # requiring attackers to begin from a corner. This Rule should be accompanied by the
+    # flag_takes_ownership_of_town_blocks: true Rule.
+    limit_attacks_based_on_neighbouring_plots: false
+
+    # How many neighbour plots are required to prevent an attack? Do not set this value to 0.
+    neighbouring_plots_required_to_prevent_attack: 2
 
     # False: Attackers capture plots when they win. Disable if you prefer *not* dealing with that.
     flag_unclaims_townblocks: false
