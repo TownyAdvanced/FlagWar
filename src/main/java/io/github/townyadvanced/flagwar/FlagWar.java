@@ -93,7 +93,7 @@ public class FlagWar extends JavaPlugin {
     /** Version for storing the latest supported version of Towny, for validation. */
     private static final Version VALID_TOWNY_VER = Version.fromString("0.97.3.0");
     /** Value of minimum configuration file version. Used for determining if file should be regenerated. */
-    private static final double MIN_CONFIG_VER = 1.5;
+    private static final double MIN_CONFIG_VER = 1.6;
     /** BStats Metrics ID. */
     public static final int METRICS_ID = 10325;
     /** Holds FlagWar's Bukkit-assigned JUL {@link Logger}. */
