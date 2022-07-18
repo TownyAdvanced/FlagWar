@@ -479,7 +479,7 @@ public class FlagWar extends JavaPlugin {
     public static boolean callAttackCellEvent(final Towny towny, final Player player, final Block block,
                                               final WorldCoord worldCoord) throws TownyException {
 
-        checkFlagHeight(block);
+        flagPlacementChecks(block);
 
         var townyUniverse = TownyUniverse.getInstance();
         var attackingResident = townyUniverse.getResident(player.getUniqueId());
@@ -550,6 +550,38 @@ public class FlagWar extends JavaPlugin {
         return true;
     }
 
+    private static void flagPlacementChecks(final Block block) throws TownyException {
+        int seaLevel = block.getWorld().getSeaLevel();
+        int yLoc = block.getY();
+        int allowedDepth = FlagWarConfig.getDepthAllowance();
+        if (yLoc < seaLevel - allowedDepth) { // ensure flag is at or above sea-level - potentially configurable.
+            if (allowedDepth > 0) {
+                throw new TownyException(Translate.fromPrefixed("error.flag.below-sea-level-allowance", allowedDepth));
+            } else {
+                throw new TownyException(Translate.fromPrefixed("error.flag.below-sea-level"));
+            }
+        }
+
+        // Check 3 blocks up, ensure they valid blocks to overwrite.
+        final byte checkHeight = 5;
+        for (byte i = 1; i < checkHeight; i++) {
+            Block iBlock = block.getWorld().getBlockAt(block.getX(), block.getY() + i, block.getZ());
+            if (iBlock.isLiquid()) { // Submersion Check
+                throw new TownyException(Translate.fromPrefixed("error.flag.avoid-liquid"));
+            } else if (!iBlock.isEmpty()) { // General Space Check
+                throw new TownyException(Translate.fromPrefixed("error.flag.need-space-above"));
+            }
+        }
+
+        if (!block.getWorld().hasCeiling()) { // Ignore if natural ceiling for world
+            Block highestBlock = block.getWorld().getHighestBlockAt(block.getLocation());
+            if (highestBlock.getY() > block.getWorld().getMaxHeight() - checkHeight
+                && yLoc < highestBlock.getY() - 1) { // Traditional check
+                throw new TownyException(Translate.fromPrefixed("error.flag.need-above-ground"));
+            }
+        }
+    }
+
     private static boolean isThisPlotProtectedByNeighbours(final WorldCoord attackedCoord) {
         UUID townUUID = attackedCoord.getTownOrNull().getUUID();
         int friendlyPlots = 0;
@@ -562,13 +594,6 @@ public class FlagWar extends JavaPlugin {
             }
         }
         return friendlyPlots >= FlagWarConfig.numberOfNeighbouringPlotsToPreventAttack();
-    }
-
-    private static void checkFlagHeight(final Block block) throws TownyException {
-        int topY = block.getWorld().getHighestBlockYAt(block.getX(), block.getZ()) - 1;
-        if (block.getY() < topY) {
-            throw new TownyException(Translate.fromPrefixed("error.flag.need-above-ground"));
-        }
     }
 
     private static void setAttackerAsEnemy(final Nation defendingNation, final Nation attackingNation)

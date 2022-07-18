@@ -8,7 +8,7 @@
 ### Summary
 
 If an attacking player is attempting to flag a plot, and a ceiling exists
-above the flag location, the flag will not be placable. Some defending
+above the flag location, the flag will not be placeable. Some defending
 players will take advantage of this fact by placing a plot-wide ceiling
 at a world's maximum build height.
 
@@ -25,17 +25,16 @@ exploit-ability.
 This issue should be easily addressed by applying a few hard-coded rules
 to when and where a war-flag may be placed.
 
-- [ ] Allow placing flags under ceilings. (Required)
-  - Conform to change in Caves & Cliffs update
-    - Valid worlds can now span y:320 &ndash; y:-64. Rules related to
-    height should adjust for them.
-  - 3-high space required for flag
-  - Always broadcast coordinates (see next todo item)
-  - Require 1-block space around flag, at timer height.
-  - Require above sea level (_Config_)
-  - Require above 
+- [x] Allow placing flags under ceilings. (Required)
+  - [x] Traditional check: In a world without a natural ceiling, and the highest block is within 5 meters of max height.
+  - [x] Add a basic height check:
+    - [x] (submersion) checks for if a flag base has a liquid up to 4 meters above it
+    - [x] (general space) check same vertical space for any non-empty, non-liquid blocks
+  - [x] Add sea-level (minus depth) check
+    - Flag base must be at or above a world's sea-level, minus modifier.
+    - Default modifier: 12 meters
 
-- [ ] Coordinate Broadcasting
+- [ ] Rework Coordinate Broadcasting
   - Specific Audience Options (_Config_)
     - everyone
     - direct (_atk + def; default_)

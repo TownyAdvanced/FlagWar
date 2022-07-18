@@ -64,6 +64,10 @@ rules:
     # Are nations able to toggle on their neutrality, when FlagWar's allow_attacks is true?
     nations_can_toggle_neutral: false
 
+    # Depth (meters) below sea-level a flag may be placed. (world-defined)
+    # Notice: Flags are still subject to submersion checks at this time.
+    flag_depth_allowance: 12
+
 player_limits:
     min_online_in_town: 2
     min_online_in_nation: 3

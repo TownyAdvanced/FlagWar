@@ -133,6 +133,13 @@ public final class FlagWarConfig {
     }
 
     /**
+     * @return The configuration value for the depth, below a world's sea level, a flag may be placed.
+     */
+    public static int getDepthAllowance() {
+        return PLUGIN.getConfig().getInt("rules.flag_depth_allowance");
+    }
+
+    /**
      * Sets the editableMaterialsInWarZone.
      */
     @NonNls
