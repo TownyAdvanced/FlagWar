@@ -494,13 +494,8 @@ public class FlagWar extends JavaPlugin {
             throw new TownyException(Translate.fromPrefixed("error.player-not-in-nation"));
         }
 
-        if (attackingResident.hasTown()) {
+        if (attackingResident.hasTown() && attackingResident.hasNation()) {
             attackingTown = attackingResident.getTown();
-        } else {
-            return false;
-        }
-
-        if (attackingResident.hasNation()) {
             attackingNation = attackingResident.getNation();
         } else {
             return false;
