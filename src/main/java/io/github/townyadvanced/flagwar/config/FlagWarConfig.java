@@ -100,6 +100,14 @@ public final class FlagWarConfig {
     }
 
     /**
+     * Query the accuracy level for coordinate-related broadcasts.
+     * @return Output of rules.flag_broadcast_accuracy.
+     */
+    public static String getBroadcastAccuracy() {
+        return PLUGIN.getConfig().getString("rules.flag_broadcast_accuracy", "towny");
+    }
+
+    /**
      * Returns a copy of the {@link Material} array making up the WarFlag's timer indicators.
      * @return a clone of the Material array.
      */

@@ -34,14 +34,10 @@ to when and where a war-flag may be placed.
     - Flag base must be at or above a world's sea-level, minus modifier.
     - Default modifier: 12 meters
 
-- [ ] Rework Coordinate Broadcasting
-  - Specific Audience Options (_Config_)
-    - everyone
-    - direct (_atk + def; default_)
-    - defenders
-    - allied-def (_def and allies_)
-    - direct-plus (_direct, plus allies for both_)
-  - Show precise elevation, default false (_Config_) 
-  - Location Accuracy (_Config_)
-    - General (_Towny Coord, default_)
-    - Accurate (_Minecraft's X,Z_)
+- [x] Rework Coordinate Broadcasting
+  
+  - [ ] ~~Specific Audience Options (_Config_)~~
+    - This specific plan was scrapped.
+  - [x] Location Accuracy (_Config_)
+    - towny (_Towny Coord, default_)
+    - precise (_Minecraft's X,Y,Z_)

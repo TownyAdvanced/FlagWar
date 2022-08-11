@@ -68,6 +68,11 @@ rules:
     # Notice: Flags are still subject to submersion checks at this time.
     flag_depth_allowance: 12
 
+    # Determines accuracy of location broadcasts.
+    # "towny" = Towny World Coordinates (`/towny map`)
+    # "precise" = X,Y,Z coordinates of the flag's base block.
+    flag_broadcast_accuracy: "towny"
+
 player_limits:
     min_online_in_town: 2
     min_online_in_nation: 3

@@ -545,8 +545,13 @@ public class FlagWar extends JavaPlugin {
         setAttackerAsEnemy(landOwnerNation, attackingNation);
         towny.updateCache(worldCoord);
 
+        String coordinates = worldCoord.toString();
+        if (FlagWarConfig.getBroadcastAccuracy().equalsIgnoreCase("precise")) {
+            coordinates = String.format("%d, %d, %d", block.getX(), block.getY(), block.getZ());
+        }
+
         TownyMessaging.sendGlobalMessage(Translate.fromPrefixed("broadcast.area.under_attack",
-            landOwnerTown.getFormattedName(), worldCoord.toString(), attackingResident.getFormattedName()));
+            landOwnerTown.getFormattedName(), coordinates, attackingResident.getFormattedName()));
         return true;
     }
 
