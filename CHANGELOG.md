@@ -2,28 +2,28 @@
 
 The format is based on [Keep a Changelog][Keep a Changelog], and this project adheres to [Semantic Versioning][semver].
 
+If a change is missing, it is likely simple or was forgotten about when this log was updated. 😓
+
+Feel free to PR corrections to this file.
+
 ## [Unreleased][Unreleased]
 
 ### Known-Issues
-- Impossible to attack plots that have
+- [Possibly fixed: See #168](https://github.com/TownyAdvanced/FlagWar/pull/168) &mdash; Impossible to attack plots that have
   [blocks placed at world build height](https://github.com/TownyAdvanced/FlagWar/issues/84). Marked as release-blocker.
-- Use JitPack is not reliable for builds > 0.5.2 due to issues fetching from `apache.snapshots`. This is being looked into.
 
 ### Added
 
 - Russian Translation ([#101](https://github.com/TownyAdvanced/FlagWar/pull/101), [@HighError][HighError])
+- Accuracy switch for broadcast locations. ([#168](https://github.com/TownyAdvanced/FlagWar/pull/168))
+- Ability to place flags in worlds marked as having ceilings. ([#168](https://github.com/TownyAdvanced/FlagWar/pull/168))
+  - Sea-level based restrictions added to compensate. 
 
 ### Changed
 
 - Update usages of the deprecated `TownyMessaging#sendResidentMessage` calls to use Spigot's `Player#sendMessage`.
   ([#108](https://github.com/TownyAdvanced/FlagWar/pull/108), [@LlmDl][LlmDl])
-- Updated Dependencies ([Dependabot][Dependabot])
-  - Towny 0.97.3.0 to 0.97.5.1
-    - Updated manually to 0.97.5.15, using Glaremaster's Repository (Jitpack having issues.)
-  - bstats-bukkit 2.2.1 to 3.0.0
-  - maven-compiler-plugin 3.8.1 to 3.9.0
-  - spotbugs-annotations 4.5.2 to 4.5.3
-  - holographicdisplays-api 2.4.5 to 2.4.9
+- Updated Dependencies (via [Dependabot][Dependabot])
 - Switch Towny repository from JitPack to Glare's Repository.
 
 ### Fixed
