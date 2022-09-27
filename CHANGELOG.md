@@ -12,24 +12,33 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 ### Added
 
 - Russian Translation ([#101](https://github.com/TownyAdvanced/FlagWar/pull/101), [@HighError][HighError])
+- Feature: Neighbouring plots protect from attack. ([#141](https://github.com/TownyAdvanced/FlagWar/pull/141), [@LlmDl][LlmDl])
 
 ### Changed
 
 - Update usages of the deprecated `TownyMessaging#sendResidentMessage` calls to use Spigot's `Player#sendMessage`.
   ([#108](https://github.com/TownyAdvanced/FlagWar/pull/108), [@LlmDl][LlmDl])
-- Updated Dependencies ([Dependabot][Dependabot])
-  - Towny 0.97.3.0 to 0.97.5.1
-    - Updated manually to 0.97.5.15, using Glaremaster's Repository (Jitpack having issues.)
-  - bstats-bukkit 2.2.1 to 3.0.0
-  - maven-compiler-plugin 3.8.1 to 3.9.0
-  - spotbugs-annotations 4.5.2 to 4.5.3
-  - holographicdisplays-api 2.4.5 to 2.4.9
+- Allow for an empty editable materials list. ([#117](https://github.com/TownyAdvanced/FlagWar/pull/117), [@LlmDl][LlmDl])
 - Switch Towny repository from JitPack to Glare's Repository.
+- Update the static min towny versions. ([#142](https://github.com/TownyAdvanced/FlagWar/pull/142), [@LlmDl][LlmDl])
+- Updated Dependencies ([Dependabot][Dependabot])
+  - Towny 0.97.3.0 to 0.98.3.8
+  - bstats-bukkit 2.2.1 to 3.0.0
+  - maven-checkstyle-plugin 3.1.2 to 3.2.0
+  - maven-compiler-plugin 3.8.1 to 3.10.1
+  - maven-javadoc-plugin 3.3.1 to 3.4.1
+  - maven-shade-plugin 3.3.0-SNAPSHOT to 3.3.0 
+  - maven-site-plugin 3.9.1 to 3.12.1
+  - spotbugs-annotations 4.5.2 to 4.7.2
+  - holographicdisplays-api 2.4.5 to 2.4.9
+  - checkstyle 9.1 to 10.3.3
 
 ### Fixed
 
 - War Beacon blocks are no longer checked against when War Beacons are disabled.
 ([#107](https://github.com/TownyAdvanced/FlagWar/pull/107), [@LlmDl][LlmDl])
+- Fix FlaggedInteractCooldown not parsing with TimeTools.
+([#116](https://github.com/TownyAdvanced/FlagWar/pull/116), [@LlmDl][LlmDl])
 
 ### Removed
 
