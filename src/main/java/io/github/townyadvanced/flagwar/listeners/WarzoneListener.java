@@ -74,6 +74,7 @@ public class WarzoneListener implements Listener {
         if (!FlagWarConfig.isEditableMaterialInWarZone(mat)) {
             townyDestroyEvent.setCancelled(true);
             townyDestroyEvent.setMessage(msgCannotEdit("destroy", mat));
+            return;
         }
         townyDestroyEvent.setCancelled(false);
     }
