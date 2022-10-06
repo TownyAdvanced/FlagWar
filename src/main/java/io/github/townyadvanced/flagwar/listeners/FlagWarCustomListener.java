@@ -496,8 +496,11 @@ public class FlagWarCustomListener implements Listener {
      * @return TRUE if the cooldown is still active.
      */
     private boolean isAfterFlaggedCooldownActive(final Town town) {
+        Instant lastFlagged = FlagWarAPI.getFlaggedInstant(town);
+        if (lastFlagged == Instant.MAX)
+            return false;
         Duration timeToWait = FlagWarConfig.getFlaggedInteractCooldown();
-        return Instant.now().isBefore(FlagWarAPI.getFlaggedInstant(town).plus(timeToWait));
+        return Instant.now().isBefore(lastFlagged.plus(timeToWait));
     }
 
     /**
