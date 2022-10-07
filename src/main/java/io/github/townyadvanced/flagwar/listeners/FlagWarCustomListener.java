@@ -497,8 +497,9 @@ public class FlagWarCustomListener implements Listener {
      */
     private boolean isAfterFlaggedCooldownActive(final Town town) {
         Instant lastFlagged = FlagWarAPI.getFlaggedInstant(town);
-        if (lastFlagged == Instant.MAX)
+        if (lastFlagged == Instant.MAX) {
             return false;
+        }
         Duration timeToWait = FlagWarConfig.getFlaggedInteractCooldown();
         return Instant.now().isBefore(lastFlagged.plus(timeToWait));
     }
