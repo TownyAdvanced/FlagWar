@@ -2,22 +2,30 @@
 
 The format is based on [Keep a Changelog][Keep a Changelog], and this project adheres to [Semantic Versioning][semver].
 
+If a change is missing, it is likely simple or was forgotten about when this log was updated. 😓
+
+Feel free to PR corrections to this file.
+
 ## [Unreleased][Unreleased]
 
 ### Known-Issues
-- Impossible to attack plots that have
+- [Possibly fixed: See #168](https://github.com/TownyAdvanced/FlagWar/pull/168) &mdash; Impossible to attack plots that have
   [blocks placed at world build height](https://github.com/TownyAdvanced/FlagWar/issues/84). Marked as release-blocker.
-- Use JitPack is not reliable for builds > 0.5.2 due to issues fetching from `apache.snapshots`. This is being looked into.
 
 ### Added
 
 - Russian Translation ([#101](https://github.com/TownyAdvanced/FlagWar/pull/101), [@HighError][HighError])
+- Accuracy switch for broadcast locations. ([#168](https://github.com/TownyAdvanced/FlagWar/pull/168))
+- Ability to place flags in worlds marked as having ceilings. ([#168](https://github.com/TownyAdvanced/FlagWar/pull/168))
+  - Sea-level based restrictions added to compensate. 
 - Feature: Neighbouring plots protect from attack. ([#141](https://github.com/TownyAdvanced/FlagWar/pull/141), [@LlmDl][LlmDl])
 
 ### Changed
 
 - Update usages of the deprecated `TownyMessaging#sendResidentMessage` calls to use Spigot's `Player#sendMessage`.
   ([#108](https://github.com/TownyAdvanced/FlagWar/pull/108), [@LlmDl][LlmDl])
+- Updated Dependencies (via [Dependabot][Dependabot])
+- Switch Towny repository from JitPack to Glare's Repository.
 - Allow for an empty editable materials list. ([#117](https://github.com/TownyAdvanced/FlagWar/pull/117), [@LlmDl][LlmDl])
 - Switch Towny repository from JitPack to Glare's Repository.
 - Update the static min towny versions. ([#142](https://github.com/TownyAdvanced/FlagWar/pull/142), [@LlmDl][LlmDl])

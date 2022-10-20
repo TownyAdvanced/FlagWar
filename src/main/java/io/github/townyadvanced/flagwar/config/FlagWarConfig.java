@@ -100,6 +100,14 @@ public final class FlagWarConfig {
     }
 
     /**
+     * Query the accuracy level for coordinate-related broadcasts.
+     * @return Output of rules.flag_broadcast_accuracy.
+     */
+    public static String getBroadcastAccuracy() {
+        return PLUGIN.getConfig().getString("rules.flag_broadcast_accuracy", "towny");
+    }
+
+    /**
      * Returns a copy of the {@link Material} array making up the WarFlag's timer indicators.
      * @return a clone of the Material array.
      */
@@ -130,6 +138,13 @@ public final class FlagWarConfig {
             LOGGER.severe("Timer blocks list was null! Using default list.");
             return DEFAULT_TIMER_MATERIALS;
         }
+    }
+
+    /**
+     * @return The configuration value for the depth, below a world's sea level, a flag may be placed.
+     */
+    public static int getDepthAllowance() {
+        return PLUGIN.getConfig().getInt("rules.flag_depth_allowance");
     }
 
     /**
