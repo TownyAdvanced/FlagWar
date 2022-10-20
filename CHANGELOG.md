@@ -6,7 +6,9 @@ If a change is missing, it is likely simple or was forgotten about when this log
 
 Feel free to PR corrections to this file.
 
-## [Unreleased][Unreleased]
+<!-- ## [Unreleased][Unreleased]-->
+
+## [0.5.3][0.5.3]
 
 ### Known-Issues
 - [Possibly fixed: See #168](https://github.com/TownyAdvanced/FlagWar/pull/168) &mdash; Impossible to attack plots that have
@@ -359,7 +361,8 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 <!---------------------------->
 
 <!-- Links to Tagged Changes -->
-[Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.2...HEAD
+[Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.3...HEAD
+[0.5.3]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.2...0.5.3
 [0.5.2]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.1b...0.5.2
 [0.5.1]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.0...0.5.1b
 [0.5.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.4.0...0.5.0
