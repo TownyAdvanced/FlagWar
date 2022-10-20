@@ -136,7 +136,6 @@ public class FlagWarCustomListener implements Listener {
      * @param cellWonEvent The event declaring the cell attack successfully completed, and triggers the processing.
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    @SuppressWarnings("unused")
     public void onCellWonEvent(final CellWonEvent cellWonEvent) {
         if (cellWonEvent.isCancelled()) {
             return;
@@ -497,8 +496,12 @@ public class FlagWarCustomListener implements Listener {
      * @return TRUE if the cooldown is still active.
      */
     private boolean isAfterFlaggedCooldownActive(final Town town) {
+        Instant lastFlagged = FlagWarAPI.getFlaggedInstant(town);
+        if (lastFlagged == Instant.MAX) {
+            return false;
+        }
         Duration timeToWait = FlagWarConfig.getFlaggedInteractCooldown();
-        return Instant.now().isAfter(FlagWarAPI.getFlaggedInstant(town).plus(timeToWait));
+        return Instant.now().isBefore(lastFlagged.plus(timeToWait));
     }
 
     /**
