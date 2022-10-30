@@ -82,7 +82,7 @@ Administrator Resources
 
 | FlagWar Release | 📅 Released On   | Requirements                                                                |
 | :-------------: | :--------------: | :-------------------------------------------------------------------------: |
-| [v0.5.3][0.5.3] | October 27, 2021 | Towny (_0.97.3.0_+), Bukkit API-based&ast; server (_1.17.1_, _1.8.2_, _1.19.2_)      |
+| [v0.5.3][0.5.3] | October 27, 2021 | Towny (_0.97.3.0_+), Bukkit API-based&ast; server (_1.17.1_, _1.18.2_, _1.19.2_)      |
 | [v0.5.2][0.5.2] | October 27, 2021 | Towny (_0.97.3.0_+), Bukkit API-based&ast; server (_1.16.5_, _1.17.1_)      |
 | [v0.5.1][0.5.1] | August 12, 2021  | Towny (_0.97.2.0 - 0.97.2.14_), Bukkit API-based&ast; server (_1.16.5_, _1.17.1_)     |
 | _Pre-History_   | _2011 - 2021_    | Deprecated & Removed in Towny versions 0.97.0.0 and 0.97.1.0, respectively. | 
