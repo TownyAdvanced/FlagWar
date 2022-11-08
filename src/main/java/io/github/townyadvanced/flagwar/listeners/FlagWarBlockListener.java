@@ -126,7 +126,7 @@ public class FlagWarBlockListener implements Listener {
      * Iteratively runs over {@link FlagWar#checkBlock(Player, Block, org.bukkit.event.Cancellable)} using the event's
      * {@link Player}, {@link Block} ({@link BlockPistonRetractEvent#getBlocks()}), and the
      * {@link BlockPistonRetractEvent} itself.
-     *
+     * <br/>
      * Fails fast if {@link BlockPistonRetractEvent#isSticky()} is false.
      *
      * @param blockPistonRetractEvent the {@link BlockPistonRetractEvent}.
@@ -158,7 +158,7 @@ public class FlagWarBlockListener implements Listener {
                 event.setCancelled(false);
             }
         } catch (TownyException townyException) {
-            event.setMessage(townyException.getMessage());
+            event.setCancelMessage(townyException.getMessage());
         }
     }
 }

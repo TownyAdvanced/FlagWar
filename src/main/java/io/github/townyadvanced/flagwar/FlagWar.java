@@ -87,11 +87,11 @@ public class FlagWar extends JavaPlugin {
     /** Holds a map of {@link Town}s, and when they were last flagged. */
     private static final Map<Town, Instant> TOWN_LAST_FLAGGED_HASH_MAP = new HashMap<>();
     /** FlagWar Copyright String. */
-    private static final String FW_COPYRIGHT = "Copyright \u00a9 2021 TownyAdvanced";
+    private static final String FW_COPYRIGHT = "Copyright \u00a9 2021–2023 TownyAdvanced";
     /** Version for storing the minimum required version of Towny, for compatibility. */
-    private static final Version MIN_TOWNY_VER = Version.fromString("0.98.1.0");
+    private static final Version MIN_TOWNY_VER = Version.fromString("0.98.3.14");
     /** Version for storing the latest supported version of Towny, for validation. */
-    private static final Version VALID_TOWNY_VER = Version.fromString("0.98.1.0");
+    private static final Version VALID_TOWNY_VER = Version.fromString("0.98.4.0");
     /** Value of minimum configuration file version. Used for determining if file should be regenerated. */
     private static final double MIN_CONFIG_VER = 1.6;
     /** BStats Metrics ID. */
@@ -174,7 +174,7 @@ public class FlagWar extends JavaPlugin {
             ? Objects.requireNonNull(plugin.getConfig().getString("translation")) : "en_US");
     }
 
-    /** Register FlagWar with bStats. Viewable from: https://bstats.org/plugin/bukkit/FlagWar/ */
+    /** Register FlagWar with bStats. Viewable from: <a href="https://bstats.org/plugin/bukkit/FlagWar/">...</a> */
     @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
     @SuppressWarnings({"unused", "java:S1854", "java:S1481"})
     private void bStatsKickstart() {
