@@ -73,7 +73,7 @@ public class WarzoneListener implements Listener {
 
         if (!FlagWarConfig.isEditableMaterialInWarZone(mat)) {
             townyDestroyEvent.setCancelled(true);
-            townyDestroyEvent.setMessage(msgCannotEdit("destroy", mat));
+            townyDestroyEvent.setCancelMessage(msgCannotEdit("destroy", mat));
             return;
         }
         townyDestroyEvent.setCancelled(false);
@@ -97,7 +97,7 @@ public class WarzoneListener implements Listener {
 
         if (!FlagWarConfig.isEditableMaterialInWarZone(mat)) {
             townyBuildEvent.setCancelled(true);
-            townyBuildEvent.setMessage(msgCannotEdit("build", mat));
+            townyBuildEvent.setCancelMessage(msgCannotEdit("build", mat));
             return;
         }
         townyBuildEvent.setCancelled(false);
@@ -120,7 +120,7 @@ public class WarzoneListener implements Listener {
 
         if (!FlagWarConfig.isAllowingItemUseInWarZone()) {
             townyItemuseEvent.setCancelled(true);
-            townyItemuseEvent.setMessage(Translate.from("error.warzone.cannot-use-item"));
+            townyItemuseEvent.setCancelMessage(Translate.from("error.warzone.cannot-use-item"));
             return;
         }
         townyItemuseEvent.setCancelled(false);
@@ -143,7 +143,7 @@ public class WarzoneListener implements Listener {
 
         if (!FlagWarConfig.isAllowingSwitchInWarZone()) {
             townySwitchEvent.setCancelled(true);
-            townySwitchEvent.setMessage(Translate.from("error.warzone.cannot-use-switch"));
+            townySwitchEvent.setCancelMessage(Translate.from("error.warzone.cannot-use-switch"));
             return;
         }
         townySwitchEvent.setCancelled(false);
@@ -197,9 +197,9 @@ public class WarzoneListener implements Listener {
         || !FlagWarConfig.isAllowingExplosionsToBreakBlocksInWarZone()) {
             return;
         }
-        List<Block> toAllow = new ArrayList<Block>();
+        List<Block> toAllow = new ArrayList<>();
         for (Block block : event.getVanillaBlockList()) {
-            // Wilderness or not located inside of a Cell which is under attack, skip it.
+            // Wilderness or not located inside a Cell which is under attack, skip it.
             if (TownyAPI.getInstance().isWilderness(block)
             || !Cell.parse(block.getLocation()).isUnderAttack()) {
                 continue;
@@ -208,7 +208,9 @@ public class WarzoneListener implements Listener {
             toAllow.add(block);
         }
         // Add all TownyFilteredBlocks to our list, since our list will be used.
-        toAllow.addAll(event.getTownyFilteredBlockList());
+        if (event.getTownyFilteredBlockList() != null) {
+            toAllow.addAll(event.getTownyFilteredBlockList());
+        }
 
         // Return the list of allowed blocks for this block explosion event.
         event.setBlockList(toAllow);
