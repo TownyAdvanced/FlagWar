@@ -67,6 +67,7 @@ public class FlagWarBlockListener implements Listener {
     public void onFlagWarFlagPlace(final TownyBuildEvent townyBuildEvent) {
         if (townyBuildEvent.getTownBlock() == null
             || !townyBuildEvent.getTownBlock().getWorld().isWarAllowed()
+            || !townyBuildEvent.getTownBlock().getTownOrNull().isAllowedToWar()
             || !FlagWarConfig.isAllowingAttacks()
             || !townyBuildEvent.getMaterial().equals(FlagWarConfig.getFlagBaseMaterial())) {
 
