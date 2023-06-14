@@ -6,7 +6,7 @@
 
 <details><summary><b>Transitioning from the Integrated FlagWar system.</b></summary>
 
-FlagWar has it's own methods for configuration and localization, independent of Towny. Please be advised that we
+FlagWar has its own methods for configuration and localization, independent of Towny. Please be advised that we
 currently only provide an English translation. There will likely be other teething issues, but we are here to help with
 them when required. See [Getting Support][get-support] if you have issues.
 
@@ -18,7 +18,7 @@ If you would like to help out with development, translations, or other efforts: 
 
 FlagWar, makes use of the [bStats](https://bstats.org/) metrics library. For an idea of what is collected, you can view
 the telemetry reports [here](https://bstats.org/plugin/bukkit/FlagWar/10325).
-While we would appreciate it if you were to keep bStats reporting enabled, you can opt-out of sending telemetry
+While we would appreciate it if you were to keep bStats reporting enabled, you can opt out of sending telemetry
 by modifying the bStats config found at `yourServer/plugins/bStats/`.
 </details>
 
@@ -28,7 +28,7 @@ Summary
 
 FlagWar is one of the first official war systems in the Towny Advanced ecosystem, dating back
 around 2011. FlagWar works similar to a strategy game, where players can capture regions of other Nations and
-Towns quickly and with pin-point precision.
+Towns quickly and with pinpoint precision.
 
 > I started getting re-involved with Towny’s development, and got some inspiration from users about
 > how to do warring Nations. I also took a gander at some of the mechanics of a similar plugin that
@@ -62,7 +62,7 @@ Sections
 Licensing
 ---------
 
-<img align="right" height="155" src="https://opensource.org/files/OSI_Approved_License.png">
+<img alt="OSI Approved License" style="float: right;" height="155" src="https://i0.wp.com/opensource.org/wp-content/uploads/2009/06/OSIApproved_100X125.png?resize=100%2C125&ssl=1">
 
 FlagWar is licensed under the [Apache License, Version 2.0][apache-v2], a license approved by the
 [Open Source Initiative][osi] and is [GPL Compatible][gpl-apache].
@@ -80,12 +80,12 @@ Administrator Resources
 
 ### Supported Releases
 
-| FlagWar Release | 📅 Released On   | Requirements                                                                |
-| :-------------: | :--------------: | :-------------------------------------------------------------------------: |
-| [v0.5.3][0.5.3] | October 20, 2022 | Towny (_0.97.3.0_+), Bukkit API-based&ast; server (_1.17.1_, _1.18.2_, _1.19.2_)      |
-| [v0.5.2][0.5.2] | October 27, 2021 | Towny (_0.97.3.0_+), Bukkit API-based&ast; server (_1.16.5_, _1.17.1_)      |
-| [v0.5.1][0.5.1] | August 12, 2021  | Towny (_0.97.2.0 - 0.97.2.14_), Bukkit API-based&ast; server (_1.16.5_, _1.17.1_)     |
-| _Pre-History_   | _2011 - 2021_    | Deprecated & Removed in Towny versions 0.97.0.0 and 0.97.1.0, respectively. | 
+| FlagWar Release |  📅 Released On  |                                   Requirements                                    |
+|:---------------:|:----------------:|:---------------------------------------------------------------------------------:|
+| [v0.5.3][0.5.3] | October 20, 2022 | Towny (_0.97.3.0_+), Bukkit API-based&ast; server (_1.17.1_, _1.18.2_, _1.19.2_)  |
+| [v0.5.2][0.5.2] | October 27, 2021 |      Towny (_0.97.3.0_+), Bukkit API-based&ast; server (_1.16.5_, _1.17.1_)       |
+| [v0.5.1][0.5.1] | August 12, 2021  | Towny (_0.97.2.0 - 0.97.2.14_), Bukkit API-based&ast; server (_1.16.5_, _1.17.1_) |
+|  _Pre-History_  |  _2011 - 2021_   |    Deprecated & Removed in Towny versions 0.97.0.0 and 0.97.1.0, respectively.    | 
 
 > FlagWar has adopted the use of Paper as an API provider. Spigot should however still be viable. Please
 > submit a ticket if you experience any issues.
@@ -96,7 +96,7 @@ Administrator Resources
 
 ### Staying up to Date
 
-<img align=right src="https://user-images.githubusercontent.com/879756/65964779-3a067200-e423-11e9-9928-938b976af2c2.gif" height="155">
+<img alt="Staying Up to Date: Github: click Watch, click Releases Only" style="float: right;" src="https://user-images.githubusercontent.com/879756/65964779-3a067200-e423-11e9-9928-938b976af2c2.gif" height="155">
 
 All Release builds and most Development builds have been made available here on GitHub's [Releases][releases] page.  
 We encourage server admins to "watch" FlagWar on GitHub in order to receive update notifications.  
