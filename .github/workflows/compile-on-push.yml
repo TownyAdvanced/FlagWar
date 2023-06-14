@@ -1,5 +1,5 @@
 name: Maven Compile (Multiple JDK)
-on: [push, pull_request]
+on: [push]
 jobs:
     build:
         runs-on: ubuntu-22.04
