@@ -39,7 +39,10 @@
             <name>FlagCourier</name>
             <email>flagcourier@pm.me</email>
             <organization>Towny Advanced</organization>
-            <roles><role>FlagWar Maintainer</role></roles>
+            <roles>
+                <role>Contributor</role>
+                <role>Former FlagWar Maintainer (2021&ndash;2023)</role>
+            </roles>
             <timezone>-6</timezone>
             <url>https://github.com/FlagCourier</url>
         </developer>
