@@ -136,7 +136,7 @@ Documentation could also use a fair bit of work. Help in this department would b
 We document both in plain-text (LICENSE, NOTICE) and in GitHub-Flavored Markdown (everywhere else).
 
 If you are interested in writing for the [FlagWar Wiki][wiki], feel free to ask on the [Towny Discord][discord]
-(ping FlagCourier), or chime in on the [Towny Discussion Board][discuss-towny] to be given write access. 
+(please use the `#flagwar` channel), or chime in on the [Towny Discussion Board][discuss-towny] to be given write access. 
 
 ### Localizing FlagWar
 
