@@ -8,7 +8,57 @@ Feel free to PR corrections to this file.
 
 <!-- ## [Unreleased][Unreleased]-->
 
-## [0.5.3][0.5.3]
+## [0.5.4][0.5.4]
+
+### Known-Issues
+- [Possibly fixed: See #168](https://github.com/TownyAdvanced/FlagWar/pull/168) &mdash; Impossible to attack plots that have
+  [blocks placed at world build height](https://github.com/TownyAdvanced/FlagWar/issues/84). Marked as release-blocker. **Testers that want to test that it is fixed would be appreciated.**
+
+### Added
+
+* Make use of new Town#isAllowedToWar Towny feature. by @LlmDl in https://github.com/TownyAdvanced/FlagWar/pull/221
+
+### Changed
+
+* Bump Snapshot and Baseline Targets by @TheFlagCourier in https://github.com/TownyAdvanced/FlagWar/pull/196
+* Bump towny from 0.98.4.0 to 0.98.4.3 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/197
+* Bump checkstyle from 10.3.4 to 10.4 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/193
+* Bump maven-shade-plugin from 3.4.0 to 3.4.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/190
+* Bump maven-checkstyle-plugin from 3.2.0 to 3.2.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/214
+* Bump bstats-bukkit from 3.0.0 to 3.0.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/223
+* Bump checkstyle from 10.4 to 10.8.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/229
+* Bump annotations from 23.0.0 to 24.0.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/231
+* Bump maven-surefire-plugin from 2.22.2 to 3.0.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/241
+* Bump maven-javadoc-plugin from 3.4.1 to 3.5.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/235
+* Bump maven-compiler-plugin from 3.10.1 to 3.11.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/236
+* Bump maven-failsafe-plugin from 2.22.2 to 3.0.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/243
+* Bump checkstyle from 10.8.0 to 10.9.2 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/245
+* Bump towny from 0.98.6.0 to 0.99.0.2 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/251
+* Bump bstats-bukkit from 3.0.1 to 3.0.2 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/247
+* Bump checkstyle from 10.9.2 to 10.9.3 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/246
+* Bump maven-failsafe-plugin from 3.0.0 to 3.1.2 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/272
+* Bump maven-surefire-plugin from 3.0.0 to 3.1.2 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/273
+* Bump maven-checkstyle-plugin from 3.2.1 to 3.3.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/264
+* Bump checkstyle from 10.9.3 to 10.12.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/268
+* Bump towny from 0.99.0.2 to 0.99.1.3 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/274
+* Bump towny from 0.99.1.3 to 0.99.5.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/287
+* Bump checkstyle from 10.12.0 to 10.12.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/281
+* Bump maven-source-plugin from 3.2.1 to 3.3.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/275
+* Bump maven-shade-plugin from 3.4.1 to 3.5.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/279
+* Transfer of Maintainership by @TheFlagCourier in https://github.com/TownyAdvanced/FlagWar/pull/288
+* Bump com.puppycrawl.tools:checkstyle from 10.12.1 to 10.12.4 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/303
+* Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.5.0 to 3.6.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/300
+
+
+### Fixed
+
+- None
+
+### Removed
+
+- None
+
+## [0.5.3][0.5.3] Oct 20, 2022
 
 ### Known-Issues
 - [Possibly fixed: See #168](https://github.com/TownyAdvanced/FlagWar/pull/168) &mdash; Impossible to attack plots that have
