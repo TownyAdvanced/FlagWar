@@ -125,8 +125,8 @@ public class FlagWar extends JavaPlugin {
      * Initializes the Scheduler object based on whether we're using Folia/Paper or Spigot/Bukkit.
      */
     public FlagWar() {
-        this.scheduler = townyVersionCheck() ? isFoliaClassPresent() ?
-                new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this) : null;
+        this.scheduler = townyVersionCheck() ? isFoliaClassPresent()
+                ? new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this) : null;
     }
 
     /**
