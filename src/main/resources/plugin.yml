@@ -21,3 +21,5 @@ softdepend:
 
 depend:
     - Towny
+
+folia-supported: true

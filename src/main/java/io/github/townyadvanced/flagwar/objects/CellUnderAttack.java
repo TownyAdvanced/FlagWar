@@ -21,6 +21,8 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.palmergames.bukkit.towny.object.Coord;
+import com.palmergames.bukkit.towny.scheduling.ScheduledTask;
+
 import io.github.townyadvanced.flagwar.CellAttackThread;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.HologramUpdateThread;
@@ -68,8 +70,8 @@ public class CellUnderAttack extends Cell {
     private List<Block> beaconWireframeBlocks;
     /** Identifies the phase the war flag is in. **/
     private int flagPhaseID;
-    /** A thread used to update the state of the {@link CellUnderAttack} using the scheduleSyncRepeatingTask. */
-    private BukkitTask thread;
+    /** A thread used to update the state of the {@link CellUnderAttack} using the Scheduler's repeating task. */
+    private ScheduledTask thread;
     /** A thread used to update the {@link #hologram}'s {@link #timerLine}. */
     private BukkitTask hologramThread;
     /** Holds the war flag hologram. */
@@ -362,8 +364,7 @@ public class CellUnderAttack extends Cell {
         final int tps = 20;
         final int milliTicks = 50;
         final long ticksFromMs = this.flagPhaseDuration.toMillis() / milliTicks;
-        thread = plugin.getServer().getScheduler()
-            .runTaskTimer(plugin, new CellAttackThread(this), ticksFromMs, ticksFromMs);
+        thread = FlagWar.getFlagWar().getScheduler().runRepeating(() -> new CellAttackThread(this), ticksFromMs, ticksFromMs);
         if (FlagWarConfig.isHologramEnabled()) {
             drawHologram();
             if (FlagWarConfig.hasTimerLine()) {
