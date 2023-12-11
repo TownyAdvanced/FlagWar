@@ -29,6 +29,9 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.WorldCoord;
+import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
+import com.palmergames.bukkit.towny.scheduling.impl.BukkitTaskScheduler;
+import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
 import com.palmergames.bukkit.towny.utils.AreaSelectionUtil;
 import com.palmergames.bukkit.util.Version;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -89,9 +92,9 @@ public class FlagWar extends JavaPlugin {
     /** FlagWar Copyright String. */
     private static final String FW_COPYRIGHT = "Copyright \u00a9 2021–2023 TownyAdvanced";
     /** Version for storing the minimum required version of Towny, for compatibility. */
-    private static final Version MIN_TOWNY_VER = Version.fromString("0.98.6.0");
+    private static final Version MIN_TOWNY_VER = Version.fromString("0.100.0.0");
     /** Version for storing the latest supported version of Towny, for validation. */
-    private static final Version VALID_TOWNY_VER = Version.fromString("0.98.6.0");
+    private static final Version VALID_TOWNY_VER = Version.fromString("0.100.0.0");
     /** Value of minimum configuration file version. Used for determining if file should be regenerated. */
     private static final double MIN_CONFIG_VER = 1.6;
     /** BStats Metrics ID. */
@@ -104,6 +107,9 @@ public class FlagWar extends JavaPlugin {
     /** Stores instance of Plugin, for easy operations. */
     private static Plugin plugin;
 
+    /** Stores the Scheduler used in Folia/Non-Folia operations. */
+    private final Object scheduler;
+
     /** Holds instance of the {@link FlagWarBlockListener}. */
     private FlagWarBlockListener flagWarBlockListener;
     /** Holds instance of the {@link FlagWarCustomListener}. */
@@ -114,6 +120,14 @@ public class FlagWar extends JavaPlugin {
     private WarzoneListener warzoneListener;
     /** Holds instance of the {@link OutlawListener}. */
     private OutlawListener outlawListener;
+
+    /**
+     * Initializes the Scheduler object based on whether we're using Folia/Paper or Spigot/Bukkit.
+     */
+    public FlagWar() {
+        this.scheduler = townyVersionCheck() ? isFoliaClassPresent()
+                ? new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this) : null;
+    }
 
     /**
      * Operations to perform when called by {@link org.bukkit.plugin.PluginLoader#enablePlugin(Plugin)}.
@@ -237,6 +251,11 @@ public class FlagWar extends JavaPlugin {
     /** @return the FlagWar {@link #plugin} instance. */
     public static Plugin getInstance() {
         return plugin;
+    }
+
+    /** @return the FlagWar {@link #plugin} instance as FlagWar. */
+    public static FlagWar getFlagWar() {
+        return (FlagWar) plugin;
     }
 
     /** Set the FlagWar {@link #plugin} instance.*/
@@ -817,6 +836,31 @@ public class FlagWar extends JavaPlugin {
             TOWN_LAST_FLAGGED_HASH_MAP.replace(town, Instant.now());
         } else {
             TOWN_LAST_FLAGGED_HASH_MAP.put(town, Instant.now());
+        }
+    }
+
+    /**
+     * Used to get the Scheduler whether it is Folia or Bukkit based.
+     * @return a TaskScheduler suitable for the server implementation.
+     */
+    public TaskScheduler getScheduler() {
+        return (TaskScheduler) this.scheduler;
+    }
+
+    private boolean townyVersionCheck() {
+        try {
+            return Towny.isTownyVersionSupported(MIN_TOWNY_VER.toString());
+        } catch (NoSuchMethodError e) {
+            return false;
+        }
+    }
+
+    private static boolean isFoliaClassPresent() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
         }
     }
 }
