@@ -16,10 +16,10 @@ prefix: FlagWar
 
 description: ${description}
 
+folia-supported: true
+
 softdepend:
     - HolographicDisplays
 
 depend:
     - Towny
-
-folia-supported: true
