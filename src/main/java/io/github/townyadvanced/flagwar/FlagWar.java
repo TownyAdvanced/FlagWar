@@ -121,9 +121,14 @@ public class FlagWar extends JavaPlugin {
     /** Holds instance of the {@link OutlawListener}. */
     private OutlawListener outlawListener;
 
+    /**
+     * Initializes the Scheduler object based on whether we're using Folia/Paper or Spigot/Bukkit.
+     */
     public FlagWar() {
-        this.scheduler = townyVersionCheck() ? isFoliaClassPresent() ? new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this) : null;
+        this.scheduler = townyVersionCheck() ? isFoliaClassPresent() ?
+                new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this) : null;
     }
+
     /**
      * Operations to perform when called by {@link org.bukkit.plugin.PluginLoader#enablePlugin(Plugin)}.
      */
@@ -834,6 +839,10 @@ public class FlagWar extends JavaPlugin {
         }
     }
 
+    /**
+     * Used to get the Scheduler whether it is Folia or Bukkit based.
+     * @return a TaskScheduler suitable for the server implementation.
+     */
     public TaskScheduler getScheduler() {
         return (TaskScheduler) this.scheduler;
     }

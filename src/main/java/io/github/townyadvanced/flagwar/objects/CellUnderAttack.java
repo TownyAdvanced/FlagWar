@@ -70,7 +70,7 @@ public class CellUnderAttack extends Cell {
     private List<Block> beaconWireframeBlocks;
     /** Identifies the phase the war flag is in. **/
     private int flagPhaseID;
-    /** A thread used to update the state of the {@link CellUnderAttack} using the Scheduler's repeating task. */
+    /** A thread used to update the state of the {@link CellUnderAttack} using the Scheduler's repeating task.*/
     private ScheduledTask thread;
     /** A thread used to update the {@link #hologram}'s {@link #timerLine}. */
     private BukkitTask hologramThread;
@@ -364,7 +364,8 @@ public class CellUnderAttack extends Cell {
         final int tps = 20;
         final int milliTicks = 50;
         final long ticksFromMs = this.flagPhaseDuration.toMillis() / milliTicks;
-        thread = FlagWar.getFlagWar().getScheduler().runRepeating(() -> new CellAttackThread(this), ticksFromMs, ticksFromMs);
+        thread = FlagWar.getFlagWar().getScheduler()
+                .runRepeating(() -> new CellAttackThread(this), ticksFromMs, ticksFromMs);
         if (FlagWarConfig.isHologramEnabled()) {
             drawHologram();
             if (FlagWarConfig.hasTimerLine()) {
