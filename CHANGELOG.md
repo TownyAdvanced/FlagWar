@@ -7,6 +7,23 @@ If a change is missing, it is likely simple or was forgotten about when this log
 Feel free to PR corrections to this file.
 
 <!-- ## [Unreleased][Unreleased]-->
+## [0.6.0][0.6.0]
+
+### Added
+
+* Add support for Folia, bump min. Towny version to 0.100.0.0. by @LlmDl in https://github.com/TownyAdvanced/FlagWar/pull/324
+
+### Changed
+
+* Bump com.palmergames.bukkit.towny:towny from 0.99.5.0 to 0.99.6.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/308
+
+### Fixed
+
+- None
+
+### Removed
+
+- None
 
 ## [0.5.4][0.5.4]
 
