@@ -554,7 +554,7 @@ public class FlagWar extends JavaPlugin {
             calculateFeesAndFines(attackingResident, townBlock, costToPlaceWarFlag);
         }
 
-        if (!kickstartCellAttackEvent(towny, player, block)) {
+        if (!kickstartCellAttackEvent(player, block)) {
             return false;
         }
         if (TownyEconomyHandler.isActive() && costToPlaceWarFlag.compareTo(BigDecimal.ZERO) > 0) {
@@ -653,15 +653,13 @@ public class FlagWar extends JavaPlugin {
 
     /**
      * Kickstart a {@link CellAttackEvent}, then return false if it does not get canceled.
-     * @param towny Instance of {@link Towny}.
      * @param player Player who should be listed as the attacker.
      * @param block Block where the flagBaseBlock should have been placed.
      * @return TRUE if the event was kick-started successfully. FALSE if event canceled.
      * @throws TownyException if the CellAttackEvent is canceled with a given reason.
      */
-    private static boolean kickstartCellAttackEvent(final Towny towny, final Player player,
-                                                    final Block block) throws TownyException {
-        var cellAttackEvent = new CellAttackEvent(towny, player, block);
+    private static boolean kickstartCellAttackEvent(final Player player, final Block block) throws TownyException {
+        var cellAttackEvent = new CellAttackEvent(player, block);
         plugin.getServer().getPluginManager().callEvent(cellAttackEvent);
         if (cellAttackEvent.isCancelled()) {
             if (cellAttackEvent.hasReason()) {

@@ -22,6 +22,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.scheduling.ScheduledTask;
+import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
 
 import io.github.townyadvanced.flagwar.CellAttackThread;
 import io.github.townyadvanced.flagwar.FlagWar;
@@ -34,9 +35,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitTask;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +49,8 @@ public class CellUnderAttack extends Cell {
 
     /** Holds an instance of FlagWar's logger. */
     private static final Logger LOGGER = FlagWar.getInstance().getLogger();
-    /** Holds an instance of Towny. */
-    private final Plugin plugin;
+    /** The TaskScheduler used to schedule attacks and holograms. */
+    private final TaskScheduler scheduler = FlagWar.getFlagWar().getScheduler();
 
     /** Holds the name of the war flag owner. */
     private final String nameOfFlagOwner;
@@ -73,7 +71,7 @@ public class CellUnderAttack extends Cell {
     /** A thread used to update the state of the {@link CellUnderAttack} using the Scheduler's repeating task.*/
     private ScheduledTask thread;
     /** A thread used to update the {@link #hologram}'s {@link #timerLine}. */
-    private BukkitTask hologramThread;
+    private ScheduledTask hologramThread;
     /** Holds the war flag hologram. */
     private Hologram hologram;
     /** Holds the time, in seconds, assuming 20 ticks is 1 second, of the war flag. */
@@ -84,15 +82,13 @@ public class CellUnderAttack extends Cell {
     /**
      * Prepares the CellUnderAttack.
      *
-     * @param instance A plugin instance. Preferably of Towny or FlagWar.
      * @param flagOwner Name of the Resident that placed the flag
      * @param base {@link Block} representing the "flag pole" of the block
      * @param timerPhase Time (as a long) between Material shifting the flag and beacon.
      */
-    public CellUnderAttack(final Plugin instance, final String flagOwner, final Block base, final Duration timerPhase) {
+    public CellUnderAttack(final String flagOwner, final Block base, final Duration timerPhase) {
 
         super(base.getLocation());
-        this.plugin = instance;
         this.nameOfFlagOwner = flagOwner;
         this.flagBaseBlock = base;
         this.flagPhaseID = 0;
@@ -364,13 +360,11 @@ public class CellUnderAttack extends Cell {
         final int tps = 20;
         final int milliTicks = 50;
         final long ticksFromMs = this.flagPhaseDuration.toMillis() / milliTicks;
-        thread = FlagWar.getFlagWar().getScheduler()
-                .runRepeating(() -> new CellAttackThread(this), ticksFromMs, ticksFromMs);
+        thread = scheduler.runRepeating(() -> new CellAttackThread(this), ticksFromMs, ticksFromMs);
         if (FlagWarConfig.isHologramEnabled()) {
             drawHologram();
             if (FlagWarConfig.hasTimerLine()) {
-                hologramThread = plugin.getServer().getScheduler()
-                    .runTaskTimer(plugin, new HologramUpdateThread(this), tps, tps);
+                hologramThread = scheduler.runRepeating(() -> new HologramUpdateThread(this), tps, tps);
             }
         }
     }
