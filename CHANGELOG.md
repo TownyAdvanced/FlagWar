@@ -7,6 +7,28 @@ If a change is missing, it is likely simple or was forgotten about when this log
 Feel free to PR corrections to this file.
 
 <!-- ## [Unreleased][Unreleased]-->
+## [0.6.1][0.6.1]
+
+### Added
+
+* None.
+
+### Changed
+
+* Bump com.github.spotbugs:spotbugs-annotations from 4.7.3 to 4.8.3
+* Bump org.apache.maven.plugins:maven-checkstyle-plugin from 3.3.0 to 3.3.1
+* Bump com.puppycrawl.tools:checkstyle from 10.12.4 to 10.12.7
+* Bump org.apache.maven.plugins:maven-surefire-plugin from 3.1.2 to 3.2.5
+* Bump org.apache.maven.plugins:maven-failsafe-plugin from 3.1.2 to 3.2.5
+
+### Fixed
+
+- Fix scheduler not running properly for flags.
+
+### Removed
+
+- None
+
 ## [0.6.0][0.6.0]
 
 ### Added

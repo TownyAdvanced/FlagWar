@@ -21,7 +21,6 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.palmergames.bukkit.towny.object.Coord;
-import com.palmergames.bukkit.towny.scheduling.ScheduledTask;
 import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
 
 import io.github.townyadvanced.flagwar.CellAttackThread;
@@ -69,9 +68,9 @@ public class CellUnderAttack extends Cell {
     /** Identifies the phase the war flag is in. **/
     private int flagPhaseID;
     /** A thread used to update the state of the {@link CellUnderAttack} using the Scheduler's repeating task.*/
-    private ScheduledTask thread;
+    private CellAttackThread thread;
     /** A thread used to update the {@link #hologram}'s {@link #timerLine}. */
-    private ScheduledTask hologramThread;
+    private HologramUpdateThread hologramThread;
     /** Holds the war flag hologram. */
     private Hologram hologram;
     /** Holds the time, in seconds, assuming 20 ticks is 1 second, of the war flag. */
@@ -99,6 +98,8 @@ public class CellUnderAttack extends Cell {
         this.flagLightBlock = world.getBlockAt(base.getX(), base.getY() + 2, base.getZ());
 
         this.flagPhaseDuration = timerPhase;
+        this.thread = new CellAttackThread(this);
+        this.hologramThread = new HologramUpdateThread(this);
     }
 
     /** @return if {@link CellUnderAttack} equals a given {@link Object}. (Defers to {@link Cell#equals(Object)}.) */
@@ -360,11 +361,11 @@ public class CellUnderAttack extends Cell {
         final int tps = 20;
         final int milliTicks = 50;
         final long ticksFromMs = this.flagPhaseDuration.toMillis() / milliTicks;
-        thread = scheduler.runRepeating(() -> new CellAttackThread(this), ticksFromMs, ticksFromMs);
+        scheduler.runRepeating(() -> thread.run(), ticksFromMs, ticksFromMs);
         if (FlagWarConfig.isHologramEnabled()) {
             drawHologram();
             if (FlagWarConfig.hasTimerLine()) {
-                hologramThread = scheduler.runRepeating(() -> new HologramUpdateThread(this), tps, tps);
+                scheduler.runRepeating(() -> hologramThread.run(), tps, tps);
             }
         }
     }

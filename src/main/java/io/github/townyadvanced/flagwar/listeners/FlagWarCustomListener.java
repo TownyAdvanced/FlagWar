@@ -89,7 +89,7 @@ public class FlagWarCustomListener implements Listener {
      * {@link FlagWar#registerAttack(CellUnderAttack)} using the cell from the CellAttackEvent.
      * @param cellAttackEvent the associated CellAttackEvent.
      */
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     @SuppressWarnings("unused")
     public void onCellAttackEvent(final CellAttackEvent cellAttackEvent) {
         if (cellAttackEvent.isCancelled()) {
