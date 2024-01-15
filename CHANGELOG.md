@@ -7,6 +7,24 @@ If a change is missing, it is likely simple or was forgotten about when this log
 Feel free to PR corrections to this file.
 
 <!-- ## [Unreleased][Unreleased]-->
+## [0.6.2][0.6.2]
+
+### Added
+
+* None.
+
+### Changed
+
+* None.
+
+### Fixed
+
+- Fix attacks tasks not being cancelled correctly.
+
+### Removed
+
+- None
+
 ## [0.6.1][0.6.1]
 
 ### Added

@@ -21,6 +21,7 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 import com.palmergames.bukkit.towny.object.Coord;
+import com.palmergames.bukkit.towny.scheduling.ScheduledTask;
 import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
 
 import io.github.townyadvanced.flagwar.CellAttackThread;
@@ -69,8 +70,10 @@ public class CellUnderAttack extends Cell {
     private int flagPhaseID;
     /** A thread used to update the state of the {@link CellUnderAttack} using the Scheduler's repeating task.*/
     private CellAttackThread thread;
+    private ScheduledTask threadTask;
     /** A thread used to update the {@link #hologram}'s {@link #timerLine}. */
     private HologramUpdateThread hologramThread;
+    private ScheduledTask hologramTask;
     /** Holds the war flag hologram. */
     private Hologram hologram;
     /** Holds the time, in seconds, assuming 20 ticks is 1 second, of the war flag. */
@@ -361,11 +364,11 @@ public class CellUnderAttack extends Cell {
         final int tps = 20;
         final int milliTicks = 50;
         final long ticksFromMs = this.flagPhaseDuration.toMillis() / milliTicks;
-        scheduler.runRepeating(() -> thread.run(), ticksFromMs, ticksFromMs);
+        threadTask = scheduler.runRepeating(() -> thread.run(), ticksFromMs, ticksFromMs);
         if (FlagWarConfig.isHologramEnabled()) {
             drawHologram();
             if (FlagWarConfig.hasTimerLine()) {
-                scheduler.runRepeating(() -> hologramThread.run(), tps, tps);
+                hologramTask = scheduler.runRepeating(() -> hologramThread.run(), tps, tps);
             }
         }
     }
@@ -376,11 +379,11 @@ public class CellUnderAttack extends Cell {
      * exists, using {@link #destroyHologram()}.
      */
     public void cancel() {
-        if (thread != null) {
-            thread.cancel();
+        if (threadTask != null) {
+            threadTask.cancel();
         }
-        if (FlagWarConfig.isHologramEnabled() && hologramThread != null) {
-            hologramThread.cancel();
+        if (FlagWarConfig.isHologramEnabled() && hologramTask != null) {
+            hologramTask.cancel();
         }
         destroyFlag();
         if (hologram != null) {
