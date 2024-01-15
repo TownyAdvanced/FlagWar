@@ -70,9 +70,11 @@ public class CellUnderAttack extends Cell {
     private int flagPhaseID;
     /** A thread used to update the state of the {@link CellUnderAttack} using the Scheduler's repeating task.*/
     private CellAttackThread thread;
+    /** A task used to the thread used to cancel the repeating task.*/
     private ScheduledTask threadTask;
     /** A thread used to update the {@link #hologram}'s {@link #timerLine}. */
     private HologramUpdateThread hologramThread;
+    /** A task used to the hologramThread used to cancel the repeating task.*/
     private ScheduledTask hologramTask;
     /** Holds the war flag hologram. */
     private Hologram hologram;
