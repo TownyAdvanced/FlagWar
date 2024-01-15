@@ -25,7 +25,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.palmergames.bukkit.towny.Towny;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -37,8 +36,6 @@ public class CellAttackEvent extends Event implements Cancellable {
 
     /** Holds the {@link HandlerList} for the {@link CellAttackEvent}. */
     private static final HandlerList HANDLERS = new HandlerList();
-    /** Holds the {@link Towny} instance. */
-    private final Towny plugin;
     /** Holds the attacking {@link Player}. */
     private final Player player;
     /** Holds the base {@link Block} for the War Flag. */
@@ -63,13 +60,11 @@ public class CellAttackEvent extends Event implements Cancellable {
 
     /**
      * Constructs the {@link CellAttackEvent}.
-     * @param townyInstance the instance of {@link Towny} at runtime. (Use {@link Towny#getPlugin()}.)
      * @param attacker the attacking {@link Player}.
      * @param flagBaseBlock the {@link Block} representing the War Flag base/pole.
      */
-    public CellAttackEvent(final Towny townyInstance, final Player attacker, final Block flagBaseBlock) {
+    public CellAttackEvent(final Player attacker, final Block flagBaseBlock) {
         super();
-        this.plugin = townyInstance;
         this.player = attacker;
         this.flagBlock = flagBaseBlock;
         setPhaseDuration(FlagWarConfig.getFlagPhasesDuration());
@@ -87,7 +82,7 @@ public class CellAttackEvent extends Event implements Cancellable {
 
     /** @return a new {@link CellUnderAttack} with the Towny instance, attacker, flag base, and attack time stored.  */
     public CellUnderAttack getData() {
-        return new CellUnderAttack(plugin, player.getName(), flagBlock, phaseDuration);
+        return new CellUnderAttack(player.getName(), flagBlock, phaseDuration);
     }
 
     /**

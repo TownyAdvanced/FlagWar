@@ -7,7 +7,7 @@
     <groupId>io.github.townyadvanced.flagwar</groupId>
     <artifactId>FlagWar</artifactId>
     <packaging>jar</packaging>
-    <version>0.5.4</version>
+    <version>0.6.0</version>
     <description>An OG war system for TownyAdvanced. Celebrating a decade of Flag-based Towny Warfare.</description>
 
     <properties>
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>com.palmergames.bukkit.towny</groupId>
             <artifactId>towny</artifactId>
-            <version>0.99.6.0</version>
+            <version>0.100.0.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
