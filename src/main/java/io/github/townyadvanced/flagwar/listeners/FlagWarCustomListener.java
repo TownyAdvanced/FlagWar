@@ -32,7 +32,7 @@ import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
-import com.palmergames.bukkit.towny.object.TransactionType;
+import com.palmergames.bukkit.towny.object.economy.transaction.TransactionType;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.FlagWarAPI;
