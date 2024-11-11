@@ -189,8 +189,10 @@ public final class FlagWarConfig {
         if (PLUGIN.getConfig().getBoolean("holograms.enabled")) {
             if (PLUGIN.getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
                 return true;
+            } else if (PLUGIN.getServer().getPluginManager().isPluginEnabled("DecentHolograms")) {
+                return true;
             } else {
-                LOGGER.severe("HolographicDisplays was not found! Holograms will be disabled.");
+                LOGGER.severe("Could not find a Hologram provider. Holograms will be disabled.");
                 return false;
             }
         } else {
