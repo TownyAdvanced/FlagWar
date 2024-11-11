@@ -87,7 +87,7 @@ public class CellUnderAttack extends Cell {
     private Duration flagLifeTime;
     /** Holds the {@link TextLine} of the hologram timer line. (HolographicDisplays) */
     private TextLine timerLine;
-    /** Holds a line for DescentHolograms, mimicking the {@link #timerLine}. */
+    /** Holds a line for DecentHolograms, mimicking the {@link #timerLine}. */
     private HologramLine timerLineDHAPI;
 
     /**
@@ -284,7 +284,7 @@ public class CellUnderAttack extends Cell {
     /**
      * Function to draw the {@link #hdHologramsAPI}.
      * Retrieves hologram settings via {@link FlagWarConfig#getHologramSettings()}.
-     * Will try to draw a hologram with the following priortiy: HolographicDisplays, DescentHolograms
+     * Will try to draw a hologram with the following priortiy: HolographicDisplays, DecentHolograms
      * */
     public void drawHologram() {
         List<Map.Entry<String, String>> holoSettings = FlagWarConfig.getHologramSettings();
@@ -298,10 +298,10 @@ public class CellUnderAttack extends Cell {
             return;
         }
 
-        // DescentHolograms
-        Plugin descentHolograms = FlagWar.getInstance().getServer().getPluginManager().getPlugin("DescentHolograms");
-        if (descentHolograms != null && descentHolograms.isEnabled()) {
-            drawDescentHologram(loc, holoSettings);
+        // DecentHolograms
+        Plugin decentHolograms = FlagWar.getInstance().getServer().getPluginManager().getPlugin("DecentHolograms");
+        if (decentHolograms != null && decentHolograms.isEnabled()) {
+            drawDecentHologram(loc, holoSettings);
         }
     }
 
@@ -347,11 +347,11 @@ public class CellUnderAttack extends Cell {
     }
 
     /**
-     * Draw Hologram using DescentHolograms ({@link DHAPI})
+     * Draw Hologram using DecentHolograms ({@link DHAPI})
      * <p>
      *     Process:
      *     <ol>
-     *         <li>Create a DescentHolograms hologram using {@link DHAPI#createHologram(String, Location)}.
+     *         <li>Create a DecentHolograms hologram using {@link DHAPI#createHologram(String, Location)}.
      *         Use the CellString as the hologram's name.</li>
      *         <li>Set Invisible</li>
      *         <li>Add Lines</li>
@@ -363,8 +363,8 @@ public class CellUnderAttack extends Cell {
      * @param holoSettings Map of 'holograms.lines' from the config.
      */
     @ApiStatus.Experimental
-    private void drawDescentHologram(final Location location, final List<Map.Entry<String, String>> holoSettings) {
-        FlagWar.getFlagWar().getLogger().warning("DescentHolograms support is experimental.");
+    private void drawDecentHologram(final Location location, final List<Map.Entry<String, String>> holoSettings) {
+        FlagWar.getFlagWar().getLogger().warning("DecentHolograms support is experimental.");
 
         //Holograph Name (CellString)
         String hologramName = this.getCellString();
@@ -413,7 +413,7 @@ public class CellUnderAttack extends Cell {
     }
 
     /**
-     * Simple expression to set the {@link #timerLineDHAPI} for DescentHolograms.
+     * Simple expression to set the {@link #timerLineDHAPI} for DecentHolograms.
      * @param holo Parent Hologram
      * @param fmtT Time Format String
      */
