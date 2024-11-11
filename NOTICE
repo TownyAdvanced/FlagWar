@@ -46,6 +46,13 @@ Full License: https://github.com/filoghost/HolographicDisplays/blob/master/LICEN
 Source Code: https://github.com/filoghost/HolographicDisplays/
 Copyright © 2014-2022 filoghost
 
+/ DecentHolograms (Soft Dependency) /
+DecentHolograms is licensed under the GNU General Public License Version 3, or any later version.
+Full License: https://github.com/DecentSoftware-eu/DecentHolograms/blob/main/LICENSE
+Source Code: https://github.com/DecentSoftware-eu/DecentHolograms/
+Copyright © 2021-2024 DecentSoftware and Contributors (https://github.com/DecentSoftware-eu/DecentHolograms/graphs/contributors)
+
+
 // Annotations //
 / JetBrains Java Annotations (compile-only) /
 JetBrains annotations are provided under version 2 of the Apache License. (Apache-2)
