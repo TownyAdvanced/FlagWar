@@ -564,6 +564,20 @@ public final class FlagWarConfig {
         return editableMaterialsInWarZone.contains(material);
     }
 
+    /**
+     * @return true when the flag is protected from the editable materials.
+     */
+    public static boolean isFlagAreaProtectedFromEditableMaterials() {
+        return PLUGIN.getConfig().getInt("warzone.protected_area_surrounding_flag") > 0;
+    }
+
+    /**
+     * @return the size of the protection area surrounding the flag.
+     */
+    public static int getFlagAreaProtectedSize() {
+        return PLUGIN.getConfig().getInt("warzone.protected_area_surrounding_flag");
+    }
+
     /** @return whether nations are allowed to toggle neutral.*/
     public static boolean isDeclaringNeutralAllowed() {
         return PLUGIN.getConfig().getBoolean("rules.nations_can_toggle_neutral");
