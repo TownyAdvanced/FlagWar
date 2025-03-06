@@ -270,15 +270,17 @@ public class WarzoneListener implements Listener {
     }
 
     /**
-     * Tell the calling method to fail because block is too close to the flag:
+     * Tell the calling method to fail if the block is too close to the flag.
      *
      * @param townBlockStatus The {@link TownBlockStatus} passed to, or established by, the original method.
      * @param townyActionEvent  The {@link TownyActionEvent} member being checked by the originating method.
      * @return True if any of the conditions are met.
      */
-    private boolean isTooCloseToTheFlag(final TownBlockStatus townBlockStatus, final TownyActionEvent townyActionEvent) {
-        if (!FlagWarConfig.isFlagAreaProtectedFromEditableMaterials())
+    private boolean isTooCloseToTheFlag(final TownBlockStatus townBlockStatus,
+            final TownyActionEvent townyActionEvent) {
+        if (!FlagWarConfig.isFlagAreaProtectedFromEditableMaterials()) {
             return false;
+        }
 
         Location blockLoc = townyActionEvent.getLocation();
         CellUnderAttack cellData = FlagWarAPI.getAttackData(Cell.parse(blockLoc));
