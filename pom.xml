@@ -11,7 +11,7 @@
     <description>An OG war system for TownyAdvanced. Celebrating a decade of Flag-based Towny Warfare.</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <project.bukkitAPIVersion>1.17</project.bukkitAPIVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
