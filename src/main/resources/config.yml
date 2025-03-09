@@ -160,6 +160,8 @@ warzone:
 
     # The space around the flag where editable materials cannot be used.
     protected_area_surrounding_flag: 0
+    # The space above the flag where editable materials cannot be used.
+    protected_area_above_flag: 20
 extra:
     # If enabled, show additional debug messages as warnings. Recommended keeping these disabled unless requested.
     debug: false
