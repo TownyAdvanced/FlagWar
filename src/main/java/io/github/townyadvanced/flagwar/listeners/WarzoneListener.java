@@ -270,7 +270,8 @@ public class WarzoneListener implements Listener {
         CellUnderAttack cellData = FlagWarAPI.getAttackData(Cell.parse(blockLoc));
         Location flagLoc = cellData.getFlagBaseBlock().getLocation();
         // We don't care if the flag is above the block being placed, or if the block is too high above the flag.
-        if (blockLoc.getY() < flagLoc.getY() || (blockLoc.getY() - flagLoc.getY()) > FlagWarConfig.getFlagAreaProtectedHeight()) {
+        if (blockLoc.getY() < flagLoc.getY()
+                || (blockLoc.getY() - flagLoc.getY()) > FlagWarConfig.getFlagAreaProtectedHeight()) {
             return false;
         }
         // Set the y value to the flag y value so we compare only the horizontal distance.
