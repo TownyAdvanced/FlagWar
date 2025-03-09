@@ -578,6 +578,13 @@ public final class FlagWarConfig {
         return PLUGIN.getConfig().getInt("warzone.protected_area_surrounding_flag");
     }
 
+    /**
+     * @return the height of the protection area surrounding the flag.
+     */
+    public static int getFlagAreaProtectedHeight() {
+        return PLUGIN.getConfig().getInt("warzone.protected_area_above_flag");
+    }
+
     /** @return whether nations are allowed to toggle neutral.*/
     public static boolean isDeclaringNeutralAllowed() {
         return PLUGIN.getConfig().getBoolean("rules.nations_can_toggle_neutral");
