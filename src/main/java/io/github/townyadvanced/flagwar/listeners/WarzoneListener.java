@@ -33,10 +33,12 @@ import io.github.townyadvanced.flagwar.FlagWarAPI;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.i18n.Translate;
 import io.github.townyadvanced.flagwar.objects.Cell;
+import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -92,6 +94,10 @@ public class WarzoneListener implements Listener {
         TownBlockStatus status = towny.getCache(player).getStatus();
 
         if (isFastFailing(status, townyBuildEvent)) {
+            return;
+        }
+
+        if (isTooCloseToTheFlag(status, townyBuildEvent)) {
             return;
         }
 
@@ -249,6 +255,31 @@ public class WarzoneListener implements Listener {
             || !FlagWarConfig.isAllowingAttacks()
             || townyActionEvent.isInWilderness()
             || !FlagWarAPI.isUnderAttack(Cell.parse(townyActionEvent.getLocation()));
+    }
+
+    /**
+     * Tell the calling method to fail if the block is too close to the flag.
+     *
+     * @param townBlockStatus The {@link TownBlockStatus} passed to, or established by, the original method.
+     * @param townyActionEvent  The {@link TownyActionEvent} member being checked by the originating method.
+     * @return True if any of the conditions are met.
+     */
+    private boolean isTooCloseToTheFlag(final TownBlockStatus townBlockStatus,
+            final TownyActionEvent townyActionEvent) {
+        if (!FlagWarConfig.isFlagAreaProtectedFromEditableMaterials()) {
+            return false;
+        }
+
+        Location blockLoc = townyActionEvent.getLocation();
+        CellUnderAttack cellData = FlagWarAPI.getAttackData(Cell.parse(blockLoc));
+        Location flagLoc = cellData.getFlagBaseBlock().getLocation();
+        // We don't care if the flag is above the block being placed.
+        if (blockLoc.getY() < flagLoc.getY()) {
+            return false;
+        }
+        // Set the y value to the flag y value so we compare only the horizontal distance.
+        blockLoc.setY(flagLoc.getY());
+        return blockLoc.distance(flagLoc) <= FlagWarConfig.getFlagAreaProtectedSize();
     }
 
     /**
