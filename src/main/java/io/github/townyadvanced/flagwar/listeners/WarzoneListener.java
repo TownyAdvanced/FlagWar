@@ -97,11 +97,11 @@ public class WarzoneListener implements Listener {
             return;
         }
 
-        if (isTooCloseToTheFlag(status, townyBuildEvent)) {
-            return;
-        }
+//        if (isTooCloseToTheFlag(status, townyBuildEvent)) {
+//            return;
+//        }
 
-        if (!FlagWarConfig.isEditableMaterialInWarZone(mat)) {
+        if (!FlagWarConfig.isEditableMaterialInWarZone(mat) || isTooCloseToTheFlag(status, townyBuildEvent)) {
             townyBuildEvent.setCancelled(true);
             townyBuildEvent.setCancelMessage(msgCannotEdit("build", mat));
             return;
@@ -273,8 +273,8 @@ public class WarzoneListener implements Listener {
         Location blockLoc = townyActionEvent.getLocation();
         CellUnderAttack cellData = FlagWarAPI.getAttackData(Cell.parse(blockLoc));
         Location flagLoc = cellData.getFlagBaseBlock().getLocation();
-        // We don't care if the flag is above the block being placed.
-        if (blockLoc.getY() < flagLoc.getY()) {
+        // We don't care if the flag is above the block being placed, or if the block is too high above the flag.
+        if (blockLoc.getY() < flagLoc.getY() || (blockLoc.getY() - flagLoc.getY()) > FlagWarConfig.getFlagAreaProtectedHeight()) {
             return false;
         }
         // Set the y value to the flag y value so we compare only the horizontal distance.
