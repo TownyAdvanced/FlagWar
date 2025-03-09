@@ -97,10 +97,6 @@ public class WarzoneListener implements Listener {
             return;
         }
 
-//        if (isTooCloseToTheFlag(status, townyBuildEvent)) {
-//            return;
-//        }
-
         if (!FlagWarConfig.isEditableMaterialInWarZone(mat) || isTooCloseToTheFlag(status, townyBuildEvent)) {
             townyBuildEvent.setCancelled(true);
             townyBuildEvent.setCancelMessage(msgCannotEdit("build", mat));
