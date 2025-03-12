@@ -135,7 +135,7 @@ public class FlagWarCustomListener implements Listener {
      *
      * @param cellWonEvent The event declaring the cell attack successfully completed, and triggers the processing.
      */
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onCellWonEvent(final CellWonEvent cellWonEvent) {
         if (cellWonEvent.isCancelled()) {
             return;
