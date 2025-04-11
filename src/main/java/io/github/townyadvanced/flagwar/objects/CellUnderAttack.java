@@ -44,6 +44,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -367,7 +368,7 @@ public class CellUnderAttack extends Cell {
         FlagWar.getFlagWar().getLogger().warning("DecentHolograms support is experimental.");
 
         //Holograph Name (CellString)
-        String hologramName = this.getCellString();
+        String hologramName = nameOfFlagOwner.concat(Objects.toString(location.getBlockX()));
 
         // Create Invisible
         eu.decentsoftware.holograms.api.holograms.Hologram hologram =
