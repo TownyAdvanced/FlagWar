@@ -368,7 +368,7 @@ public class CellUnderAttack extends Cell {
         FlagWar.getFlagWar().getLogger().warning("DecentHolograms support is experimental.");
 
         //Holograph Name (CellString)
-        String hologramName = nameOfFlagOwner.concat(Objects.toString(location.getBlockX()));
+        String hologramName = getCellString();
 
         // Create Invisible
         eu.decentsoftware.holograms.api.holograms.Hologram hologram =
@@ -502,15 +502,14 @@ public class CellUnderAttack extends Cell {
         if (FlagWarConfig.isHologramEnabled() && hologramTask != null) {
             hologramTask.cancel();
         }
+
         destroyFlag();
-        if (hdHologramsAPI != null) {
-            destroyHologram();
-        }
+        destroyHologram();
     }
 
     /** @return the string "%getWorldName% (%getX%, %getZ%)". */
     public String getCellString() {
-        return String.format("%s (%d, %d)", getWorldName(), getX(), getZ());
+        return String.format("%s%d%d", getWorldName(), getX(), getZ());
     }
 
     /**
