@@ -7,7 +7,7 @@
     <groupId>io.github.townyadvanced.flagwar</groupId>
     <artifactId>FlagWar</artifactId>
     <packaging>jar</packaging>
-    <version>0.6.4</version>
+    <version>0.7.1</version>
     <description>An OG war system for TownyAdvanced. Celebrating a decade of Flag-based Towny Warfare.</description>
 
     <properties>
@@ -71,7 +71,7 @@
     <repositories>
         <repository>
             <id>paper-mc</id>
-            <url>https://papermc.io/repo/repository/maven-public/</url>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
             <id>glaremasters repo</id>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>1.21.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

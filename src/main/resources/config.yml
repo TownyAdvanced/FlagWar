@@ -16,7 +16,7 @@
 ################################################################################
 
 # Note: Do not modify config_version, unless you want to regenerate your config
-config_version: 1.6
+config_version: 1.7
 
 # Please see https://github.com/TownyAdvanced/FlagWar/tree/main/src/main/resources/
 # for available translations. Custom translations are only supported if they are merged.
@@ -158,6 +158,10 @@ warzone:
     explosions: true
     explosions_break_blocks: true
 
+    # The space around the flag where editable materials cannot be used.
+    protected_area_surrounding_flag: 0
+    # The space above the flag where editable materials cannot be used.
+    protected_area_above_flag: 20
 extra:
     # If enabled, show additional debug messages as warnings. Recommended keeping these disabled unless requested.
     debug: false
