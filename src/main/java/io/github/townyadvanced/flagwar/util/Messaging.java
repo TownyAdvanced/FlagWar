@@ -40,7 +40,7 @@ public final class Messaging {
 
     /**
      * Sends a simple {@link String} to a given {@link CommandSender}.
-     * @param recipient Player receiving message.
+     * @param recipient CommandSender receiving message.
      * @param str A simple String.
      */
     public static void send(@NotNull final CommandSender recipient, @NotNull final String str) {
