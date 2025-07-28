@@ -18,7 +18,8 @@ package io.github.townyadvanced.flagwar.util;
 
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
-import org.bukkit.entity.Player;
+
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Formatter;
@@ -38,11 +39,11 @@ public final class Messaging {
     }
 
     /**
-     * Sends a simple {@link String} to a given {@link Player}.
+     * Sends a simple {@link String} to a given {@link CommandSender}.
      * @param recipient Player receiving message.
      * @param str A simple String.
      */
-    public static void send(@NotNull final Player recipient, @NotNull final String str) {
+    public static void send(@NotNull final CommandSender recipient, @NotNull final String str) {
         recipient.sendMessage(str);
     }
 

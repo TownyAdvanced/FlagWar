@@ -35,6 +35,7 @@ import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
 import com.palmergames.bukkit.towny.utils.AreaSelectionUtil;
 import com.palmergames.bukkit.util.Version;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.github.townyadvanced.flagwar.command.TownyAdminReloadAddon;
 import io.github.townyadvanced.flagwar.config.ConfigLoader;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.events.CellAttackCanceledEvent;
@@ -147,9 +148,11 @@ public class FlagWar extends JavaPlugin {
         loadFlagWarMaterials();
         registerEvents();
         bStatsKickstart();
+
+        new TownyAdminReloadAddon();
     }
 
-    private boolean loadConfig() {
+    public boolean loadConfig() {
         var configLoader = new ConfigLoader(this);
         try {
             configLoader.loadConfig(MIN_CONFIG_VER);
