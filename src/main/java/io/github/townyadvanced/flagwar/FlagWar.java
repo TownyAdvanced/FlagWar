@@ -152,6 +152,10 @@ public class FlagWar extends JavaPlugin {
         new TownyAdminReloadAddon();
     }
 
+    /**
+     * Used to load and reload the config.yml.
+     * @return true when the file has successfully loaded.
+     */
     public boolean loadConfig() {
         var configLoader = new ConfigLoader(this);
         try {

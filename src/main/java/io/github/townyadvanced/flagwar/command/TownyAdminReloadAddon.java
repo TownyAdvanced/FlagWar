@@ -16,18 +16,25 @@ import io.github.townyadvanced.flagwar.util.Messaging;
 
 public class TownyAdminReloadAddon extends BaseCommand implements TabExecutor {
 
+    /**
+     * Method which will register the flagwar subcommand in Towny's /ta reload.
+     */
     public TownyAdminReloadAddon() {
         AddonCommand townyAdminReloadCommand = new AddonCommand(CommandType.TOWNYADMIN_RELOAD, "flagwar", this);
         TownyCommandAddonAPI.addSubCommand(townyAdminReloadCommand);
     }
 
+    /**
+     * onCommand class required by TabExecutor.
+     */
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command command, final String label,
+            final String[] args) {
         parseAdminReloadCommand(args, sender);
         return true;
     }
 
-    private void parseAdminReloadCommand(String[] args, CommandSender sender) {
+    private void parseAdminReloadCommand(final String[] args, final CommandSender sender) {
         if (sender instanceof Player player) {
             if (!TownyUniverse.getInstance().getPermissionSource().isTownyAdmin(player)) {
                 Messaging.send(player, Translate.fromPrefixed("error.command.disabled"));
