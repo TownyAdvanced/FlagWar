@@ -50,6 +50,7 @@ public class CellWonEvent extends Event implements Cancellable {
      * @param cellAttackData the CellUnderAttack to associate to the event.
      */
     public CellWonEvent(final CellUnderAttack cellAttackData) {
+        super();
         this.cellUnderAttack = cellAttackData;
     }
 
