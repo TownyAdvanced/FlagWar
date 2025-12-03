@@ -137,7 +137,7 @@ public class FlagWar extends JavaPlugin {
     public void onEnable() {
         setInstance();
 
-        if (loadConfig()) {
+        if (!loadConfig()) {
             return;
         }
         setLocale();
@@ -164,13 +164,13 @@ public class FlagWar extends JavaPlugin {
             FW_LOGGER.severe(e.getMessage());
             e.printStackTrace();
             onDisable();
-            return true;
+            return false;
         } catch (Exception e) {
             FW_LOGGER.severe(e.getMessage());
             onDisable();
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     /**
