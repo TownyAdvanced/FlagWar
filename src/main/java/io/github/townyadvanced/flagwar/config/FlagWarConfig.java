@@ -132,11 +132,11 @@ public final class FlagWarConfig {
             } catch (IllegalArgumentException e) {
                 LOGGER.severe("One or more timer blocks were invalid! Using default list.");
                 LOGGER.severe(e.getMessage());
-                return DEFAULT_TIMER_MATERIALS;
+                return DEFAULT_TIMER_MATERIALS.clone();
             }
         } else {
             LOGGER.severe("Timer blocks list was null! Using default list.");
-            return DEFAULT_TIMER_MATERIALS;
+            return DEFAULT_TIMER_MATERIALS.clone();
         }
     }
 
@@ -181,18 +181,16 @@ public final class FlagWarConfig {
     }
 
     /**
-     * Check if Holograms are enabled in the config, and if HolographicDisplays is present. Also, if Holograms are
-     * enabled, but HolographicDisplays is missing, log an error and return false.
+     * Check if holograms are enabled in the config, and if a provider is present.
+     * If holograms are enabled, but a provider is missing, log an error and return false.
      * @return True if both conditions are true.
      */
     private static boolean isHologramConfigured() {
         if (PLUGIN.getConfig().getBoolean("holograms.enabled")) {
-            if (PLUGIN.getServer().getPluginManager().isPluginEnabled("HolographicDisplays")) {
-                return true;
-            } else if (PLUGIN.getServer().getPluginManager().isPluginEnabled("DecentHolograms")) {
+            if (PLUGIN.getServer().getPluginManager().isPluginEnabled("DecentHolograms")) {
                 return true;
             } else {
-                LOGGER.severe("Could not find a Hologram provider. Holograms will be disabled.");
+                LOGGER.severe("Could not find a hologram provider. Holograms will be disabled.");
                 return false;
             }
         } else {

@@ -18,7 +18,6 @@ package io.github.townyadvanced.flagwar.i18n;
 
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.util.Messaging;
-import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
 import java.util.Locale;
@@ -102,7 +101,6 @@ public final class LocaleUtil {
         logger.info(usingLocale);
     }
 
-    @NotNull
     private static String parseVariant(final String region) {
         String variant;
         if (region.contains("_")) {
@@ -119,7 +117,6 @@ public final class LocaleUtil {
         return variant;
     }
 
-    @NotNull
     private static String parseRegion(final String region) {
         String newRegion;
         if (region.contains("_")) {
