@@ -17,33 +17,24 @@
 
 package io.github.townyadvanced.flagwar.objects;
 
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
+import io.github.townyadvanced.flagwar.util.HologramUtil;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.scheduling.ScheduledTask;
 import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
 
-import eu.decentsoftware.holograms.api.DHAPI;
-import eu.decentsoftware.holograms.api.holograms.HologramLine;
 import io.github.townyadvanced.flagwar.CellAttackThread;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.HologramUpdateThread;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.i18n.Translate;
 import io.github.townyadvanced.flagwar.util.Messaging;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,18 +68,12 @@ public class CellUnderAttack extends Cell {
     private final CellAttackThread thread;
     /** A task used to the thread used to cancel the repeating task.*/
     private ScheduledTask threadTask;
-    /** A thread used to update the {@link #hdHologramsAPI}'s {@link #timerLine}. */
+    /** A thread used to update a Hologram's timer. */
     private final HologramUpdateThread hologramThread;
-    /** A task used to the hologramThread used to cancel the repeating task.*/
+    /** A task used by the hologramThread, to cancel the repeating task.*/
     private ScheduledTask hologramTask;
-    /** Holds the war flag hologram. */
-    private Hologram hdHologramsAPI;
     /** Holds the time, in seconds, assuming 20 ticks is 1 second, of the war flag. */
     private Duration flagLifeTime;
-    /** Holds the {@link TextLine} of the hologram timer line. (HolographicDisplays) */
-    private TextLine timerLine;
-    /** Holds a line for DecentHolograms, mimicking the {@link #timerLine}. */
-    private HologramLine timerLineDHAPI;
 
     /**
      * Prepares the CellUnderAttack.
@@ -281,196 +266,21 @@ public class CellUnderAttack extends Cell {
         }
     }
 
-    /**
-     * Function to draw the {@link #hdHologramsAPI}.
-     * Retrieves hologram settings via {@link FlagWarConfig#getHologramSettings()}.
-     * Will try to draw a hologram with the following priortiy: HolographicDisplays, DecentHolograms
-     * */
-    public void drawHologram() {
-        List<Map.Entry<String, String>> holoSettings = FlagWarConfig.getHologramSettings();
-        Location loc = flagLightBlock.getLocation();
-
-        // HolographicDisplays
-        Plugin holographicDisplays = FlagWar.getInstance().getServer().getPluginManager()
-            .getPlugin("HolographicDisplays");
-        if (holographicDisplays != null && holographicDisplays.isEnabled()) {
-            drawHolographicDisplay(loc, holoSettings);
-            return;
-        }
-
-        // DecentHolograms
-        Plugin decentHolograms = FlagWar.getInstance().getServer().getPluginManager().getPlugin("DecentHolograms");
-        if (decentHolograms != null && decentHolograms.isEnabled()) {
-            drawDecentHologram(loc, holoSettings);
-        }
-    }
-
-    /**
-     * Draw Hologram using HolographicDisplays
-     * <p>
-     *     Process:
-     *     <ol>
-     *         <li>Creates a new {@link #hdHologramsAPI}, using the plugin instance and supplied location
-     *         (from a {@link #flagLightBlock}).</li>
-     *         <li>Disables default visibility</li>
-     *         <li>Iterates through hologram settings, adding lines corresponding to the line type and line data.</li>
-     *         <li>Adjusts the location of the hologram according to the height of the {@link #hdHologramsAPI}</li>
-     *         <li>Enables visibility.</li>
-     *     </ol>
-     * </p>
-     * @param location {@link #flagLightBlock} ({@link Block#getLocation})
-     * @param holoSettings Map of 'holograms.lines' from the config.
-     */
-    private void drawHolographicDisplay(final Location location, final List<Map.Entry<String, String>> holoSettings) {
-        hdHologramsAPI = HologramsAPI.createHologram(FlagWar.getInstance(), location);
-        hdHologramsAPI.getVisibilityManager().setVisibleByDefault(false);
-        for (Map.Entry<String, String> holoSetting : holoSettings) {
-            var type = holoSetting.getKey();
-            var data = holoSetting.getValue();
-
-            switch (type) {
-                case "item" -> {
-                    Material material = Material.matchMaterial(data);
-                    if (material != null) {
-                        hdHologramsAPI.appendItemLine(new ItemStack(material));
-                    }
-                }
-                case "text" -> hdHologramsAPI.appendTextLine(data);
-                case "timer" -> setTimerLine(data);
-                default -> hdHologramsAPI.appendTextLine("");
-            }
-        }
-        final double hOffset = 0.5d;
-        final double vOffset = 0.9d;
-        hdHologramsAPI.teleport(location.add(hOffset, vOffset + hdHologramsAPI.getHeight(), hOffset));
-        hdHologramsAPI.getVisibilityManager().setVisibleByDefault(true);
-    }
-
-    /**
-     * Draw Hologram using DecentHolograms ({@link DHAPI})
-     * <p>
-     *     Process:
-     *     <ol>
-     *         <li>Create a DecentHolograms hologram using {@link DHAPI#createHologram(String, Location)}.
-     *         Use the CellString as the hologram's name.</li>
-     *         <li>Set Invisible</li>
-     *         <li>Add Lines</li>
-     *         <li>Set offset</li>
-     *         <li>Set Visible</li>
-     *     </ol>
-     * </p>
-     * @param location Location to initially spawn the hologram.
-     * @param holoSettings Map of 'holograms.lines' from the config.
-     */
-    @ApiStatus.Experimental
-    private void drawDecentHologram(final Location location, final List<Map.Entry<String, String>> holoSettings) {
-        FlagWar.getFlagWar().getLogger().warning("DecentHolograms support is experimental.");
-
-        //Holograph Name (CellString)
-        String hologramName = this.getCellString();
-
-        // Create Invisible
-        eu.decentsoftware.holograms.api.holograms.Hologram hologram =
-            DHAPI.createHologram(hologramName, location, false);
-        hologram.setDefaultVisibleState(false);
-
-        // Add Lines
-        for (Map.Entry<String, String> holoSetting : holoSettings) {
-            var type = holoSetting.getKey();
-            var data = holoSetting.getValue();
-
-            switch (type) {
-                case "item" -> {
-                    Material material = Material.matchMaterial(data);
-                    if (material != null) {
-                        DHAPI.addHologramLine(hologram, material);
-                    }
-                }
-                case "text" -> DHAPI.addHologramLine(hologram, data);
-                case "timer" -> setTimerLineDHAPI(hologram, data);
-                default -> DHAPI.addHologramLine(hologram, "");
-            }
-        }
-
-        //Teleport
-        final double hOffset = 0.5d;
-        final double vOffset = 0.9d;
-        final double textHeight = 0.23d;
-        Location offset = location.add(hOffset, vOffset + (hologram.getPage(0).size() * textHeight), hOffset);
-        hologram.setLocation(offset);
-
-        //Set Visible
-        hologram.setDefaultVisibleState(true);
-
-    }
-
-    /**
-     * Simple expression to set the {@link #timerLine} for HolographicDisplays .
-     * @param data the value of a hologram setting (defined in {@link #drawHologram()}
-     */
-    private void setTimerLine(final String data) {
-        timerLine = hdHologramsAPI.appendTextLine(formatTime(flagLifeTime, data));
-    }
-
-    /**
-     * Simple expression to set the {@link #timerLineDHAPI} for DecentHolograms.
-     * @param holo Parent Hologram
-     * @param fmtT Time Format String
-     */
-    private void setTimerLineDHAPI(final eu.decentsoftware.holograms.api.holograms.Hologram holo, final String fmtT) {
-        timerLineDHAPI = DHAPI.addHologramLine(holo, formatTime(flagLifeTime, fmtT));
-    }
-
-    /**
-     * Decreases {@link #flagLifeTime} by 1, and sets the {@link #hdHologramsAPI} {@link #timerLine} text using
-     * {@link #formatTime(Duration, String)} with the updated {@link #flagLifeTime} and
-     * {@link FlagWarConfig#getTimerText()} as the parameters.
-     */
-    public void updateHologram() {
+    /** Off-loaded to {@link HologramUtil#updateHologram(Duration)}. */
+    public void taskUpdateHologram() {
         this.flagLifeTime = flagLifeTime.minusSeconds(1);
-        if (timerLine != null) {
-            timerLine.setText(formatTime(flagLifeTime, FlagWarConfig.getTimerText()));
-        }
-        if (timerLineDHAPI != null) {
-            timerLineDHAPI.setText(formatTime(flagLifeTime, FlagWarConfig.getTimerText()));
-        }
-    }
-
-    /** Destroys the hologram, after some null-checking. */
-    public void destroyHologram() {
-        if (hdHologramsAPI != null) {
-            this.hdHologramsAPI.delete();
-        }
-        if (timerLineDHAPI != null) {
-            timerLineDHAPI.getParent().getParent().delete();
-        }
+        HologramUtil.updateHologram(flagLifeTime);
     }
 
     /**
-     * Function used to format a {@link Duration} according to the formatting defined in
-     * {@link FlagWarConfig#getTimerText()}.
-     * @param duration Duration to extrapolate the hours, minutes, and seconds from.
-     * @param formatString The string to format. Should contain one or more format specifiers with argument indexes
-     *                 corresponding with seconds, minutes, and hours, respectively.
-     * @return The formatted string.
-     */
-    public String formatTime(final Duration duration, final String formatString) {
-        final int hoursInDay = 24;
-        final long hours = duration.toHoursPart() + (duration.toDaysPart() * hoursInDay);
-        final int minutes = duration.toMinutesPart();
-        final int seconds = duration.toSecondsPart();
-        return String.format(formatString, seconds, minutes, hours);
-    }
-
-    /**
-     * Draw the initial phase of the flag and jumpstart both the {@link #thread} and {@link #hologramThread}.
+     * Draw the initial phase of the flag and jump-start both the {@link #thread} and {@link #hologramThread}.
      * <p>
      *     Uses the {@link #flagPhaseDuration} as both the repeat delay and runtime period for the {@link #thread}.
      *     The delay and period are derived from the phase duration in milliseconds, divided by 50.
      *     This value is floored to the last tick, and is not rounded.
      * </p>
      * <p>
-     *     If {@link FlagWarConfig#isHologramEnabled()} returns true, execute {@link #drawHologram()}, and if
+     *     If {@link FlagWarConfig#isHologramEnabled()} returns true, draws a hologram, and if
      *     {@link FlagWarConfig#hasTimerLine()} returns true, also start a {@link #hologramThread}, with
      *     20 ticks as both the repeat delay and runtime timer.
      * </p>
@@ -482,7 +292,8 @@ public class CellUnderAttack extends Cell {
         final long ticksFromMs = this.flagPhaseDuration.toMillis() / milliTicks;
         threadTask = scheduler.runRepeating(thread, ticksFromMs, ticksFromMs);
         if (FlagWarConfig.isHologramEnabled()) {
-            drawHologram();
+            HologramUtil.drawHologram(this.getCellString(), flagLightBlock.getLocation(), flagLifeTime);
+            HologramUtil.drawHologram(this.getCellString(), flagLightBlock.getLocation(), flagLifeTime);
             if (FlagWarConfig.hasTimerLine()) {
                 hologramTask = scheduler.runRepeating(hologramThread, tps, tps);
             }
@@ -491,8 +302,8 @@ public class CellUnderAttack extends Cell {
 
     /**
      * Cancels the {@link #thread} task, started in {@link #beginAttack()}. Then runs {@link #destroyFlag()}.
-     * Also cancels the {@link #hologramThread} task, if running, and destroys the {@link #hdHologramsAPI}, if it
-     * exists, using {@link #destroyHologram()}.
+     * Also cancels the {@link #hologramThread} task, if running, and destroys the Hologram, if it
+     * exists, using {@link HologramUtil#destroyHologram()}.
      */
     public void cancel() {
         if (threadTask != null) {
@@ -502,9 +313,7 @@ public class CellUnderAttack extends Cell {
             hologramTask.cancel();
         }
         destroyFlag();
-        if (hdHologramsAPI != null) {
-            destroyHologram();
-        }
+        HologramUtil.destroyHologram();
     }
 
     /** @return the string "%getWorldName% (%getX%, %getZ%)". */

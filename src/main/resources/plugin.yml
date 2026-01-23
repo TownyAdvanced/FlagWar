@@ -19,7 +19,6 @@ description: ${description}
 folia-supported: true
 
 softdepend:
-    - HolographicDisplays
     - DecentHolograms
 
 depend:
