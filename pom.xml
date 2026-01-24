@@ -11,8 +11,8 @@
     <description>An OG war system for TownyAdvanced. Celebrating a decade of Flag-based Towny Warfare.</description>
 
     <properties>
-        <java.version>21</java.version>
-        <project.bukkitAPIVersion>1.21</project.bukkitAPIVersion>
+        <java.version>17</java.version>
+        <project.bukkitAPIVersion>1.19</project.bukkitAPIVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -24,7 +24,7 @@
         </license>
         <license>
             <name>Creative Commons Attribution 4.0 International (CC BY 4.0)</name>
-            <comments>Governs written documentation and artistic assetsint for FlagWar.</comments>
+            <comments>Governs written documentation and artistic assets for FlagWar.</comments>
             <url>https://creativecommons.org/licenses/by/4.0/legalcode</url>
         </license>
     </licenses>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.11-R0.1-SNAPSHOT</version>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
