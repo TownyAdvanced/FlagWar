@@ -266,10 +266,10 @@ public class CellUnderAttack extends Cell {
         }
     }
 
-    /** Off-loaded to {@link HologramUtil#updateHologram(Duration)}. */
+    /** Off-loaded to {@link HologramUtil#updateHologramTimer(String, Duration)}. */
     public void taskUpdateHologram() {
         this.flagLifeTime = flagLifeTime.minusSeconds(1);
-        HologramUtil.updateHologram(flagLifeTime);
+        HologramUtil.updateHologramTimer(getCellString(), flagLifeTime);
     }
 
     /**
@@ -293,7 +293,6 @@ public class CellUnderAttack extends Cell {
         threadTask = scheduler.runRepeating(thread, ticksFromMs, ticksFromMs);
         if (FlagWarConfig.isHologramEnabled()) {
             HologramUtil.drawHologram(this.getCellString(), flagLightBlock.getLocation(), flagLifeTime);
-            HologramUtil.drawHologram(this.getCellString(), flagLightBlock.getLocation(), flagLifeTime);
             if (FlagWarConfig.hasTimerLine()) {
                 hologramTask = scheduler.runRepeating(hologramThread, tps, tps);
             }
@@ -303,7 +302,7 @@ public class CellUnderAttack extends Cell {
     /**
      * Cancels the {@link #thread} task, started in {@link #beginAttack()}. Then runs {@link #destroyFlag()}.
      * Also cancels the {@link #hologramThread} task, if running, and destroys the Hologram, if it
-     * exists, using {@link HologramUtil#destroyHologram()}.
+     * exists, using {@link HologramUtil#destroyHologram(String)}.
      */
     public void cancel() {
         if (threadTask != null) {
@@ -313,7 +312,7 @@ public class CellUnderAttack extends Cell {
             hologramTask.cancel();
         }
         destroyFlag();
-        HologramUtil.destroyHologram();
+        HologramUtil.destroyHologram(getCellString());
     }
 
     /** @return the string "%getWorldName% (%getX%, %getZ%)". */

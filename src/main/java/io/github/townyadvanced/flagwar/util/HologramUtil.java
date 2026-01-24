@@ -18,7 +18,6 @@ package io.github.townyadvanced.flagwar.util;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import eu.decentsoftware.holograms.api.holograms.HologramLine;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import org.bukkit.Location;
@@ -31,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 public final class HologramUtil {
-    /** DecentHolograms HologramLine for the timer. */
-    private static HologramLine timerLineDHAPI;
 
     private HologramUtil() {
         // Masking "public" constructor.
@@ -41,53 +38,53 @@ public final class HologramUtil {
     /**
      * Ignition source for a hologram.
      * Retrieves hologram settings via {@link FlagWarConfig}, then will attempt to draw a hologram.
-     * @param hologramName Hologram's name - Typically, the Cell String from CellUnderAttack.
+     * @param name Hologram's name - Typically, the Cell String from CellUnderAttack.
      * @param location Hologram's location
-     * @param flagLifeTime (Remaining) duration of the flag's timer.
+     * @param lifeTime (Remaining) duration of the flag's timer.
      */
-    public static void drawHologram(final String hologramName, final Location location, final Duration flagLifeTime) {
-        List<Map.Entry<String, String>> holoSettings = FlagWarConfig.getHologramSettings();
+    public static void drawHologram(final String name,
+                                    final Location location,
+                                    final Duration lifeTime) {
+        List<Map.Entry<String, String>> settings = FlagWarConfig.getHologramSettings();
 
         // DecentHolograms
         Plugin decentHolograms = FlagWar.getInstance().getServer().getPluginManager()
             .getPlugin("DecentHolograms");
         if (decentHolograms != null && decentHolograms.isEnabled()) {
-            drawDecentHolograms(hologramName, location, holoSettings, flagLifeTime);
+            drawDecentHolograms(name, location, settings, lifeTime);
+        } else {
+            Messaging.debug("Tried to draw a hologram (%s), but no supported hologram plugins loaded.", name);
         }
     }
 
     /**
-     * Draw Hologram using DecentHolograms ({@link DHAPI})
-     * <p>
-     *     <b>Process:</b>
-     *     <ol>
-     *         <li>Create a DecentHolograms hologram using {@link DHAPI#createHologram(String, Location)}.
-     *         Use the CellString as the hologram's name.</li>
-     *         <li>Set Invisible</li>
-     *         <li>Add Lines</li>
-     *         <li>Set offset</li>
-     *         <li>Set Visible</li>
-     *     </ol>
-     * </p>
-     * @param hologramName Name of the hologram (typically, the Cell String)
+     * Draw Hologram using DecentHolograms ({@link DHAPI}).
+     *
+     * @param name Name of the hologram (typically, the Cell String)
      * @param location Location to initially spawn the hologram.
-     * @param holoSettings Map of 'holograms.lines' from the config.
-     * @param flagLifeTime (Remaining) Duration of flag's timer.
+     * @param settings Map of 'holograms.lines' from the config.
+     * @param lifeTime (Remaining) Duration of flag's timer.
      */
     @ApiStatus.Experimental
-    public static void drawDecentHolograms(final String hologramName,
+    private static void drawDecentHolograms(final String name,
                                            final Location location,
-                                           final List<Map.Entry<String, String>> holoSettings,
-                                           final Duration flagLifeTime) {
+                                           final List<Map.Entry<String, String>> settings,
+                                           final Duration lifeTime) {
+
+        if (DHAPI.getHologram(name) != null) {
+            Messaging.debug("Attempted to draw a pre-existing hologram at: %s", name);
+            Messaging.debug("This should be destroyed and re-created, or fetched and updated.");
+            return;
+        }
 
         // Create Invisible
-        Hologram hologram = DHAPI.createHologram(hologramName, location, false);
+        Hologram hologram = DHAPI.createHologram(name, location, false);
         hologram.setDefaultVisibleState(false);
 
         // Add Lines
-        for (Map.Entry<String, String> holoSetting : holoSettings) {
-            var type = holoSetting.getKey();
-            var data = holoSetting.getValue();
+        for (Map.Entry<String, String> holoSetting : settings) {
+            String type = holoSetting.getKey();
+            String data = holoSetting.getValue();
 
             switch (type) {
                 case "item" -> {
@@ -97,7 +94,7 @@ public final class HologramUtil {
                     }
                 }
                 case "text" -> DHAPI.addHologramLine(hologram, data);
-                case "timer" -> timerLineDHAPI = DHAPI.addHologramLine(hologram, FormatUtil.time(flagLifeTime, data));
+                case "timer" -> DHAPI.addHologramLine(hologram, FormatUtil.time(lifeTime, data));
                 default -> DHAPI.addHologramLine(hologram, "");
             }
         }
@@ -113,22 +110,38 @@ public final class HologramUtil {
     }
 
     /**
-     * Sets the Hologram's timer line text using
-     * {@link FormatUtil#time(Duration, String)} with the supplied Duration and
-     * {@link FlagWarConfig#getTimerText()} as the parameters.
-     * @param flagLifeTime (Remaining) Duration of the flag's timer.
+     * Destroys a given hologram by name.
+     * @param name Hologram name (Cell String)
      */
-    public static void updateHologram(final Duration flagLifeTime) {
-        String formatText = FormatUtil.time(flagLifeTime, FlagWarConfig.getTimerText());
-        if (timerLineDHAPI != null) {
-            timerLineDHAPI.setText(formatText);
+    public static void destroyHologram(final String name) {
+        Plugin decentHolograms = FlagWar.getInstance().getServer().getPluginManager()
+            .getPlugin("DecentHolograms");
+        if (decentHolograms != null && decentHolograms.isEnabled()) {
+            Hologram hologram = DHAPI.getHologram(name);
+            if (hologram != null) {
+                hologram.destroy();
+            }
+        } else {
+            Messaging.debug("Tried to destroy a hologram (%s), but no supported plugins are in use.", name);
         }
     }
 
-    /** Destroys the hologram. */
-    public static void destroyHologram() {
-        if (timerLineDHAPI != null) {
-            timerLineDHAPI.getParent().getParent().delete();
+    /**
+     * Set's the Hologram's timer line text - which is assumed to be line index 2.
+     * @param name Hologram name (Cell String)
+     * @param lifeTime Flag duration
+     */
+    public static void updateHologramTimer(final String name, final Duration lifeTime) {
+        Plugin decentHolograms = FlagWar.getInstance().getServer().getPluginManager()
+            .getPlugin("DecentHolograms");
+        if (decentHolograms != null && decentHolograms.isEnabled()) {
+            Hologram hologram = DHAPI.getHologram(name);
+
+            if (hologram != null) {
+                DHAPI.setHologramLine(hologram, 2, FormatUtil.time(lifeTime, FlagWarConfig.getTimerText()));
+            }
+        } else {
+            Messaging.debug("Tried to update a hologram's timer (%s), but no supported plugins are in use.", name);
         }
     }
 }
