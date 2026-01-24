@@ -11,8 +11,8 @@
     <description>An OG war system for TownyAdvanced. Celebrating a decade of Flag-based Towny Warfare.</description>
 
     <properties>
-        <java.version>17</java.version>
-        <project.bukkitAPIVersion>1.17</project.bukkitAPIVersion>
+        <java.version>21</java.version>
+        <project.bukkitAPIVersion>1.21</project.bukkitAPIVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -154,22 +154,29 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <propertiesEncoding>UTF-8</propertiesEncoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.12.1</version>
+                <version>3.21.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.1</version>
                 <configuration>
                     <relocations>
                         <relocation>
@@ -199,7 +206,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.4.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -212,17 +219,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.5.4</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.5.4</version>
             </plugin>
             <plugin>
                 <groupId>org.ec4j.maven</groupId>
                 <artifactId>editorconfig-maven-plugin</artifactId>
-                <version>0.1.3</version>
+                <version>0.2.0</version>
                 <executions>
                     <execution>
                         <id>check</id>
@@ -251,7 +258,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.6.3</version>
+                        <version>3.12.0</version>
                         <executions>
                             <execution>
                                 <phase>compile</phase>
@@ -261,6 +268,7 @@
                             </execution>
                         </executions>
                         <configuration>
+                            <doclint>all,-missing</doclint>
                             <source>${java.version}</source>
                             <javadocExecutable>${java.home}/bin/</javadocExecutable>
                             <notimestamp>true</notimestamp>
@@ -276,18 +284,16 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>3.5.0</version>
+                        <version>3.6.0</version>
                         <dependencies>
                             <dependency>
                                 <groupId>com.puppycrawl.tools</groupId>
                                 <artifactId>checkstyle</artifactId>
-                                <version>10.15.0</version>
+                                <version>10.21.0</version>
                             </dependency>
                         </dependencies>
                         <configuration>
                             <configLocation>.checkstyle/checkstyle.xml</configLocation>
-                            <inputEncoding>UTF-8</inputEncoding>
-                            <outputEncoding>UTF-8</outputEncoding>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
                             <linkXRef>false</linkXRef>
