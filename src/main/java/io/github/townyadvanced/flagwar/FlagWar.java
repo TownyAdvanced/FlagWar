@@ -131,7 +131,7 @@ public class FlagWar extends JavaPlugin {
                 ? new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this) : null;
     }
 
-    /** On-Enable Protocol */
+    /** On-Enable Protocol. */
     @Override
     public void onEnable() {
         setInstance();
@@ -172,7 +172,7 @@ public class FlagWar extends JavaPlugin {
         return true;
     }
 
-    /** On-Disable Protocol */
+    /** On-Disable Protocol. */
     @Override
     public void onDisable() {
         FW_LOGGER.log(Level.INFO, () -> Translate.from("shutdown.cancel-all"));

@@ -587,7 +587,7 @@ public class FlagWarCustomListener implements Listener {
     }
 
     private void messageResident(final Resident resident, final String message) {
-        if (resident.isOnline() && resident.getPlayer() != null ) {
+        if (resident.isOnline() && resident.getPlayer() != null) {
             resident.getPlayer().sendMessage(message);
         }
     }
@@ -595,11 +595,11 @@ public class FlagWarCustomListener implements Listener {
     private void msgAttackDefended(final Resident atkRes, final Resident defRes, final String formattedMoney) {
         String message;
         message = Translate.fromPrefixed("area.defended.attacker", defRes.getFormattedName(), formattedMoney);
-        if (atkRes.isOnline() && atkRes.getPlayer() != null ) {
+        if (atkRes.isOnline() && atkRes.getPlayer() != null) {
             atkRes.getPlayer().sendMessage(message);
         }
         message = Translate.fromPrefixed("area.defended.defender", atkRes.getFormattedName(), formattedMoney);
-        if (defRes.isOnline() && defRes.getPlayer() != null ) {
+        if (defRes.isOnline() && defRes.getPlayer() != null) {
             defRes.getPlayer().sendMessage(message);
         }
     }
