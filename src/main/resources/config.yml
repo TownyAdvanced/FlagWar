@@ -106,15 +106,15 @@ timer_blocks:
         - red_terracotta
 
 # Defines War Flag Hologram settings
-# Requires HolographicDisplays
+# Requires a supported hologram provider.
 holograms:
-    # If true, and if HolographicDisplays is present, holograms will appear when a war flag is placed.
+    # If true, and if a provider is present, holograms will appear when a war flag is placed.
     enabled: false
     # Defines the lines of the hologram. The number indicates the line number. Starts at zero.
     # Use an item type to add a floating item.
     # Use a text type to add text.
     # Use the timer type to indicate the time left. Only one timer line may be used.
-    # The timer formatting can be customised as described here:
+    # The timer formatting can be customized as described here:
     # https://docs.oracle.com/en/java/javase/16/docs/api/java.base/java/util/Formatter.html
     # Argument Index: Seconds is the first argument, minutes the second argument, and hours the third argument.
     lines:

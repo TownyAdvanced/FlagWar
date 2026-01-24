@@ -2,10 +2,10 @@ name: Maven Compile (Multiple JDK)
 on: [push]
 jobs:
     build:
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-24.04
         strategy:
             matrix:
-                java: ['21']
+                java: ['25', '21', '17']
         name: Java ${{ matrix.java }}
         steps:
             - uses: actions/checkout@v3

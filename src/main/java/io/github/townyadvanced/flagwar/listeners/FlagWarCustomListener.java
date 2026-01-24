@@ -28,6 +28,7 @@ import com.palmergames.bukkit.towny.event.town.TownLeaveEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreSetHomeBlockEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreUnclaimCmdEvent;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -468,7 +469,13 @@ public class FlagWarCustomListener implements Listener {
     }
 
     private void unclaimTownBlock(final TownBlock townBlock) {
-        TownyUniverse.getInstance().getDataSource().removeTownBlock(townBlock);
+        try {
+            TownyUniverse.getInstance().getDataSource().removeTownBlock(townBlock);
+        } catch (TownyException te) {
+            // Couldn't Unclaim TownBlock
+            TownyMessaging.sendErrorMsg(te.getMessage());
+            te.printStackTrace();
+        }
     }
 
     private void transferOwnership(final Town attackingTown, final TownBlock townBlock) {
@@ -559,7 +566,7 @@ public class FlagWarCustomListener implements Listener {
 
     /**
      * Takes a {@link Player} object, and gets the associated name. If the player is a valid {@link Resident}, get the
-     * formatted name from it's Resident. If Null, "Greater&nbsp;Forces" is used instead.
+     * formatted name from its Resident. If Null, "Greater&nbsp;Forces" is used instead.
      *
      * @param player the Player object to parse
      * @return a name for the associated Player, which may or not be formatted from an associated Resident, or "Greater
@@ -580,7 +587,7 @@ public class FlagWarCustomListener implements Listener {
     }
 
     private void messageResident(final Resident resident, final String message) {
-        if (resident.isOnline()) {
+        if (resident.isOnline() && resident.getPlayer() != null) {
             resident.getPlayer().sendMessage(message);
         }
     }
@@ -588,11 +595,11 @@ public class FlagWarCustomListener implements Listener {
     private void msgAttackDefended(final Resident atkRes, final Resident defRes, final String formattedMoney) {
         String message;
         message = Translate.fromPrefixed("area.defended.attacker", defRes.getFormattedName(), formattedMoney);
-        if (atkRes.isOnline()) {
+        if (atkRes.isOnline() && atkRes.getPlayer() != null) {
             atkRes.getPlayer().sendMessage(message);
         }
         message = Translate.fromPrefixed("area.defended.defender", atkRes.getFormattedName(), formattedMoney);
-        if (defRes.isOnline()) {
+        if (defRes.isOnline() && defRes.getPlayer() != null) {
             defRes.getPlayer().sendMessage(message);
         }
     }

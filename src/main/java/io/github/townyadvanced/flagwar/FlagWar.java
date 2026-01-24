@@ -69,6 +69,7 @@ import java.util.logging.Logger;
 import io.github.townyadvanced.flagwar.util.Messaging;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -91,11 +92,11 @@ public class FlagWar extends JavaPlugin {
     /** Holds a map of {@link Town}s, and when they were last flagged. */
     private static final Map<Town, Instant> TOWN_LAST_FLAGGED_HASH_MAP = new HashMap<>();
     /** FlagWar Copyright String. */
-    private static final String FW_COPYRIGHT = "Copyright \u00a9 2021–2023 TownyAdvanced";
+    private static final String FW_COPYRIGHT = "Copyright © 2021–2023 TownyAdvanced";
     /** Version for storing the minimum required version of Towny, for compatibility. */
-    private static final Version MIN_TOWNY_VER = Version.fromString("0.100.3.7");
+    private static final Version MIN_TOWNY_VER = Version.fromString("0.102.0.0");
     /** Version for storing the latest supported version of Towny, for validation. */
-    private static final Version VALID_TOWNY_VER = Version.fromString("0.100.3.7");
+    private static final Version VALID_TOWNY_VER = Version.fromString("0.102.0.6");
     /** Value of minimum configuration file version. Used for determining if file should be regenerated. */
     private static final double MIN_CONFIG_VER = 1.6;
     /** BStats Metrics ID. */
@@ -130,9 +131,7 @@ public class FlagWar extends JavaPlugin {
                 ? new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this) : null;
     }
 
-    /**
-     * Operations to perform when called by {@link org.bukkit.plugin.PluginLoader#enablePlugin(Plugin)}.
-     */
+    /** On-Enable Protocol. */
     @Override
     public void onEnable() {
         setInstance();
@@ -173,20 +172,15 @@ public class FlagWar extends JavaPlugin {
         return true;
     }
 
-    /**
-     * Operations to perform when called by {@link org.bukkit.plugin.PluginLoader#disablePlugin(Plugin)}.
-     * (Or, if called internally.)
-     */
+    /** On-Disable Protocol. */
     @Override
     public void onDisable() {
         FW_LOGGER.log(Level.INFO, () -> Translate.from("shutdown.cancel-all"));
 
-        try {
+        if (!ATTACK_HASH_MAP.isEmpty()) {
             for (CellUnderAttack cell : new ArrayList<>(ATTACK_HASH_MAP.values())) {
                 attackCanceled(cell);
             }
-        } catch (NullPointerException npe) {
-            npe.printStackTrace();
         }
     }
 
@@ -361,11 +355,10 @@ public class FlagWar extends JavaPlugin {
         List<CellUnderAttack> cells = new ArrayList<>();
         for (CellUnderAttack cua : ATTACK_HASH_MAP.values()) {
             Town townUnderAttack;
-            var location = cua.getFlagBaseBlock().getLocation();
-            if (TownyAPI.getInstance().getTownBlock(location).hasTown()) {
-                townUnderAttack =
-                    TownyAPI.getInstance().getTownBlock(location).getTownOrNull();
-
+            Location location = cua.getFlagBaseBlock().getLocation();
+            TownBlock tb = TownyAPI.getInstance().getTownBlock(location);
+            if (tb != null && tb.hasTown()) {
+                townUnderAttack = tb.getTownOrNull();
                 if (townUnderAttack == town) {
                     cells.add(cua);
                 }
@@ -377,10 +370,10 @@ public class FlagWar extends JavaPlugin {
     static boolean isUnderAttack(final Town town) {
         for (CellUnderAttack cua : ATTACK_HASH_MAP.values()) {
             Town townUnderAttack;
-            var location = cua.getFlagBaseBlock().getLocation();
-            if (TownyAPI.getInstance().getTownBlock(location).hasTown()) {
-                townUnderAttack =
-                    TownyAPI.getInstance().getTownBlock(location).getTownOrNull();
+            Location location = cua.getFlagBaseBlock().getLocation();
+            TownBlock tb = TownyAPI.getInstance().getTownBlock(location);
+            if (tb != null && tb.hasTown()) {
+                townUnderAttack = tb.getTownOrNull();
                 if (townUnderAttack == town) {
                     return true;
                 }
@@ -614,21 +607,24 @@ public class FlagWar extends JavaPlugin {
     }
 
     private static boolean isThisPlotProtectedByNeighbours(final WorldCoord attackedCoord) {
-        UUID townUUID = attackedCoord.getTownOrNull().getUUID();
+        var town = attackedCoord.getTownOrNull();
+        if (town == null) {
+            return false;
+        }
+        UUID townUUID = town.getUUID();
         int friendlyPlots = 0;
         int[][] offset = {{-1, 0 }, {1, 0 }, {0, -1 }, {0, 1 } };
         for (int i = 0; i < DIRECTIONS; i++) {
             WorldCoord wc = new WorldCoord(attackedCoord.getWorldName(), attackedCoord.getX() + offset[i][0],
                     attackedCoord.getZ() + offset[i][1]);
-            if (wc.hasTownBlock() && wc.getTownOrNull().getUUID().equals(townUUID)) {
+            if (wc.hasTownBlock() && wc.getTownOrNull() != null && wc.getTownOrNull().getUUID().equals(townUUID)) {
                 friendlyPlots++;
             }
         }
         return friendlyPlots >= FlagWarConfig.numberOfNeighbouringPlotsToPreventAttack();
     }
 
-    private static void setAttackerAsEnemy(final Nation defendingNation, final Nation attackingNation)
-        throws AlreadyRegisteredException {
+    private static void setAttackerAsEnemy(final Nation defendingNation, final Nation attackingNation) {
         if (!defendingNation.hasEnemy(attackingNation)) {
             defendingNation.addEnemy(attackingNation);
             defendingNation.save();

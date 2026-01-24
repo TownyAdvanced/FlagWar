@@ -42,7 +42,6 @@ public class HologramUpdateThread extends TimerTask {
      */
     @Override
     public void run() {
-
-        cell.updateHologram();
+        cell.taskUpdateHologram();
     }
 }
