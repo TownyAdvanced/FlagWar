@@ -16,10 +16,14 @@
 
 package io.github.townyadvanced.flagwar.util;
 
+import com.Zrips.CMI.CMI;
+import com.Zrips.CMI.Modules.Display.CMIBillboard;
+import com.Zrips.CMI.Modules.Holograms.CMIHologram;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
@@ -52,9 +56,17 @@ public final class HologramUtil {
             .getPlugin("DecentHolograms");
         if (decentHolograms != null && decentHolograms.isEnabled()) {
             drawDecentHolograms(name, location, settings, lifeTime);
-        } else {
-            Messaging.debug("Tried to draw a hologram (%s), but no supported hologram plugins loaded.", name);
+            return;
         }
+
+        // CMI - Common paid alternative to EssentialsX. Use as last resort, add other alternatives above this point.
+        Plugin cmi = FlagWar.getInstance().getServer().getPluginManager().getPlugin("cmi");
+        if (cmi != null && cmi.isEnabled()) {
+            drawCMIHolograms(name, location, settings, lifeTime);
+            return;
+        }
+
+        Messaging.debug("Tried to draw a hologram (%s), but no supported hologram plugins loaded.", name);
     }
 
     /**
@@ -99,14 +111,64 @@ public final class HologramUtil {
             }
         }
 
-        //Teleport
+        // Teleport to new offset
         final double hOffset = 0.5d;
         final double vOffset = 0.9d;
         final double textHeight = 0.23d;
         hologram.setLocation(location.add(hOffset, vOffset + (hologram.getPage(0).size() * textHeight), hOffset));
 
-        //Set Visible
+        // Set Visible
         hologram.setDefaultVisibleState(true);
+    }
+
+    /**
+     * Draw hologram with CMI.
+     * @param name Hologram Name
+     * @param location Hologram Location
+     * @param settings Settings
+     * @param lifetime (Remaining) life span of hologram
+     */
+    private static void drawCMIHolograms(final String name,
+                                         final Location location,
+                                         final List<Map.Entry<String, String>> settings,
+                                         final Duration lifetime) {
+        CMIHologram hologram = new CMIHologram(name, location);
+        hologram.setNewDisplayMethod(true);
+        hologram.setBillboard(CMIBillboard.CENTER);
+
+        // Self-Destruct - backup to #destroyHologram()
+        double[] tps = Bukkit.getTPS(); // Will use 5-minute average of running server.
+        int bufferTicks = (int) Math.round(tps[0]) * 2; // add 2s, in case the average is slower than current tick rate.
+        hologram.setSelfDestructIn((Math.toIntExact(lifetime.toSeconds()) * (int) Math.round(tps[0])) + bufferTicks);
+
+        // Add Lines
+        for (Map.Entry<String, String> holoSetting : settings) {
+            String type = holoSetting.getKey();
+            String data = holoSetting.getValue();
+
+            switch (type) {
+                case "item" -> {
+                    Material material = Material.matchMaterial(data);
+                    if (material != null) {
+                        // Need working confirmation that this actually adds an icon.
+                        hologram.setLine(0, "ICON:" + material.name());
+                    }
+                }
+                case "text" -> hologram.setLine(1, data);
+                case "timer" -> hologram.setLine(2, FormatUtil.time(lifetime, data));
+                default -> hologram.addLine("");
+            }
+        }
+
+        // Offset
+        final double hOffset = 0.5d;
+        final double vOffset = 0.9d;
+        final double textHeight = 0.23d;
+        hologram.moveTo(location.add(hOffset, vOffset + (hologram.getPage(0).getHeight() * textHeight), hOffset));
+
+        // Register / Draw
+        CMI.getInstance().getHologramManager().addHologram(hologram);
+        hologram.update();
     }
 
     /**
@@ -114,6 +176,7 @@ public final class HologramUtil {
      * @param name Hologram name (Cell String)
      */
     public static void destroyHologram(final String name) {
+        // DecentHolograms
         Plugin decentHolograms = FlagWar.getInstance().getServer().getPluginManager()
             .getPlugin("DecentHolograms");
         if (decentHolograms != null && decentHolograms.isEnabled()) {
@@ -121,9 +184,20 @@ public final class HologramUtil {
             if (hologram != null) {
                 hologram.destroy();
             }
-        } else {
-            Messaging.debug("Tried to destroy a hologram (%s), but no supported plugins are in use.", name);
+            return;
         }
+
+        // CMI
+        Plugin cmi = FlagWar.getInstance().getServer().getPluginManager().getPlugin("cmi");
+        if (cmi != null && cmi.isEnabled()) {
+            CMIHologram hologram = CMI.getInstance().getHologramManager().getByName(name);
+            if (hologram != null) {
+                hologram.remove();
+            }
+            return;
+        }
+
+        Messaging.debug("Tried to destroy a hologram (%s), but no supported plugins are in use.", name);
     }
 
     /**
@@ -132,16 +206,28 @@ public final class HologramUtil {
      * @param lifeTime Flag duration
      */
     public static void updateHologramTimer(final String name, final Duration lifeTime) {
+        // DecentHolograms
         Plugin decentHolograms = FlagWar.getInstance().getServer().getPluginManager()
             .getPlugin("DecentHolograms");
         if (decentHolograms != null && decentHolograms.isEnabled()) {
             Hologram hologram = DHAPI.getHologram(name);
-
             if (hologram != null) {
                 DHAPI.setHologramLine(hologram, 2, FormatUtil.time(lifeTime, FlagWarConfig.getTimerText()));
             }
-        } else {
-            Messaging.debug("Tried to update a hologram's timer (%s), but no supported plugins are in use.", name);
+            return;
         }
+
+        // CMI
+        Plugin cmi = FlagWar.getInstance().getServer().getPluginManager().getPlugin("cmi");
+        if (cmi != null && cmi.isEnabled()) {
+            CMIHologram hologram = CMI.getInstance().getHologramManager().getByName(name);
+            if (hologram != null) {
+                hologram.setLine(2, FormatUtil.time(lifeTime, FlagWarConfig.getTimerText()));
+                hologram.refresh();
+            }
+            return;
+        }
+
+        Messaging.debug("Tried to update a hologram's timer (%s), but no supported plugins are in use.", name);
     }
 }
