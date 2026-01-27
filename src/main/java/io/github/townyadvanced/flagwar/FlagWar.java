@@ -72,6 +72,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.plugin.Plugin;
@@ -158,13 +159,8 @@ public class FlagWar extends JavaPlugin {
         var configLoader = new ConfigLoader(this);
         try {
             configLoader.loadConfig(MIN_CONFIG_VER);
-        } catch (IOException e) {
-            FW_LOGGER.severe(e.getMessage());
-            e.printStackTrace();
-            onDisable();
-            return false;
-        } catch (Exception e) {
-            FW_LOGGER.severe(e.getMessage());
+        } catch (InvalidConfigurationException | IOException e) {
+            FW_LOGGER.log(Level.SEVERE, e.getMessage(), e);
             onDisable();
             return false;
         }
@@ -198,10 +194,7 @@ public class FlagWar extends JavaPlugin {
     private void checkTowny() {
         FW_LOGGER.log(Level.INFO, () -> Translate.from("startup.check-towny.notify"));
         var towny = Towny.getPlugin();
-        if (towny == null) {
-            FW_LOGGER.log(Level.SEVERE, () -> Translate.from("startup.check-towny.not-running"));
-            onDisable();
-        } else if (towny.isError()) {
+        if (towny.isError()) {
             FW_LOGGER.log(Level.SEVERE, () -> Translate.from("startup.check-towny.isError"));
             onDisable();
         } else {
