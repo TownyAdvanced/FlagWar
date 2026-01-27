@@ -316,7 +316,7 @@ public final class FlagWarConfig {
 
     /** @return {@link #HOLOGRAM_SETTINGS}, defined by {@link #getHologramConfig()}. */
     public static List<Map.Entry<String, String>> getHologramSettings() {
-        return HOLOGRAM_SETTINGS;
+        return List.copyOf(HOLOGRAM_SETTINGS);
     }
 
     /** @return The hologram {@link #timerText}, if it exists, defined in {@link #getHologramConfig()}. */

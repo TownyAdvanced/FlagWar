@@ -18,8 +18,11 @@ package io.github.townyadvanced.flagwar.i18n;
 
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.util.Messaging;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -149,9 +152,10 @@ public final class LocaleUtil {
     private static void setLocale(final Locale locale) {
         currentLocale = locale;
     }
+
     /** @return the {@link #messages} {@link ResourceBundle}. */
     public static ResourceBundle getMessages() {
-        return messages;
+        return new ResourceBundleWrapper(messages);
     }
 
     /**
@@ -160,5 +164,23 @@ public final class LocaleUtil {
      */
     private static void setMessages(final ResourceBundle resourceBundle) {
         messages = resourceBundle;
+    }
+
+    private static class ResourceBundleWrapper extends ResourceBundle {
+        private final ResourceBundle original;
+
+        public ResourceBundleWrapper(ResourceBundle original) {
+            this.original = original;
+        }
+
+        @Override
+        protected Object handleGetObject(@NotNull String key) {
+            return original.getObject(key);
+        }
+
+        @Override
+        public @NotNull Enumeration<String> getKeys() {
+            return Collections.enumeration(original.keySet());
+        }
     }
 }
