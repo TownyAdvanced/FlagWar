@@ -35,6 +35,7 @@ public class TownyAdminReloadAddon extends BaseCommand implements TabExecutor {
         return true;
     }
 
+    @SuppressWarnings("unused")
     private void parseAdminReloadCommand(final String[] args, final CommandSender sender) {
         if (sender instanceof Player player) {
             if (!TownyUniverse.getInstance().getPermissionSource().isTownyAdmin(player)) {

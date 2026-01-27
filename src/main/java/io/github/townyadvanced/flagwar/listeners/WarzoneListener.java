@@ -97,7 +97,7 @@ public class WarzoneListener implements Listener {
             return;
         }
 
-        if (!FlagWarConfig.isEditableMaterialInWarZone(mat) || isTooCloseToTheFlag(status, townyBuildEvent)) {
+        if (!FlagWarConfig.isEditableMaterialInWarZone(mat) || isTooCloseToTheFlag(townyBuildEvent)) {
             townyBuildEvent.setCancelled(true);
             townyBuildEvent.setCancelMessage(msgCannotEdit("build", mat));
             return;
@@ -256,12 +256,10 @@ public class WarzoneListener implements Listener {
     /**
      * Tell the calling method to fail if the block is too close to the flag.
      *
-     * @param townBlockStatus The {@link TownBlockStatus} passed to, or established by, the original method.
      * @param townyActionEvent  The {@link TownyActionEvent} member being checked by the originating method.
      * @return True if any of the conditions are met.
      */
-    private boolean isTooCloseToTheFlag(final TownBlockStatus townBlockStatus,
-            final TownyActionEvent townyActionEvent) {
+    private boolean isTooCloseToTheFlag(final TownyActionEvent townyActionEvent) {
         if (!FlagWarConfig.isFlagAreaProtectedFromEditableMaterials()) {
             return false;
         }

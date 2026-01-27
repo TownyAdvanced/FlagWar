@@ -28,7 +28,9 @@ import org.bukkit.entity.Player;
 
 /**
  *  FlagWar Public API.
+ *  These are externally consumable. Not all methods are used internally.
  */
+@SuppressWarnings("unused")
 public final class FlagWarAPI {
 
     private FlagWarAPI() {
