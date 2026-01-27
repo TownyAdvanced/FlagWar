@@ -86,17 +86,13 @@ public class FlagWarCustomListener implements Listener {
     }
 
     /**
-     * If the {@link CellAttackEvent} fires, and has not been canceled, this method tries running
+     * If the {@link CellAttackEvent} fires, this method tries running
      * {@link FlagWar#registerAttack(CellUnderAttack)} using the cell from the CellAttackEvent.
      * @param cellAttackEvent the associated CellAttackEvent.
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     @SuppressWarnings("unused")
     public void onCellAttackEvent(final CellAttackEvent cellAttackEvent) {
-        if (cellAttackEvent.isCancelled()) {
-            return;
-        }
-
         try {
             FlagWar.registerAttack(cellAttackEvent.getData());
         } catch (Exception e) {
