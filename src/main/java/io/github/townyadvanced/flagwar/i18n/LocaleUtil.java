@@ -167,15 +167,21 @@ public final class LocaleUtil {
         messages = resourceBundle;
     }
 
+    /**
+     * Wrapper for returning a copy of a ResourceBundle, rather than a reference to the original.
+     */
     private static class ResourceBundleWrapper extends ResourceBundle {
+        /**
+         * Original ResourceBundle to be wrapped.
+         */
         private final ResourceBundle original;
 
-        public ResourceBundleWrapper(ResourceBundle original) {
-            this.original = original;
+        ResourceBundleWrapper(final ResourceBundle originalBundle) {
+            this.original = originalBundle;
         }
 
         @Override
-        protected Object handleGetObject(@NotNull String key) {
+        protected Object handleGetObject(@NotNull final String key) {
             return original.getObject(key);
         }
 

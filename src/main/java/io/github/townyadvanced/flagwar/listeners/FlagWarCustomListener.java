@@ -230,8 +230,8 @@ public class FlagWarCustomListener implements Listener {
     }
 
     /**
-     * When a {@link Town} attempts to leave a {@link Nation}, check that there are no active or recent attacks. If there
-     * are, cancel the {@link NationPreTownLeaveEvent} with the appropriate reason.
+     * When a {@link Town} attempts to leave a {@link Nation}, check that there are no active or recent attacks.
+     * If there are, cancel the {@link NationPreTownLeaveEvent} with the appropriate reason.
      *
      * @param nationPreTownLeaveEvent the NationPreTownLeaveEvent.
      */
