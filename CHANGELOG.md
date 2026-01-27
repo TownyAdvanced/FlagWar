@@ -4,32 +4,85 @@ The format is based on [Keep a Changelog][Keep a Changelog], and this project ad
 
 If a change is missing, it is likely simple or was forgotten about when this log was updated. 😓
 
-Feel free to PR corrections to this file.
+Feel free to PR corrections to this file. Links are reference-style, except for PR links. In other words,
+check the bottom of the markdown document.
 
-<!-- ## [Unreleased][Unreleased]-->
-## [0.6.2][0.6.2]
-
+<!-- ## [Unreleased][Unreleased]
 ### Added
-
-* None.
 
 ### Changed
 
-* None.
+### Fixed
+
+### Removed
+-->
+
+---
+
+## [0.8.0][0.8.0]
+_Released 2026-01-24_
+
+### Added
+- DecentHolograms Support (_Experimental_) ([FlagCourier][FlagCourier] - [#386](https://github.com/TownyAdvanced/FlagWar/pull/386))
+
+### Removed
+- HolographicDisplays Support ([FlagCourier][FlagCourier] - [#386](https://github.com/TownyAdvanced/FlagWar/pull/386))
+
+## [0.7.2][0.7.2]
+_Released 2025-12-03_
+
+### Fixed
+- `FlagWar.loadConfig()` returning opposite of what was intended. ([LlmDl][LlmDl] - [#412](https://github.com/TownyAdvanced/FlagWar/pull/412))
+
+## [0.7.1][0.7.1]
+_Released 2025-11-08_
+
+### Added
+- `/ta reload` command to reload FlagWar. ([LlmDl][LlmDl] - [#409](https://github.com/TownyAdvanced/FlagWar/pull/409))
+
+### Fixed
+- CellWonEvent being unable to be acted upon. ([LlmDl][LlmDl] - [#406](https://github.com/TownyAdvanced/FlagWar/pull/406))
+- Jitpack.yml java version not allowing builds against the repository. ([LlmDl][LlmDl] - [#408](https://github.com/TownyAdvanced/FlagWar/pull/408))
+- CellWonEvent being unable to be thrown asynchronously. ([LlmDl][LlmDl] - [#411](https://github.com/TownyAdvanced/FlagWar/pull/411))
+
+## [0.7.0][0.7.0]
+_Released 2025-03-09_
+
+### Added
+- Ability to protect an area surrounding the flag from building. ([LlmDl][LlmDl] - [#401](https://github.com/TownyAdvanced/FlagWar/pull/401))
+  - Made configurable in [#402](https://github.com/TownyAdvanced/FlagWar/pull/402) 
+
+### Changed
+- (CI) Update compile-on-push workflow to use Java 21 ([LlmDl][LlmDl] - [#400](https://github.com/TownyAdvanced/FlagWar/pull/400))
+
+## [0.6.4][0.6.4]
+_Released 2024-09-27_
+
+### Added
+- zh_CN translation ([Kongchenglige][Kongchenglige] - [#371](https://github.com/TownyAdvanced/FlagWar/pull/371))
+
+### Changed
+- (Automation) Bumped dependencies:
+  - `maven-shade-plugin`, `spotbugs-annotations`, `maven-surefire-plugin`, `maven-checkstyle-plugin`, `maven-failsafe-plugin`
+
+## [0.6.3][0.6.3]
+_Released 2024-07-12_
+
+### Changed
+- Updated import class paths for Towny's `Transaction` class (was `TransactionType`)
+- Bumped minimum required Towny version to 0.100.3.7
+- (Automation) Bumped dependencies:
+  - `maven-javadoc-plugin`, `maven-compiler-plugin`, `checkstyle`, Jetbrains' `java-annotations`
+
+## [0.6.2][0.6.2]
+_Released 2024-01-15_
 
 ### Fixed
 
 - Fix attacks tasks not being cancelled correctly.
 
-### Removed
-
-- None
-
 ## [0.6.1][0.6.1]
-
-### Added
-
-* None.
+_Released 2024-01-15_
 
 ### Changed
 
@@ -43,29 +96,23 @@ Feel free to PR corrections to this file.
 
 - Fix scheduler not running properly for flags.
 
-### Removed
-
-- None
-
 ## [0.6.0][0.6.0]
+_Released 2023-12-30_
+
+> First release under [LlmDl][LlmDl]
 
 ### Added
 
-* Add support for Folia, bump min. Towny version to 0.100.0.0. by @LlmDl in https://github.com/TownyAdvanced/FlagWar/pull/324
+* Add support for Folia, bump min. Towny version to 0.100.0.0. by [LlmDl][LlmDl] in [#324](https://github.com/TownyAdvanced/FlagWar/pull/324)
 
 ### Changed
 
-* Bump com.palmergames.bukkit.towny:towny from 0.99.5.0 to 0.99.6.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/308
-
-### Fixed
-
-- None
-
-### Removed
-
-- None
+* Bump com.palmergames.bukkit.towny:towny from 0.99.5.0 to 0.99.6.0 by [dependabot][dependabot] in [#308](https://github.com/TownyAdvanced/FlagWar/pull/308)
 
 ## [0.5.4][0.5.4]
+_Released 2023-10-02_
+
+> Last release under maintainership of [FlagCourier][FlagCourier].
 
 ### Known-Issues
 - [Possibly fixed: See #168](https://github.com/TownyAdvanced/FlagWar/pull/168) &mdash; Impossible to attack plots that have
@@ -77,45 +124,24 @@ Feel free to PR corrections to this file.
 
 ### Changed
 
-* Bump Snapshot and Baseline Targets by @TheFlagCourier in https://github.com/TownyAdvanced/FlagWar/pull/196
-* Bump towny from 0.98.4.0 to 0.98.4.3 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/197
-* Bump checkstyle from 10.3.4 to 10.4 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/193
-* Bump maven-shade-plugin from 3.4.0 to 3.4.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/190
-* Bump maven-checkstyle-plugin from 3.2.0 to 3.2.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/214
-* Bump bstats-bukkit from 3.0.0 to 3.0.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/223
-* Bump checkstyle from 10.4 to 10.8.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/229
-* Bump annotations from 23.0.0 to 24.0.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/231
-* Bump maven-surefire-plugin from 2.22.2 to 3.0.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/241
-* Bump maven-javadoc-plugin from 3.4.1 to 3.5.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/235
-* Bump maven-compiler-plugin from 3.10.1 to 3.11.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/236
-* Bump maven-failsafe-plugin from 2.22.2 to 3.0.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/243
-* Bump checkstyle from 10.8.0 to 10.9.2 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/245
-* Bump towny from 0.98.6.0 to 0.99.0.2 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/251
-* Bump bstats-bukkit from 3.0.1 to 3.0.2 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/247
-* Bump checkstyle from 10.9.2 to 10.9.3 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/246
-* Bump maven-failsafe-plugin from 3.0.0 to 3.1.2 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/272
-* Bump maven-surefire-plugin from 3.0.0 to 3.1.2 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/273
-* Bump maven-checkstyle-plugin from 3.2.1 to 3.3.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/264
-* Bump checkstyle from 10.9.3 to 10.12.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/268
-* Bump towny from 0.99.0.2 to 0.99.1.3 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/274
-* Bump towny from 0.99.1.3 to 0.99.5.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/287
-* Bump checkstyle from 10.12.0 to 10.12.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/281
-* Bump maven-source-plugin from 3.2.1 to 3.3.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/275
-* Bump maven-shade-plugin from 3.4.1 to 3.5.1 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/279
-* Transfer of Maintainership by @TheFlagCourier in https://github.com/TownyAdvanced/FlagWar/pull/288
-* Bump com.puppycrawl.tools:checkstyle from 10.12.1 to 10.12.4 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/303
-* Bump org.apache.maven.plugins:maven-javadoc-plugin from 3.5.0 to 3.6.0 by @dependabot in https://github.com/TownyAdvanced/FlagWar/pull/300
+* Bump Snapshot and Baseline Targets by [FlagCourier][FlagCourier] in [#196](https://github.com/TownyAdvanced/FlagWar/pull/196)
+* Bump Dependencies (via [dependabot][dependabot]):
+  * Bump `bstats-bukkit` from `3.0.0` to `3.0.2`
+  * Bump `checkstyle` from `10.3.4` to `10.12.4`
+  * Bump `java-annotations` from `23.0.0` to `24.0.1`
+  * Bump `maven-checkstyle-plugin` from `3.2.0` to `3.3.0`
+  * Bump `maven-compiler-plugin` from `3.10.1` to `3.11.0`
+  * Bump `maven-failsafe-plugin` from `2.22.2` to `3.1.2`
+  * Bump `maven-javadoc-plugin` from `3.4.1` to `3.6.0`
+  * Bump `maven-shade-plugin` from `3.4.0` to `3.5.1`
+  * Bump `maven-source-plugin` from `3.2.1` to `3.3.0`
+  * Bump `maven-surefire-plugin` from `2.22.2` to `3.1.2`
+  * Bump `towny` from `0.98.4.0` to `0.99.5.0`
 
+* Transfer of Maintainership by [FlagCourier][FlagCourier] in [#288](https://github.com/TownyAdvanced/FlagWar/pull/288)
 
-### Fixed
-
-- None
-
-### Removed
-
-- None
-
-## [0.5.3][0.5.3] Oct 20, 2022
+## [0.5.3][0.5.3]
+_Released 2022-10-20_
 
 ### Known-Issues
 - [Possibly fixed: See #168](https://github.com/TownyAdvanced/FlagWar/pull/168) &mdash; Impossible to attack plots that have
@@ -174,12 +200,12 @@ Feel free to PR corrections to this file.
     - `getTimeBetweenFlagColorChange()` \[long\]
     - `getTimeToWaitAfterFlagged()` \[long\]
 
-## [0.5.2][0.5.2] - 21/11/21
+## [0.5.2][0.5.2]
+_Released 2021-11-21_
 
 ### Known-Issues
 - Impossible to attack plots that have
-[blocks placed at world build height](https://github.com/TownyAdvanced/FlagWar/issues/84). Marked as release-blocker for
-the next release (0.5.3, or, 0.6.0)
+[blocks placed at world build height](https://github.com/TownyAdvanced/FlagWar/issues/84). Marked as release-blocker for 0.5.3.
 
 ### Added
 
@@ -237,7 +263,7 @@ the next release (0.5.3, or, 0.6.0)
 - Refactored Holograph line population methods to reduce complexity. (commit: b08e1fa41a74019a2559d1dac7c2430f78ef22fc)
   - This is a code-quality change, and should have no bearing on server operations.
 
-- Changed how time is tracked and calculated: ([#89](https://github.com/))
+- Changed how time is tracked and calculated: ([#89](https://github.com/TownyAdvanced/FlagWar/pull/89))
   - FlagWar will now use Duration and Instant instead of the primitive `long` when storing cool-downs and timestamps.
 
 - Changed how payments / fees are calculated: Using BigDecimal to avoid IEEE754 floating-point inconsistencies.
@@ -248,7 +274,7 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 
 ### Fixed
 
-- Fix `Cell#parse(WorldCoord)` (Also from [#88](https://github.com/TownyAdvanced/FlagWar/pull/8))
+- Fix `Cell#parse(WorldCoord)` (Also from [#88](https://github.com/TownyAdvanced/FlagWar/pull/88))
 
 ### Deprecated API
 
@@ -260,7 +286,8 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 - `FlagWarConfig#getTimeBetweenFlagColorChange()` (long)
 - `FlagWarConfig#getTimeToWaitAfterFlagged()` (long)
 
-## [0.5.1][0.5.1] - _2021-10-27_
+## [0.5.1][0.5.1]
+_Released 2021-10-27_
 
 > Note, two editions of 0.5.1 exist: Git Tag `0.5.1` and Git Tag `0.5.1b`. This changelog represents the latter, which 
 > is an amended release.
@@ -288,7 +315,8 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 - Adjust implementation of the WarZoneListener, and how FlagWar utilizes WarZones.
   ([#86](https://github.com/TownyAdvanced/FlagWar/pull/86), [@LlmDl][LlmDl])
 
-## [0.5.0][0.5.0] - _2021-10-13_
+## [0.5.0][0.5.0]
+_Released 2021-10-13_
 
 ### Added
 
@@ -324,7 +352,8 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
   - Specifically uses Microsoft's build of OpenJDK 17, and Maven 3.8.3 (As opposed to Oracle JDK 8, Maven 3.6.1)
   - [Tested Working](https://jitpack.io/com/github/TownyAdvanced/FlagWar/main-7d7ba1c80e-1/build.log) 
 
-## [0.4.0][0.4.0] - _2021-08-12_
+## [0.4.0][0.4.0]
+_Released 2021-08-12_
 
 ### Added
 
@@ -353,7 +382,8 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 
 - Deployment to GitHub Packages
 
-## [0.3.0][0.3.0] - _2021-07-17_
+## [0.3.0][0.3.0]
+_Released 2021-07-17_
 
 ### Added
 
@@ -375,7 +405,8 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 
 - WarZoneListener Functionality
 
-## [0.2.0][0.2.0] - _2021-06-18_
+## [0.2.0][0.2.0]
+_Released 2021-06-18_
 
 ### Added
 
@@ -415,7 +446,8 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 
 - Beacons not rendering ([PR #40](https://github.com/TownyAdvanced/FlagWar/pull/40))
 
-## [0.1.1][0.1.1] - _2021-03-03_
+## [0.1.1][0.1.1]
+_Released 2021-03-03_
 
 ### Added
 
@@ -435,7 +467,8 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 
 - Certain setting being loaded from Towny's in-built implementation, instead of self-contained settings.
 
-## [0.1.0][0.1.0] - _2021-02-18_
+## [0.1.0][0.1.0]
+_Released 2021-02-18_
 
 ### Added
 
@@ -458,7 +491,7 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 
 - Un-ignored some `.idea/` files for better interoperability among developers using IDEA.
 
-## Pre-History
+# Pre-History
 
 - FlagWar created by [@Zren][Zren] as "Cell War", then merged into Towny. Maintained for over ten
   years as part of Towny, before the decoupling effort.
@@ -468,7 +501,20 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 <!---------------------------->
 
 <!-- Links to Tagged Changes -->
-[Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.3...HEAD
+<!-- Unreleased ---------- Change This TAG to CURRENT RELEASE  V V V -->
+[Unreleased]: https://github.com/TownyAdvanced/FlagWar/compare/0.8.0...HEAD
+
+<!-- Released -->
+[0.8.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.7.2...0.8.0
+[0.7.2]: https://github.com/TownyAdvanced/FlagWar/compare/0.7.1...0.7.2
+[0.7.1]: https://github.com/TownyAdvanced/FlagWar/compare/0.7.0...0.7.1
+[0.7.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.6.4...0.7.0
+[0.6.4]: https://github.com/TownyAdvanced/FlagWar/compare/0.6.3...0.6.4
+[0.6.3]: https://github.com/TownyAdvanced/FlagWar/compare/0.6.2...0.6.3
+[0.6.2]: https://github.com/TownyAdvanced/FlagWar/compare/0.6.1...0.6.3
+[0.6.1]: https://github.com/TownyAdvanced/FlagWar/compare/0.6.0...0.6.3
+[0.6.0]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.4...0.6.0
+[0.5.4]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.3...0.5.4
 [0.5.3]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.2...0.5.3
 [0.5.2]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.1b...0.5.2
 [0.5.1]: https://github.com/TownyAdvanced/FlagWar/compare/0.5.0...0.5.1b
@@ -497,3 +543,6 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 [Mrredstone5230]: https://github.com/Mrredstone5230/
 [HighError]: https://github.com/HighError/
 [Dependabot]: https://github.com/Dependabot/
+[Kongchenglige]: https://github.com/Kongchenglige/
+[FlagCourier]: https://github.com/TheFlagCourier/
+[dependabot]: https://github.com/dependabot/
