@@ -136,19 +136,18 @@ public class FlagWar extends JavaPlugin {
     public void onEnable() {
         setInstance();
 
-        if (!loadConfig()) {
-            return;
+        if (loadConfig()) {
+            setLocale();
+
+            brandingMessage();
+            checkTowny();
+            initializeListeners();
+            loadFlagWarMaterials();
+            registerEvents();
+            bStatsKickstart();
+
+            new TownyAdminReloadAddon();
         }
-        setLocale();
-
-        brandingMessage();
-        checkTowny();
-        initializeListeners();
-        loadFlagWarMaterials();
-        registerEvents();
-        bStatsKickstart();
-
-        new TownyAdminReloadAddon();
     }
 
     /**

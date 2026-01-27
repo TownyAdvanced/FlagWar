@@ -73,12 +73,12 @@ public class WarzoneListener implements Listener {
             return;
         }
 
-        if (!FlagWarConfig.isEditableMaterialInWarZone(mat)) {
+        if (FlagWarConfig.isEditableMaterialInWarZone(mat)) {
+            townyDestroyEvent.setCancelled(false);
+        } else {
             townyDestroyEvent.setCancelled(true);
             townyDestroyEvent.setCancelMessage(msgCannotEdit("destroy", mat));
-            return;
         }
-        townyDestroyEvent.setCancelled(false);
     }
 
     /**
@@ -97,12 +97,12 @@ public class WarzoneListener implements Listener {
             return;
         }
 
-        if (!FlagWarConfig.isEditableMaterialInWarZone(mat) || isTooCloseToTheFlag(townyBuildEvent)) {
+        if (FlagWarConfig.isEditableMaterialInWarZone(mat) || !isTooCloseToTheFlag(townyBuildEvent)) {
+            townyBuildEvent.setCancelled(false);
+        } else {
             townyBuildEvent.setCancelled(true);
             townyBuildEvent.setCancelMessage(msgCannotEdit("build", mat));
-            return;
         }
-        townyBuildEvent.setCancelled(false);
     }
 
     /**
