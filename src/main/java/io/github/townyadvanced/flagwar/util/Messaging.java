@@ -50,7 +50,7 @@ public final class Messaging {
     /**
      * Send a debugMessage (FW_DEBUG: [{@link String}]) over the {@link Logger} via {@link Level#WARNING}.
      * <p>
-     * Must have the extra.debug config node set to true for the message to be sent.
+     * Must have the 'extra.debug' config node set to true for the message to be sent.
      * @param debugMessage Simple String to pass to the logger.
      */
     public static void debug(@NotNull final String debugMessage) {

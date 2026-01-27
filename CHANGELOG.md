@@ -191,7 +191,7 @@ the next release (0.5.3, or, 0.6.0)
       - "Running Version of Towny released after FlagWar version. Are you up-to-date?"
     - `startup.check-towny.new.pre-release`
       - "This Towny Pre-Release is newer than what we've tested. Please report any issues."
-    - _French and Spanish (MX) keys were machine-translated using [bing translate](https://translate.bing.com/). If you
+    - _French and Spanish (MX) keys were machine-translated using [Bing Translate](https://translate.bing.com/). If you
     are familiar with either, feel free to drop in and make sure that the translation is appropriate._
 
 - `rules.nations_can_toggle_neutral` config setting. _Default: `FALSE`_
@@ -272,7 +272,7 @@ Scale to 2, use "Bankers' Rounding" (HALF_EVEN)
 
 - Expansion of the WarZoneListener
   ([#87](https://github.com/TownyAdvanced/FlagWar/pull/87), [@LlmDl][LlmDl])
-  - Now implements listeners for the following Towny Events:
+  - Now implements listeners for the following Towny events:
     - `TownyBurnEvent`
     - `TownyExplodingBlocksEvent`
     - `TownyExplosionDamagesEntityEvent`

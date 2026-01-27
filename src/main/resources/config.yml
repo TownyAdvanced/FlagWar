@@ -35,7 +35,7 @@ rules:
 
     # Prevent attacks on townblocks with x neighbouring plots.
     # When enabled plots will be protected from attack by neighbouring plots. Flag war will check North,
-    # East, South and West of the plot under attack. By default this requires 3 plots for protection,
+    # East, South and West of the plot under attack. By default, this requires 3 plots for protection,
     # requiring attackers to begin from a corner. This Rule should be accompanied by the
     # flag_takes_ownership_of_town_blocks: true Rule.
     limit_attacks_based_on_neighbouring_plots: false

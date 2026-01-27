@@ -29,7 +29,7 @@ public final class Translate {
 
     /**
      * Takes a Translation key and variable arguments (Varargs), and returns the formatted String.
-     * The key is ran through {@link LocaleUtil#getMessages()} and {@link java.util.ResourceBundle#getString(String)}.
+     * The key is run through {@link LocaleUtil#getMessages()} and {@link java.util.ResourceBundle#getString(String)}.
      * @param translationKey The translation key, as it appears in a Translation_locale.properties ResourceBundle.
      * @param args The {@link String#format(String, Object...)} arguments to use, in place of {@link Object}s.
      * @return A translated String, with parsed arguments.

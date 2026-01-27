@@ -28,7 +28,7 @@ A few ground rules for translations:
   Google, or Microsoft servers to be accurate.
 - Adhere to the [Java Locale][java-locales] language tag when naming your localization.
   That's `language_REGION(_VARIANT)`, generally. 
-  If you are submitting a fake locale, such as upsidedown or piratespeak, use a common language and region, and set the
+  If you are submitting a fake locale, such as "upsidedown" or "piratespeak", use a common language and region, and set the
   fake locale as the variant. Ex: en_GB_PIRATE, en_US_INVERTED, es_MX_INVERTED.
 - Make sure your language works - play test it. Building with Maven is super easy, and FlagWar will warn when the
   language cannot load, so there's no excuse. 
@@ -115,9 +115,8 @@ A few ground rules for translations:
     
 5. **Use of Minecraft Server-specific Code**
     - Do not use NMS (`net.minecraft.server`) or server implementation-specific code.
-    
-- If you wish to incorporate Paper features, consider using PaperLib first. While we use Paper directly as the
-      bukkit api provider, we would still like to keep Spigot compatibility if possible.
+    - If you wish to incorporate Paper features, consider using PaperLib first.
+    While we use Paper directly as the bukkit api provider, we would still like to keep Spigot compatibility if possible.
    
 6. **Use of Reflection**
     - Reflection should be a _last resort_ reserved for special circumstances.
@@ -164,10 +163,13 @@ A few ground rules for translations:
       
 11. **Comments**
     - Avoid using inappropriate Javadoc comments
-        ```java
+      - ```java
         /**
-         * ⛔ Do not do this, unless you are writing Javadocs. Loose one of those leading asterisks.
+         * Do not do this, unless you are writing Javadocs.
+         * Lose one of those leading asterisks.
          */
+        private someMethod() {
+        }
         ```
       
     - Avoid superfluous in-line comments. Let your code be self-documenting, if possible.

@@ -230,7 +230,7 @@ public class FlagWarCustomListener implements Listener {
     }
 
     /**
-     * When a {@link Town} atempts to leave a {@link Nation}, check that there are no active or recent attacks. If there
+     * When a {@link Town} attempts to leave a {@link Nation}, check that there are no active or recent attacks. If there
      * are, cancel the {@link NationPreTownLeaveEvent} with the appropriate reason.
      *
      * @param nationPreTownLeaveEvent the NationPreTownLeaveEvent.
@@ -285,7 +285,7 @@ public class FlagWarCustomListener implements Listener {
 
     /**
      * Similar to {@link #onNationWithdraw}, prevents a {@link Town}'s
-     * {@link com.palmergames.bukkit.towny.object.EconomyAccount} from being looted by it's own players if the post-flag
+     * {@link com.palmergames.bukkit.towny.object.EconomyAccount} from being looted by its own players if the post-flag
      * cooldown is still active.
      *
      * @param townPreTransactionEvent Event fired by {@link Towny} prior to a Town's EconomyAccount transaction being
@@ -351,7 +351,7 @@ public class FlagWarCustomListener implements Listener {
      * Listen for if a {@link Resident} attempts to leave a {@link Town}.
      * <p>
      * If the Town is under attack and Flagged Interaction is prohibited, or if it was recently attacked and on
-     * cooldown, prevent it's players from leaving the Town.
+     * cooldown, prevent its players from leaving the Town.
      *
      * @param townLeaveEvent Event fired by {@link Towny} when a Town attempts to leave a Nation.
      */
@@ -524,7 +524,7 @@ public class FlagWarCustomListener implements Listener {
     /**
      * If {@link TownyEconomyHandler#isActive()}, attempt to reward the defender and run
      * {@link #notifyDefAndPayOrRefund(Resident, Resident, String)}.
-     * Does not take into account if the attacker an pay, or even if they can cover the whole reward.
+     * Does not take into account if the attacker can pay, or even if they can cover the whole reward.
      *
      * @param dP the Defending {@link Player}.
      * @param cell the {@link CellUnderAttack} that was defended.
