@@ -16,6 +16,7 @@
 
 package io.github.townyadvanced.flagwar.i18n;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.util.Messaging;
 import org.jetbrains.annotations.NotNull;
@@ -179,6 +180,7 @@ public final class LocaleUtil {
         }
 
         @Override
+        @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
         public @NotNull Enumeration<String> getKeys() {
             return Collections.enumeration(original.keySet());
         }
