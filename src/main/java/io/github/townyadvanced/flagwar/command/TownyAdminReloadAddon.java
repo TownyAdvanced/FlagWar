@@ -13,6 +13,7 @@ import com.palmergames.bukkit.towny.object.AddonCommand;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.i18n.Translate;
 import io.github.townyadvanced.flagwar.util.Messaging;
+import org.jetbrains.annotations.NotNull;
 
 public class TownyAdminReloadAddon extends BaseCommand implements TabExecutor {
 
@@ -28,12 +29,13 @@ public class TownyAdminReloadAddon extends BaseCommand implements TabExecutor {
      * onCommand class required by TabExecutor.
      */
     @Override
-    public boolean onCommand(final CommandSender sender, final Command command, final String label,
-            final String[] args) {
+    public boolean onCommand(@NotNull final CommandSender sender, @NotNull final Command command,
+                             @NotNull final String label, final String[] args) {
         parseAdminReloadCommand(args, sender);
         return true;
     }
 
+    @SuppressWarnings("unused")
     private void parseAdminReloadCommand(final String[] args, final CommandSender sender) {
         if (sender instanceof Player player) {
             if (!TownyUniverse.getInstance().getPermissionSource().isTownyAdmin(player)) {

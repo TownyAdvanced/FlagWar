@@ -78,11 +78,12 @@ public class ConfigLoader {
      * @throws IOException Thrown if there are issues writing either the backupFile or the configFile.
      */
     public void regenerateConfiguration(final File configFile, final File backupFile) throws IOException {
-        if (!backupConfig(configFile, backupFile)) {
+        if (backupConfig(configFile, backupFile)) {
+            Files.delete(configFile.toPath());
+            plugin.saveDefaultConfig();
+        } else {
             plugin.onDisable();
         }
-        Files.delete(configFile.toPath());
-        plugin.saveDefaultConfig();
     }
 
     /**

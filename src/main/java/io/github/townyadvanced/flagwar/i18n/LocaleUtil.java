@@ -16,10 +16,14 @@
 
 package io.github.townyadvanced.flagwar.i18n;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.util.Messaging;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -149,9 +153,10 @@ public final class LocaleUtil {
     private static void setLocale(final Locale locale) {
         currentLocale = locale;
     }
+
     /** @return the {@link #messages} {@link ResourceBundle}. */
     public static ResourceBundle getMessages() {
-        return messages;
+        return new ResourceBundleWrapper(messages);
     }
 
     /**
@@ -160,5 +165,30 @@ public final class LocaleUtil {
      */
     private static void setMessages(final ResourceBundle resourceBundle) {
         messages = resourceBundle;
+    }
+
+    /**
+     * Wrapper for returning a copy of a ResourceBundle, rather than a reference to the original.
+     */
+    private static class ResourceBundleWrapper extends ResourceBundle {
+        /**
+         * Original ResourceBundle to be wrapped.
+         */
+        private final ResourceBundle original;
+
+        ResourceBundleWrapper(final ResourceBundle originalBundle) {
+            this.original = originalBundle;
+        }
+
+        @Override
+        protected Object handleGetObject(@NotNull final String key) {
+            return original.getObject(key);
+        }
+
+        @Override
+        @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
+        public @NotNull Enumeration<String> getKeys() {
+            return Collections.enumeration(original.keySet());
+        }
     }
 }

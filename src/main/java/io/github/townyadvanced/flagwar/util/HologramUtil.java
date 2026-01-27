@@ -16,6 +16,7 @@
 
 package io.github.townyadvanced.flagwar.util;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
 import io.github.townyadvanced.flagwar.FlagWar;
@@ -66,6 +67,7 @@ public final class HologramUtil {
      * @param lifeTime (Remaining) Duration of flag's timer.
      */
     @ApiStatus.Experimental
+    @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
     private static void drawDecentHolograms(final String name,
                                            final Location location,
                                            final List<Map.Entry<String, String>> settings,

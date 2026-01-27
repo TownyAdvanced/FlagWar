@@ -28,7 +28,7 @@ have submitted under the terms of the accompanying license (Apache-2.0). I guara
 changes are mine and are not encumbered by any other license or restriction to the best of my
 knowledge.
 
-<!-- For co-authored commits, all co-authors will need to reply to this PR within a 48 Hrs.
+<!-- For co-authored commits, all co-authors will need to reply to this PR within 48 Hrs.
 If no replies have been left within a reasonable period, we may attempt to contact them by their
 email tied to their commits, OR reject the PR at our discretion.
 

@@ -315,7 +315,7 @@ public class CellUnderAttack extends Cell {
         HologramUtil.destroyHologram(getCellString());
     }
 
-    /** @return the string "%getWorldName% (%getX%, %getZ%)". */
+    /** @return the string "'WORLD_NAME' ('X', 'Z')". */
     public String getCellString() {
         return String.format("%s (%d, %d)", getWorldName(), getX(), getZ());
     }

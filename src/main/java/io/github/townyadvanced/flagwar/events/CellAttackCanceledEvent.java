@@ -17,6 +17,7 @@
 
 package io.github.townyadvanced.flagwar.events;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -42,7 +43,8 @@ public class CellAttackCanceledEvent extends Event implements Cancellable {
     }
 
     /** @return {@link #HANDLERS} statically. */
-    public static HandlerList getHandlerList() {
+    @SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
+    public static @NotNull HandlerList getHandlerList() {
         return HANDLERS;
     }
 

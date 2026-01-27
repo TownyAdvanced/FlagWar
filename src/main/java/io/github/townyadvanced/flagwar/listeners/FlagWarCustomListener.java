@@ -52,6 +52,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -86,17 +87,13 @@ public class FlagWarCustomListener implements Listener {
     }
 
     /**
-     * If the {@link CellAttackEvent} fires, and has not been canceled, this method tries running
+     * If the {@link CellAttackEvent} fires, this method tries running
      * {@link FlagWar#registerAttack(CellUnderAttack)} using the cell from the CellAttackEvent.
      * @param cellAttackEvent the associated CellAttackEvent.
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     @SuppressWarnings("unused")
     public void onCellAttackEvent(final CellAttackEvent cellAttackEvent) {
-        if (cellAttackEvent.isCancelled()) {
-            return;
-        }
-
         try {
             FlagWar.registerAttack(cellAttackEvent.getData());
         } catch (Exception e) {
@@ -206,8 +203,11 @@ public class FlagWarCustomListener implements Listener {
                 messageResident(attackingResident, moneyTransferMessage);
                 TownyMessaging.sendPrefixedTownMessage(defendingTown, moneyTransferMessage);
             }
-        } catch (NotRegisteredException e) {
-            e.printStackTrace();
+        } catch (NotRegisteredException exception) {
+            logger.log(
+                Level.SEVERE,
+                "Something isn't registered: Resident's Town|Nation, the TownBlock, or the TownBlock's World.",
+                exception);
         }
     }
 
@@ -230,8 +230,8 @@ public class FlagWarCustomListener implements Listener {
     }
 
     /**
-     * When a {@link Town} atempts to leave a {@link Nation}, check that there are no active or recent attacks. If there
-     * are, cancel the {@link NationPreTownLeaveEvent} with the appropriate reason.
+     * When a {@link Town} attempts to leave a {@link Nation}, check that there are no active or recent attacks.
+     * If there are, cancel the {@link NationPreTownLeaveEvent} with the appropriate reason.
      *
      * @param nationPreTownLeaveEvent the NationPreTownLeaveEvent.
      */
@@ -285,7 +285,7 @@ public class FlagWarCustomListener implements Listener {
 
     /**
      * Similar to {@link #onNationWithdraw}, prevents a {@link Town}'s
-     * {@link com.palmergames.bukkit.towny.object.EconomyAccount} from being looted by it's own players if the post-flag
+     * {@link com.palmergames.bukkit.towny.object.EconomyAccount} from being looted by its own players if the post-flag
      * cooldown is still active.
      *
      * @param townPreTransactionEvent Event fired by {@link Towny} prior to a Town's EconomyAccount transaction being
@@ -351,7 +351,7 @@ public class FlagWarCustomListener implements Listener {
      * Listen for if a {@link Resident} attempts to leave a {@link Town}.
      * <p>
      * If the Town is under attack and Flagged Interaction is prohibited, or if it was recently attacked and on
-     * cooldown, prevent it's players from leaving the Town.
+     * cooldown, prevent its players from leaving the Town.
      *
      * @param townLeaveEvent Event fired by {@link Towny} when a Town attempts to leave a Nation.
      */
@@ -472,9 +472,7 @@ public class FlagWarCustomListener implements Listener {
         try {
             TownyUniverse.getInstance().getDataSource().removeTownBlock(townBlock);
         } catch (TownyException te) {
-            // Couldn't Unclaim TownBlock
-            TownyMessaging.sendErrorMsg(te.getMessage());
-            te.printStackTrace();
+            logger.log(Level.SEVERE, te.getMessage(), te);
         }
     }
 
@@ -483,9 +481,7 @@ public class FlagWarCustomListener implements Listener {
             townBlock.setTown(attackingTown);
             townBlock.save();
         } catch (Exception te) {
-            // Couldn't claim it.
-            TownyMessaging.sendErrorMsg(te.getMessage());
-            te.printStackTrace();
+            logger.log(Level.SEVERE, te.getMessage(), te);
         }
     }
 
@@ -524,7 +520,7 @@ public class FlagWarCustomListener implements Listener {
     /**
      * If {@link TownyEconomyHandler#isActive()}, attempt to reward the defender and run
      * {@link #notifyDefAndPayOrRefund(Resident, Resident, String)}.
-     * Does not take into account if the attacker an pay, or even if they can cover the whole reward.
+     * Does not take into account if the attacker can pay, or even if they can cover the whole reward.
      *
      * @param dP the Defending {@link Player}.
      * @param cell the {@link CellUnderAttack} that was defended.
