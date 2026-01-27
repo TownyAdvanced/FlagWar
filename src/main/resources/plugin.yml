@@ -20,6 +20,7 @@ folia-supported: true
 
 softdepend:
     - DecentHolograms
+    - CMI
 
 depend:
     - Towny
