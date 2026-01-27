@@ -52,6 +52,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -202,8 +203,11 @@ public class FlagWarCustomListener implements Listener {
                 messageResident(attackingResident, moneyTransferMessage);
                 TownyMessaging.sendPrefixedTownMessage(defendingTown, moneyTransferMessage);
             }
-        } catch (NotRegisteredException e) {
-            e.printStackTrace();
+        } catch (NotRegisteredException exception) {
+            logger.log(
+                Level.SEVERE,
+                "Something isn't registered: Resident's Town|Nation, the TownBlock, or the TownBlock's World.",
+                exception);
         }
     }
 
@@ -468,9 +472,7 @@ public class FlagWarCustomListener implements Listener {
         try {
             TownyUniverse.getInstance().getDataSource().removeTownBlock(townBlock);
         } catch (TownyException te) {
-            // Couldn't Unclaim TownBlock
-            TownyMessaging.sendErrorMsg(te.getMessage());
-            te.printStackTrace();
+            logger.log(Level.SEVERE, te.getMessage(), te);
         }
     }
 
@@ -479,9 +481,7 @@ public class FlagWarCustomListener implements Listener {
             townBlock.setTown(attackingTown);
             townBlock.save();
         } catch (Exception te) {
-            // Couldn't claim it.
-            TownyMessaging.sendErrorMsg(te.getMessage());
-            te.printStackTrace();
+            logger.log(Level.SEVERE, te.getMessage(), te);
         }
     }
 
