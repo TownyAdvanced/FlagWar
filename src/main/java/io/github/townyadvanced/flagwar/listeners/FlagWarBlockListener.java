@@ -18,6 +18,8 @@
 package io.github.townyadvanced.flagwar.listeners;
 
 import com.palmergames.bukkit.towny.event.actions.TownyActionEvent;
+import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownBlock;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -65,21 +67,24 @@ public class FlagWarBlockListener implements Listener {
     @EventHandler (priority = EventPriority.HIGH)
     @SuppressWarnings("unused")
     public void onFlagWarFlagPlace(final TownyBuildEvent townyBuildEvent) {
-        if (townyBuildEvent.getTownBlock() == null
-            || !townyBuildEvent.getTownBlock().getWorld().isWarAllowed()
-            || !townyBuildEvent.getTownBlock().getTownOrNull().isAllowedToWar()
-            || !FlagWarConfig.isAllowingAttacks()
-            || !townyBuildEvent.getMaterial().equals(FlagWarConfig.getFlagBaseMaterial())) {
+        TownBlock townBlock = townyBuildEvent.getTownBlock();
+        if (townBlock != null) {
+            Town town = townBlock.getTownOrNull();
 
-            return;
-        }
+            if (!townBlock.getWorld().isWarAllowed()
+                || (town != null && !town.isAllowedToWar())
+                || !FlagWarConfig.isAllowingAttacks()
+                || !townyBuildEvent.getMaterial().equals(FlagWarConfig.getFlagBaseMaterial())) {
+                return;
+            }
 
-        var player = townyBuildEvent.getPlayer();
-        var block = player.getWorld().getBlockAt(townyBuildEvent.getLocation());
-        var worldCoord = new WorldCoord(block.getWorld().getName(), Coord.parseCoord(block));
+            var player = townyBuildEvent.getPlayer();
+            var block = player.getWorld().getBlockAt(townyBuildEvent.getLocation());
+            var worldCoord = new WorldCoord(block.getWorld().getName(), Coord.parseCoord(block));
 
-        if (towny.getCache(player).getStatus().equals(TownBlockStatus.ENEMY)) {
-            tryCallCellAttack(townyBuildEvent, player, block, worldCoord);
+            if (towny.getCache(player).getStatus().equals(TownBlockStatus.ENEMY)) {
+                tryCallCellAttack(townyBuildEvent, player, block, worldCoord);
+            }
         }
     }
 
