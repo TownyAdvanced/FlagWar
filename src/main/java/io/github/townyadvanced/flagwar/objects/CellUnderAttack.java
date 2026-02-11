@@ -32,6 +32,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -269,7 +272,7 @@ public class CellUnderAttack extends Cell {
     /** Off-loaded to {@link HologramUtil#updateHologramTimer(String, Duration)}. */
     public void taskUpdateHologram() {
         this.flagLifeTime = flagLifeTime.minusSeconds(1);
-        HologramUtil.updateHologramTimer(getCellString(), flagLifeTime);
+        HologramUtil.updateHologramTimer(getCellHologramKey(), flagLifeTime);
     }
 
     /**
@@ -292,7 +295,8 @@ public class CellUnderAttack extends Cell {
         final long ticksFromMs = this.flagPhaseDuration.toMillis() / milliTicks;
         threadTask = scheduler.runRepeating(thread, ticksFromMs, ticksFromMs);
         if (FlagWarConfig.isHologramEnabled()) {
-            HologramUtil.drawHologram(this.getCellString(), flagLightBlock.getLocation(), flagLifeTime);
+            HologramUtil.drawHologram(getCellHologramKey(), flagLightBlock.getLocation(), flagLifeTime);
+
             if (FlagWarConfig.hasTimerLine()) {
                 hologramTask = scheduler.runRepeating(hologramThread, tps, tps);
             }
@@ -312,7 +316,32 @@ public class CellUnderAttack extends Cell {
             hologramTask.cancel();
         }
         destroyFlag();
-        HologramUtil.destroyHologram(getCellString());
+        HologramUtil.destroyHologram(getCellHologramKey());
+    }
+
+    // -----------------------------------------------------------------
+    // Utility – return a 16‑character hash of any input string.
+    // -----------------------------------------------------------------
+    private static String getFixedHash(String input) {
+        try {
+            // SHA‑256 gives us a 32‑byte digest.
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
+
+            // Convert the first 8 bytes (16 hex chars) to a string.
+            StringBuilder sb = new StringBuilder(16);
+            for (int i = 0; i < 8; i++) {            // 8 bytes × 2 hex chars = 16
+                sb.append(String.format("%02x", digest[i]));
+            }
+            return sb.toString();                    // e.g., "3f5a9c1b7d4e6f23"
+        } catch (NoSuchAlgorithmException e) {
+            // This should never happen – SHA‑256 is guaranteed to exist.
+            throw new RuntimeException("SHA-256 not available", e);
+        }
+    }
+
+    public String getCellHologramKey() {
+        return getFixedHash(this.getCellString());
     }
 
     /** @return the string "'WORLD_NAME' ('X', 'Z')". */
