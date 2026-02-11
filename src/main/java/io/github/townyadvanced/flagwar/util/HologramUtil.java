@@ -133,7 +133,7 @@ public final class HologramUtil {
             Hologram hologram = DHAPI.getHologram(name);
 
             if (hologram != null) {
-                DHAPI.setHologramLine(hologram, 2, FormatUtil.time(lifeTime, FlagWarConfig.getTimerText()));
+                DHAPI.setHologramLine(hologram, FlagWarConfig.getHologramTimerIndex(), FormatUtil.time(lifeTime, FlagWarConfig.getTimerText()));
             }
         } else {
             Messaging.debug("Tried to update a hologram's timer (%s), but no supported plugins are in use.", name);
