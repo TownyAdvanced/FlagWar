@@ -78,9 +78,8 @@ public final class HologramUtil {
             Messaging.debug("This should be destroyed and re-created, or fetched and updated.");
             return;
         }
-
         // Create Invisible
-        Hologram hologram = DHAPI.createHologram(name, location, false);
+        Hologram hologram = DHAPI.createHologram(name, location.add(0.5, 0.82 + (0.35 * settings.size()), 0.5), false);
         hologram.setDefaultVisibleState(false);
 
         // Add Lines
@@ -100,12 +99,6 @@ public final class HologramUtil {
                 default -> DHAPI.addHologramLine(hologram, "");
             }
         }
-
-        //Teleport
-        final double hOffset = 0.5d;
-        final double vOffset = 0.9d;
-        final double textHeight = 0.23d;
-        hologram.setLocation(location.add(hOffset, vOffset + (hologram.getPage(0).size() * textHeight), hOffset));
 
         //Set Visible
         hologram.setDefaultVisibleState(true);
