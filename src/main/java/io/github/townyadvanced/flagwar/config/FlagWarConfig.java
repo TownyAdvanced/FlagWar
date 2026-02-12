@@ -59,7 +59,7 @@ public final class FlagWarConfig {
     private static Material beaconWireFrameMaterial = null;
     /** Set of EditableMaterials which can be built/destroyed in attacked cells. */
     private static Set<Material> editableMaterialsInWarZone = null;
-    /** Index to know which hologram line contains the timer string (not shown/used in config.yml) */
+    /** Index to know which hologram line contains the timer string. */
     private static int hologramTimerLineIndex;
     /** {@link Plugin} instance, used internally. */
     private static final Plugin PLUGIN = FlagWar.getInstance();
@@ -595,6 +595,7 @@ public final class FlagWarConfig {
         return PLUGIN.getConfig().getBoolean("rules.nations_can_toggle_neutral");
     }
 
+    /** @return the line of the hologram which contains the timer.*/
     public static int getHologramTimerLineIndex() {
         return hologramTimerLineIndex;
     }

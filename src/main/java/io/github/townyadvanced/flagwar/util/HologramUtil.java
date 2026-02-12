@@ -32,6 +32,11 @@ import java.util.Map;
 
 public final class HologramUtil {
 
+    /** The value to add to the x and z Location of a Hologram. */
+    private static final double HOR_OFFSET = 0.5;
+    /** The value to add to the y Location of a Hologram. */
+    private static final double VER_OFFSET = 0.82 + 0.35 * (FlagWarConfig.getHologramSettings().size());
+
     private HologramUtil() {
         // Masking "public" constructor.
     }
@@ -79,7 +84,7 @@ public final class HologramUtil {
             return;
         }
         // Create Invisible
-        Hologram hologram = DHAPI.createHologram(name, location.add(0.5, 0.82 + (0.35 * settings.size()), 0.5), false);
+        Hologram hologram = DHAPI.createHologram(name, location.add(HOR_OFFSET, VER_OFFSET, HOR_OFFSET), false);
         hologram.setDefaultVisibleState(false);
 
         // Add Lines
@@ -133,7 +138,8 @@ public final class HologramUtil {
             Hologram hologram = DHAPI.getHologram(name);
 
             if (hologram != null) {
-                DHAPI.setHologramLine(hologram, FlagWarConfig.getHologramTimerLineIndex(), FormatUtil.time(lifeTime, FlagWarConfig.getTimerText()));
+                DHAPI.setHologramLine(hologram, FlagWarConfig.getHologramTimerLineIndex(),
+                        FormatUtil.time(lifeTime, FlagWarConfig.getTimerText()));
             }
         } else {
             Messaging.debug("Tried to update a hologram's timer (%s), but no supported plugins are in use.", name);

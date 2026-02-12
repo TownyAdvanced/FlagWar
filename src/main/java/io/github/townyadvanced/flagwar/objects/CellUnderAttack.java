@@ -322,15 +322,17 @@ public class CellUnderAttack extends Cell {
     // -----------------------------------------------------------------
     // Utility – return a 16‑character hash of any input string.
     // -----------------------------------------------------------------
-    private static String getFixedHash(String input) {
+    private static String getFixedHash(final String input) {
         try {
             // SHA‑256 gives us a 32‑byte digest.
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] digest = md.digest(input.getBytes(StandardCharsets.UTF_8));
 
             // Convert the first 8 bytes (16 hex chars) to a string.
-            StringBuilder sb = new StringBuilder(16);
-            for (int i = 0; i < 8; i++) {            // 8 bytes × 2 hex chars = 16
+            final int characters = 16;
+            final int bytes = 8;
+            StringBuilder sb = new StringBuilder(characters);
+            for (int i = 0; i < bytes; i++) {            // 8 bytes × 2 hex chars = 16
                 sb.append(String.format("%02x", digest[i]));
             }
             return sb.toString();                    // e.g., "3f5a9c1b7d4e6f23"
@@ -340,7 +342,8 @@ public class CellUnderAttack extends Cell {
         }
     }
 
-    public String getCellHologramKey() {
+    /** @return the hashed hologram key used for lookup/replacement. */
+    private String getCellHologramKey() {
         return getFixedHash(this.getCellString());
     }
 
