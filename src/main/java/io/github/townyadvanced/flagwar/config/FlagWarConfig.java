@@ -59,6 +59,8 @@ public final class FlagWarConfig {
     private static Material beaconWireFrameMaterial = null;
     /** Set of EditableMaterials which can be built/destroyed in attacked cells. */
     private static Set<Material> editableMaterialsInWarZone = null;
+    /** Index to know which hologram line contains the timer string (not shown/used in config.yml) */
+    private static int hologramTimerLineIndex;
     /** {@link Plugin} instance, used internally. */
     private static final Plugin PLUGIN = FlagWar.getInstance();
     /** Holds an instance of FlagWar's logger. */
@@ -242,7 +244,10 @@ public final class FlagWarConfig {
             switch (lineType.toLowerCase()) {
                 case "item" -> addHoloItem(index, data, holoSettings);
                 case "text" -> addHoloText(index, data, holoSettings);
-                case "timer" -> addHoloTimer(index, data, holoSettings);
+                case "timer" -> {
+                    addHoloTimer(index, data, holoSettings);
+                    hologramTimerLineIndex = index;
+                }
                 case "empty" -> {
                     final var nEmpty = index;
                     LOGGER.severe(() -> String.format("Missing hologram line type for line %s!", nEmpty));
@@ -588,5 +593,9 @@ public final class FlagWarConfig {
     /** @return whether nations are allowed to toggle neutral.*/
     public static boolean isDeclaringNeutralAllowed() {
         return PLUGIN.getConfig().getBoolean("rules.nations_can_toggle_neutral");
+    }
+
+    public static int getHologramTimerLineIndex() {
+        return hologramTimerLineIndex;
     }
 }
