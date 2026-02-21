@@ -39,11 +39,10 @@ public final class FlagWarAPI {
 
     /**
      * Check if a given {@link Cell} is a {@link CellUnderAttack}.
-     * @param cell The given Cell
      * @return True or False
      */
     public static boolean isUnderAttack(final Cell cell) {
-        return FlagWar.isUnderAttack(cell);
+        return FlagWar.isUnderAttack(cell);       
     }
 
     /**
@@ -63,9 +62,8 @@ public final class FlagWarAPI {
     public static boolean isUnderAttack(final Nation nation) {
         boolean nationUnderAttack = false;
         for (Town town : nation.getTowns()) {
-            if (FlagWarAPI.isUnderAttack(town)) {
+            if (FlagWarAPI.isUnderAttack(town))
                 nationUnderAttack = true;
-            }
         }
         return nationUnderAttack;
     }
