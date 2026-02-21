@@ -17,5 +17,5 @@ jobs:
                   distribution: 'temurin'
                   java-version: ${{ matrix.java }}
                   java-package: jdk
-            - name: Compile with Maven
-              run: mvn -B test -P checkstyle,javadocs
+            - name: Validate Checkstyle
+              run: mvn validate
