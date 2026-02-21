@@ -18,6 +18,4 @@ jobs:
                   java-version: ${{ matrix.java }}
                   java-package: jdk
             - name: Compile with Maven
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: mvn -B compile test -P checkstyle,javadocs
+              run: mvn -B test -P checkstyle,javadocs
