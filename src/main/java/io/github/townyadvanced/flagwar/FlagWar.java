@@ -135,7 +135,7 @@ public class FlagWar extends JavaPlugin {
     /** On-Enable Protocol. */
     @Override
     public void onEnable() {
-        setInstance();
+        setInstance();   
 
         if (loadConfig()) {
             setLocale();
@@ -167,7 +167,6 @@ public class FlagWar extends JavaPlugin {
         return true;
     }
 
-    /** On-Disable Protocol. */
     @Override
     public void onDisable() {
         FW_LOGGER.log(Level.INFO, () -> Translate.from("shutdown.cancel-all"));
