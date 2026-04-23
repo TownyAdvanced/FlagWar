@@ -28,6 +28,7 @@ import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.i18n.Translate;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -244,6 +245,14 @@ public class CellUnderAttack extends Cell {
     }
 
     /**
+     * @return the location of {@link #flagTimerBlock}.
+     */
+    public Location getFlagTimerBlockLocation() {
+        return flagTimerBlock.getLocation();
+    }
+
+
+    /**
      * @return the value of {@link #nameOfFlagOwner}.
      */
     public String getNameOfFlagOwner() {
@@ -423,6 +432,11 @@ public class CellUnderAttack extends Cell {
      */
     public boolean isFlagLight(final Block block) {
         return this.flagLightBlock.equals(block);
+    }
+
+    /** Returns the block two blocks above the base block, illuminating the flag. */
+    public Block getFlagLightBlock(){
+        return flagLightBlock;
     }
 
     /**

@@ -24,6 +24,7 @@ import io.github.townyadvanced.flagwar.BannerWarAPI;
 import io.github.townyadvanced.flagwar.config.FlagWarConfig;
 import io.github.townyadvanced.flagwar.objects.Battle;
 import io.github.townyadvanced.flagwar.objects.CellUnderAttack;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -89,6 +90,16 @@ public class CellAttackEvent extends Event implements Cancellable {
     /** @return the base {@link Block} of the War Flag. */
     public Block getFlagBlock() {
         return flagBlock;
+    }
+
+    /** @return the location of the timer block (one block above the flag base block). This is primarily used by Boutique. */
+    public Location getFlagTimerLocation() {
+        return flagBlock.getLocation().clone().add(0, 1, 0);
+    }
+
+    /** @return the location of the light block (two blocks above the flag base block). This is primarily used by Boutique. */
+    public Location getFlagLightLocation() {
+        return flagBlock.getLocation().clone().add(0, 2, 0);
     }
 
     /** @return a new {@link CellUnderAttack} with the Towny instance, attacker, flag base, and attack time stored.  */

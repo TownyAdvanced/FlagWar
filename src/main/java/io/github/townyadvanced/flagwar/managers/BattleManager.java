@@ -9,6 +9,7 @@ import io.github.townyadvanced.flagwar.BannerWarAPI;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.chunk.ChunkCopy;
 import io.github.townyadvanced.flagwar.database.BattleDatabase;
+import io.github.townyadvanced.flagwar.database.DatabaseInteraction;
 import io.github.townyadvanced.flagwar.events.BattleResumeEvent;
 import io.github.townyadvanced.flagwar.events.BattleStartEvent;
 import io.github.townyadvanced.flagwar.objects.*;
@@ -141,9 +142,6 @@ public final class BattleManager {
                 ACTIVE_BATTLES.put(contestedTown.getName(), battle);
 
                 logBannerPlacer(BannerPlacerRecord.of(bannerPlacer));
-
-                var chunks = BattleUtil.toChunks(contestedTown.getTownBlocks(), contestedTown.getWorld());
-                ChunkCopy.getInstance().copy(BattleUtil.toChunkSnapshot(chunks));
 
                 Bukkit.getServer().getPluginManager().callEvent(new BattleStartEvent(battle, bannerPlacer));
 

@@ -137,6 +137,8 @@ public class FlagWar extends JavaPlugin {
     private OutlawListener outlawListener;
     /** Holds instance of the {@link BattleListener}. */
     private BattleListener battleListener;
+    /** Holds instance of the {@link BoutiqueListener}. */
+    private BoutiqueListener boutiqueListener;
     /** Holds instance of the {@link WearinessListener}. */
     private WearinessListener wearinessListener;
     /** Holds instance of the {@link WearinessListener}. */
@@ -284,6 +286,7 @@ public class FlagWar extends JavaPlugin {
         PLUGIN_MANAGER.registerEvents(outlawListener, this);
         PLUGIN_MANAGER.registerEvents(battleListener, this);
         PLUGIN_MANAGER.registerEvents(wearinessListener, this);
+        PLUGIN_MANAGER.registerEvents(boutiqueListener, this);
         PLUGIN_MANAGER.registerEvents(vanillaListener, this);
         PLUGIN_MANAGER.registerEvents(flagWarListener, this);
         FW_LOGGER.log(Level.INFO, () -> Translate.from("startup.events.registered"));
@@ -310,6 +313,7 @@ public class FlagWar extends JavaPlugin {
         outlawListener = new OutlawListener();
         battleListener = new BattleListener(battleManager);
         wearinessListener = new WearinessListener(this, battleManager);
+        boutiqueListener = new BoutiqueListener();
         vanillaListener = new VanillaListener(trackedBattleManager);
         flagWarListener = new FlagWarListener(trackedBattleManager);
         FW_LOGGER.log(Level.INFO, () -> Translate.from("startup.listeners.initialized"));

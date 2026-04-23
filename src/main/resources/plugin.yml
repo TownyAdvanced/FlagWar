@@ -22,6 +22,7 @@ softdepend:
     - DecentHolograms
     - WorldEdit
     - PlayerLocatorAPI
+    - Boutique
 
 depend:
     - Towny
@@ -29,7 +30,7 @@ depend:
 
 commands:
     StageAdvance:
-        description: Advances the stage of a war. E.g. Pre-Flag --> Flag
+        description: Advances the stage of a battle. E.g. Pre-Flag --> Flag
         usage: §cUsage - /<command> <TownName> OR /<command> <TownName> <isDefenderWinner>
         aliases:
             - PhaseAdvance
