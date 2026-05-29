@@ -26,6 +26,6 @@ jobs:
           mvn javadoc:javadoc
 
       - name: Publish Javadoc
-        uses: MathieuSoysal/deploy-publish-javadoc@v2
+        uses: MathieuSoysal/Javadoc-publisher.yml@v3.0.2
         with:
           folder: ./target/site/apidocs # or ./build/docs/javadoc for Gradle
