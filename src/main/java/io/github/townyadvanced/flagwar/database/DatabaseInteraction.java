@@ -51,7 +51,9 @@ public final class DatabaseInteraction {
                             BattleStage.valueOf(rs.getString(8)),
                             UUID.fromString(rs.getString(9)),
                             BattleUtil.toWorldCoords(rs.getString(9), rs.getString(10)),
-                            UUID.fromString(rs.getString(11))
+                            UUID.fromString(rs.getString(11)),
+                            BattleUtil.toLocation(rs.getString(12)),
+                            BattleUtil.toLocations(rs.getString(13))
                         ));
                     }
                     return battles;
@@ -66,12 +68,12 @@ public final class DatabaseInteraction {
     public CompletableFuture<Void> insertBattle(BattleRecord r) {
 
         return CompletableFuture.runAsync(() -> {
-            String query = "INSERT INTO " + BATTLE_TABLE + " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+            String query = "INSERT INTO " + BATTLE_TABLE + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
             try (PreparedStatement ps = MANAGER.getConnection().prepareStatement(query)) {
 
-                ps.setString(1, r.attacker());
-                ps.setString(2, r.defender());
-                ps.setString(3, r.contestedTown());
+                ps.setString(1, r.contestedTown());
+                ps.setString(2, r.attacker());
+                ps.setString(3, r.defender());
                 ps.setInt(4, r.homeX());
                 ps.setInt(5, r.homeZ());
                 ps.setLong(6, r.stageStartTime());
@@ -80,6 +82,8 @@ public final class DatabaseInteraction {
                 ps.setString(9, r.worldID().toString());
                 ps.setString(10, BattleUtil.fromWorldCoords(r.townBlocksCoords()));
                 ps.setString(11, r.initialMayorID().toString());
+                ps.setString(12, BattleUtil.fromLocation(r.spawn()));
+                ps.setString(13, BattleUtil.fromLocations(r.outpostSpawns()));
 
                 if (ps.executeUpdate() > 0)
                     LOGGER.info("Successfully added battle " + r.contestedTown() + " to database!");
@@ -94,7 +98,7 @@ public final class DatabaseInteraction {
 
     public CompletableFuture<Void> insertOrUpdate(BattleRecord r) {
         return CompletableFuture.runAsync(() -> {
-            String query = "INSERT OR REPLACE INTO " + BATTLE_TABLE + " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+            String query = "INSERT OR REPLACE INTO " + BATTLE_TABLE + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
             try (PreparedStatement ps = MANAGER.getConnection().prepareStatement(query)) {
 
                 ps.setString(1, r.contestedTown());
@@ -108,6 +112,8 @@ public final class DatabaseInteraction {
                 ps.setString(9, r.worldID().toString());
                 ps.setString(10, BattleUtil.fromWorldCoords(r.townBlocksCoords()));
                 ps.setString(11, r.initialMayorID().toString());
+                ps.setString(12, BattleUtil.fromLocation(r.spawn()));
+                ps.setString(13, BattleUtil.fromLocations(r.outpostSpawns()));
 
                 if (ps.executeUpdate() <= 0)
                     LOGGER.warning("Failed to add battle " + r.contestedTown() + " to database!");

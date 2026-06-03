@@ -4,9 +4,10 @@ import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.flagwar.FlagWar;
 import io.github.townyadvanced.flagwar.util.BattleUtil;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Location;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -22,6 +23,8 @@ import java.util.UUID;
  * @param worldID the {@link UUID} of the world that this battle is hosted in
  * @param townBlocksCoords the {@link Collection} of the {@link WorldCoord} of all {@link TownBlock}s that the contested town accommodated before the battle began
  * @param initialMayorID the {@link UUID} of the resident who was mayor before the battle began
+ * @param spawn the town spawn that existed before the battle began
+ * @param outpostSpawns the town outpost spawns that existed before the battle began
  */
 public record BattleRecord (
     String contestedTown,
@@ -34,7 +37,9 @@ public record BattleRecord (
     BattleStage stage,
     UUID worldID,
     Collection<WorldCoord> townBlocksCoords,
-    UUID initialMayorID
+    UUID initialMayorID,
+    Location spawn,
+    List<Location> outpostSpawns
 )
 {
     public static BattleRecord of(Battle b) {
@@ -50,7 +55,9 @@ public record BattleRecord (
                 b.getCurrentStage(),
                 b.getContestedTown().getWorld().getUID(),
                 BattleUtil.toWorldCoords(b.getInitialTownBlocks()),
-                b.getInitialMayor().getUUID()
+                b.getInitialMayor().getUUID(),
+                b.getInitialSpawn(),
+                b.getInitialOutpostSpawns()
             );
         } catch (Exception e)  {
             FlagWar.getInstance().getLogger().severe("Error while creating BattleRecord: " + e.getMessage()

@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -34,7 +35,9 @@ public final class DatabaseManager {
             Stage TEXT NOT NULL,
             World TEXT NOT NULL,
             TownBlocks TEXT NOT NULL,
-            InitialMayor TEXT NOT NULL
+            InitialMayor TEXT NOT NULL,
+            Spawn TEXT,
+            OutpostSpawns TEXT NOT NULL DEFAULT ''
         );
         """,
         """
@@ -61,6 +64,7 @@ public final class DatabaseManager {
         openConnection();
         applyPragmas();
         createTables();
+        migrateTables();
     }
 
     /**
@@ -107,6 +111,34 @@ public final class DatabaseManager {
             stmt.execute("PRAGMA journal_mode=WAL;");
             stmt.execute("PRAGMA synchronous=NORMAL;");
             stmt.execute("PRAGMA foreign_keys=ON;");
+        }
+    }
+
+
+    /**
+     * Applies additive schema updates for installations that created the database before newer columns existed.
+     * @throws SQLException when a migration query cannot be performed
+     */
+    private void migrateTables() throws SQLException {
+        try (Statement stmt = connection.createStatement()) {
+            if (!tableHasColumn(BATTLE_TABLE_NAME, "Spawn"))
+                stmt.execute("ALTER TABLE Battle ADD COLUMN Spawn TEXT;");
+            if (!tableHasColumn(BATTLE_TABLE_NAME, "OutpostSpawns"))
+                stmt.execute("ALTER TABLE Battle ADD COLUMN OutpostSpawns TEXT NOT NULL DEFAULT '';");
+        }
+    }
+
+    /** Holds the name of the battle table. */
+    private static final String BATTLE_TABLE_NAME = "Battle";
+
+    /**
+     * Returns whether a table already contains a column.
+     * @param tableName the table to inspect
+     * @param columnName the column to find
+     */
+    private boolean tableHasColumn(String tableName, String columnName) throws SQLException {
+        try (ResultSet rs = connection.getMetaData().getColumns(null, null, tableName, columnName)) {
+            return rs.next();
         }
     }
 
