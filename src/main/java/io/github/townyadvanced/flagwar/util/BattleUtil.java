@@ -103,7 +103,7 @@ public final class BattleUtil {
 
         String[] parts = serializedLocation.split(",");
         if (parts.length != 6) return null;
-
+        try {
         World world = Bukkit.getServer().getWorld(UUID.fromString(parts[0]));
         if (world == null) return null;
 
@@ -115,6 +115,11 @@ public final class BattleUtil {
             Float.parseFloat(parts[4]),
             Float.parseFloat(parts[5])
         );
+
+        } catch (IllegalArgumentException e) {
+            Bukkit.getLogger().log(java.util.logging.Level.WARNING, "An error occurred:", e);
+            return null;
+        }
     }
 
     /**
