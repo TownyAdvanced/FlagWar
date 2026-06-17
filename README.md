@@ -135,7 +135,7 @@ When a townblock is under attack, BannerWar can selectively loosen or restrict a
 
 ### Developer API and events
 
-BannerWar exposes helpers and Bukkit events for integrations.
+BannerWar exposes helpers and Bukkit events for integrations. Full integration documentation is available in [docs/API.md](docs/API.md).
 
 * `BannerWarAPI` exposes battle lookup, town battle state checks, attacker/defender association checks,
   associated-player queries, non-associated-player queries, and TownyAI bot queries.
