@@ -15,6 +15,7 @@ import io.github.townyadvanced.flagwar.events.BattleFlaggableEvent;
 import io.github.townyadvanced.flagwar.events.BattleRuinEvent;
 import io.github.townyadvanced.flagwar.util.BattleUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -53,6 +54,12 @@ public class Battle {
     /** Holds the {@link Resident} who was mayor of the {@link #CONTESTED_TOWN} at the time of the attack. */
     private final Resident INITIAL_MAYOR;
 
+    /** Holds the town spawn of the {@link #CONTESTED_TOWN} at the time of the attack. */
+    private final Location INITIAL_SPAWN;
+
+    /** Holds the outpost spawns of the {@link #CONTESTED_TOWN} at the time of the attack. */
+    private final List<Location> INITIAL_OUTPOST_SPAWNS;
+
     /** Holds the Unix Epoch time in milliseconds at which the current {@link #stage} started. */
     private long stageStartTimeMillis;
 
@@ -72,12 +79,12 @@ public class Battle {
      * @param contestedTown the town at which the battle is held
      * @param stm the system time in milliseconds (Unix Epoch) at which the battle started
      * @param preWarBlocks the {@link List} of the {@link WorldCoord} of every {@link TownBlock} that belonged to the town before the battle
-     * @param homeBlock the homeblock coordinates of the contested town
+     * @param homeBlock the homeblock of the contested town
      * @param isCityState whether this battle's town is a City State or not
      * @param stage the {@link BattleStage} of the battle
      * @param initialMayor the {@link Resident} who was mayor of the {@link #CONTESTED_TOWN} at the time of the attack
      */
-    private Battle(Nation attacker, Nation defender, Town contestedTown, Collection<WorldCoord> preWarBlocks, long stm, WorldCoord homeBlock, boolean isCityState, BattleStage stage, Resident initialMayor, BattleManager mgr) {
+    private Battle(Nation attacker, Nation defender, Town contestedTown, Collection<WorldCoord> preWarBlocks, long stm, TownBlock homeBlock, Location spawn, List<Location> outpostSpawns, boolean isCityState, BattleStage stage, Resident initialMayor, BattleManager mgr) {
         this.ATTACKER = attacker;
         this.DEFENDER = defender;
         this.CONTESTED_TOWN = contestedTown;
@@ -86,8 +93,10 @@ public class Battle {
         this.stageStartTimeMillis = stm;
         this.isCityState = isCityState;
         this.stage = stage;
-        this.HOME_BLOCK_COORDS = homeBlock;
+        this.HOME_BLOCK_COORDS = homeBlock.getWorldCoord();
         this.INITIAL_MAYOR = initialMayor;
+        this.INITIAL_SPAWN = copyLocation(spawn);
+        this.INITIAL_OUTPOST_SPAWNS = copyLocations(outpostSpawns);
         this.STAGE_DURATIONS = BattleUtil.computeStageTimes(this);
         this.MANAGER = mgr;
 
@@ -113,7 +122,9 @@ public class Battle {
             System.currentTimeMillis(),
 
             // before a battle begins, the homeblock existence is checked at the battle listener
-            Objects.requireNonNull(contestedTown.getHomeBlockOrNull()).getWorldCoord(),
+            Objects.requireNonNull(contestedTown.getHomeBlockOrNull()),
+            contestedTown.getSpawnOrNull(),
+            contestedTown.getAllOutpostSpawns(),
 
             isCityState,
             BattleStage.PRE_FLAG,
@@ -133,7 +144,10 @@ public class Battle {
             TownyAPI.getInstance().getTown(br.contestedTown()),
             br.townBlocksCoords(),
             br.stageStartTime(),
-            new WorldCoord(Bukkit.getWorld(br.worldID()), br.homeX(), br.homeZ()),
+            TownyAPI.getInstance().getTownBlock(
+            new WorldCoord(Bukkit.getWorld(br.worldID()), br.homeX(), br.homeZ())),
+            br.spawn(),
+            br.outpostSpawns(),
             br.isCityState(),
             br.stage(),
             TownyAPI.getInstance().getResident(br.initialMayorID()),
@@ -161,6 +175,7 @@ public class Battle {
         return HOME_BLOCK_COORDS;
     }
 
+
     /** Returns the town where the battle is held. */
     public Town getContestedTown() {
         return CONTESTED_TOWN;
@@ -169,6 +184,16 @@ public class Battle {
     /** Returns the {@link Resident} who was mayor of the {@link #CONTESTED_TOWN} at the time of the attack. */
     public @NotNull Resident getInitialMayor() {
         return INITIAL_MAYOR;
+    }
+
+    /** Returns the town spawn that existed before this battle began, or {@code null} if the town had no spawn. */
+    public Location getInitialSpawn() {
+        return copyLocation(INITIAL_SPAWN);
+    }
+
+    /** Returns the outpost spawns that existed before this battle began. */
+    public List<Location> getInitialOutpostSpawns() {
+        return copyLocations(INITIAL_OUTPOST_SPAWNS);
     }
 
     /**
@@ -350,7 +375,7 @@ public class Battle {
             TownRuinUtil.reclaimTown(getInitialMayor(), getContestedTown());
     }
 
-    /** Procedures to be performed at the end of a war, regardless of the status,
+    /** Procedures to be performed at the end of a war, regardless of the result,
      * such as transferring ownership of {@link TownBlock}s back and cancelling ongoing flags. */
     private void endWarProcedures() {
 
@@ -367,18 +392,152 @@ public class Battle {
      */
     private void transferBlockOwnership(final Town town, final Collection<TownBlock> townBlocks, final TownBlock homeBlock) {
         try {
-            for (var tb : townBlocks) {
-                tb.setTown(town);
-                tb.save();
-            }
-
-            town.setHomeBlock(homeBlock);
-
+            restorePreWarTownMetadata(town, townBlocks, homeBlock);
         } catch (Exception E) {
             // Couldn't claim it.
             TownyMessaging.sendErrorMsg(E.getMessage());
             E.printStackTrace();
         }
+    }
+
+    /**
+     * Restores the townblocks, homeblock, spawn, and outpost spawns captured before the battle, then verifies and saves them.
+     * @param town the {@link Town} to restore
+     * @param townBlocks the pre-war {@link TownBlock}s to restore
+     * @param homeBlock the pre-war homeblock to restore
+     */
+    private void restorePreWarTownMetadata(final Town town, final Collection<TownBlock> townBlocks, final TownBlock homeBlock) {
+        Set<TownBlock> affectedTownBlocks = new HashSet<>();
+
+        for (TownBlock townBlock : townBlocks) {
+            townBlock.setTown(town);
+            affectedTownBlocks.add(townBlock);
+        }
+
+        town.setHomeBlock(homeBlock);
+        if (homeBlock != null) affectedTownBlocks.add(homeBlock);
+        verifyHomeBlock(town, homeBlock, "after setHomeBlock");
+
+        town.setSpawn(copyLocation(INITIAL_SPAWN));
+        verifySpawnMatchesHomeBlock(town, homeBlock);
+
+        List<Location> outpostSpawns = copyLocations(INITIAL_OUTPOST_SPAWNS);
+        town.setOutpostSpawns(outpostSpawns);
+        verifyOutpostSpawns(town, outpostSpawns);
+        affectedTownBlocks.addAll(getTownBlocksAt(outpostSpawns));
+
+        town.save();
+        for (TownBlock townBlock : affectedTownBlocks)
+            townBlock.save();
+
+        verifyHomeBlock(town, homeBlock, "after save");
+    }
+
+    /**
+     * Logs a warning if Towny is not reporting the expected homeblock.
+     */
+    private void verifyHomeBlock(final Town town, final TownBlock expectedHomeBlock, final String phase) {
+        TownBlock actualHomeBlock = town.getHomeBlockOrNull();
+        if (expectedHomeBlock == null || actualHomeBlock == null || !expectedHomeBlock.getWorldCoord().equals(actualHomeBlock.getWorldCoord()))
+            FlagWar.getInstance().getLogger().warning(String.format(
+                "Towny reported homeblock %s for %s %s; expected %s.",
+                formatTownBlock(actualHomeBlock),
+                town.getName(),
+                phase,
+                formatTownBlock(expectedHomeBlock)
+            ));
+    }
+
+    /**
+     * Logs a warning if the restored spawn is not in Towny's reported homeblock.
+     */
+    private void verifySpawnMatchesHomeBlock(final Town town, final TownBlock expectedHomeBlock) {
+        Location spawn = town.getSpawnOrNull();
+        if (spawn == null) {
+            if (INITIAL_SPAWN != null)
+                FlagWar.getInstance().getLogger().warning("Towny did not retain the restored spawn for " + town.getName() + ".");
+            return;
+        }
+
+        WorldCoord spawnCoord = WorldCoord.parseWorldCoord(spawn);
+        if (expectedHomeBlock == null || !expectedHomeBlock.getWorldCoord().equals(spawnCoord))
+            FlagWar.getInstance().getLogger().warning(String.format(
+                "Towny reported spawn %s for %s outside the restored homeblock %s.",
+                formatLocation(spawn),
+                town.getName(),
+                formatTownBlock(expectedHomeBlock)
+            ));
+    }
+
+    /**
+     * Logs a warning if Towny's outpost list differs from the battle's pre-war snapshot.
+     */
+    private void verifyOutpostSpawns(final Town town, final List<Location> expectedOutpostSpawns) {
+        List<Location> actualOutpostSpawns = town.getAllOutpostSpawns();
+        if (!locationsMatch(expectedOutpostSpawns, actualOutpostSpawns))
+            FlagWar.getInstance().getLogger().warning(String.format(
+                "Towny reported outpost spawns %s for %s; expected %s.",
+                formatLocations(actualOutpostSpawns),
+                town.getName(),
+                formatLocations(expectedOutpostSpawns)
+            ));
+    }
+
+    /**
+     * Returns the {@link TownBlock}s that contain the given locations.
+     */
+    private Collection<TownBlock> getTownBlocksAt(final Collection<Location> locations) {
+        Collection<TownBlock> townBlocks = new ArrayList<>();
+        for (Location location : locations) {
+            if (location == null) continue;
+            TownBlock townBlock = TownyAPI.getInstance().getTownBlock(WorldCoord.parseWorldCoord(location));
+            if (townBlock != null) townBlocks.add(townBlock);
+        }
+
+        return townBlocks;
+    }
+
+    private static Location copyLocation(final Location location) {
+        return location == null ? null : location.clone();
+    }
+
+    private static List<Location> copyLocations(final Collection<Location> locations) {
+        List<Location> out = new ArrayList<>();
+        if (locations == null) return out;
+
+        for (Location location : locations)
+            out.add(copyLocation(location));
+
+        return out;
+    }
+
+    private static boolean locationsMatch(final List<Location> expected, final List<Location> actual) {
+        return normalizeLocations(expected).equals(normalizeLocations(actual));
+    }
+
+    private static List<String> normalizeLocations(final Collection<Location> locations) {
+        return locations.stream().map(Battle::formatLocation).sorted().toList();
+    }
+
+    private static String formatLocations(final Collection<Location> locations) {
+        return normalizeLocations(locations).toString();
+    }
+
+    private static String formatLocation(final Location location) {
+        if (location == null || location.getWorld() == null) return "null";
+        return String.format(
+            "%s:%s:%s:%s:%s:%s",
+            location.getWorld().getUID(),
+            location.getX(),
+            location.getY(),
+            location.getZ(),
+            location.getYaw(),
+            location.getPitch()
+        );
+    }
+
+    private static String formatTownBlock(final TownBlock townBlock) {
+        return townBlock == null ? "null" : townBlock.getWorldCoord().toString();
     }
 
     /**

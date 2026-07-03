@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.World;
+import org.bukkit.Location;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -61,6 +62,80 @@ public final class BattleUtil {
 
         return String.join(DELIMITER, chunks);
 
+    }
+
+    /**
+     * Returns a serialized representation of a {@link Location}, or an empty string when no location was provided.
+     * @param location the {@link Location} to serialize
+     */
+    public static String fromLocation(Location location) {
+        if (location == null || location.getWorld() == null) return "";
+        return String.join(",",
+            location.getWorld().getUID().toString(),
+            Double.toString(location.getX()),
+            Double.toString(location.getY()),
+            Double.toString(location.getZ()),
+            Float.toString(location.getYaw()),
+            Float.toString(location.getPitch())
+        );
+    }
+
+    /**
+     * Returns a serialized representation of a {@link Collection} of {@link Location}s.
+     * @param locations the {@link Collection} of {@link Location}s to serialize
+     */
+    public static String fromLocations(Collection<Location> locations) {
+        if (locations == null || locations.isEmpty()) return "";
+
+        Collection<String> out = new ArrayList<>();
+        for (Location location : locations)
+            out.add(fromLocation(location));
+
+        return String.join(DELIMITER, out);
+    }
+
+    /**
+     * Returns a {@link Location} from a serialized representation.
+     * @param serializedLocation the serialized {@link Location}
+     */
+    public static Location toLocation(String serializedLocation) {
+        if (serializedLocation == null || serializedLocation.isBlank()) return null;
+
+        String[] parts = serializedLocation.split(",");
+        if (parts.length != 6) return null;
+        try {
+        World world = Bukkit.getServer().getWorld(UUID.fromString(parts[0]));
+        if (world == null) return null;
+
+        return new Location(
+            world,
+            Double.parseDouble(parts[1]),
+            Double.parseDouble(parts[2]),
+            Double.parseDouble(parts[3]),
+            Float.parseFloat(parts[4]),
+            Float.parseFloat(parts[5])
+        );
+
+        } catch (IllegalArgumentException e) {
+            Bukkit.getLogger().log(java.util.logging.Level.WARNING, "An error occurred:", e);
+            return null;
+        }
+    }
+
+    /**
+     * Returns {@link Location}s from a serialized representation.
+     * @param serializedLocations the serialized {@link Location}s
+     */
+    public static List<Location> toLocations(String serializedLocations) {
+        if (serializedLocations == null || serializedLocations.isBlank()) return new ArrayList<>();
+
+        List<Location> out = new ArrayList<>();
+        for (String serializedLocation : serializedLocations.split(DELIMITER)) {
+            Location location = toLocation(serializedLocation);
+            if (location != null) out.add(location);
+        }
+
+        return out;
     }
 
     /**
