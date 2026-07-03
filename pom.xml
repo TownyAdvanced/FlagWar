@@ -101,6 +101,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>sopho.firstproject</groupId>
+            <artifactId>WorldCore</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.battria</groupId>
             <artifactId>boutique</artifactId>
             <version>1</version>

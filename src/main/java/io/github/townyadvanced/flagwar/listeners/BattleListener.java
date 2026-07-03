@@ -30,6 +30,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.flintstqne.townyCivics.api.TownyCivicsAPI;
 
 public class BattleListener implements Listener {
 
@@ -106,7 +107,7 @@ public class BattleListener implements Listener {
         }
 
 
-        if (defender != null && defender.isNeutral()) {
+        if (defender != null && TownyCivicsAPI.getInstance().isNationNeutral(defender)) {
             Broadcasts.sendErrorMessage(event.getPlayer(), "You cannot attack a peaceful nation!");
             return;
         }

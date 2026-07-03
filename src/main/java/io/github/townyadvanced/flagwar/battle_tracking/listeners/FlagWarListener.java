@@ -29,7 +29,8 @@ public class FlagWarListener implements Listener {
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onBattleStart(BattleStartEvent e) {
-        TRACKED_BATTLE_MANAGER.trackBattle(e.getBattle());
+         // todo figure out why this is causing the server to freeze
+        // TRACKED_BATTLE_MANAGER.trackBattle(e.getBattle());
     }
 
     @EventHandler (priority = EventPriority.MONITOR)
@@ -76,7 +77,6 @@ public class FlagWarListener implements Listener {
             FLAG_OCCURRENCES.remove(flagOwner);
         }
 
-        Bukkit.broadcastMessage(player.getName() + " just broke the flag of " + flagOwner);
     }
 
     @EventHandler (priority = EventPriority.MONITOR)

@@ -7,9 +7,7 @@ import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import io.github.townyadvanced.flagwar.BannerWarAPI;
 import io.github.townyadvanced.flagwar.FlagWar;
-import io.github.townyadvanced.flagwar.chunk.ChunkCopy;
 import io.github.townyadvanced.flagwar.database.BattleDatabase;
-import io.github.townyadvanced.flagwar.database.DatabaseInteraction;
 import io.github.townyadvanced.flagwar.events.BattleResumeEvent;
 import io.github.townyadvanced.flagwar.events.BattleStartEvent;
 import io.github.townyadvanced.flagwar.objects.*;
@@ -85,7 +83,6 @@ public final class BattleManager {
      * Refreshes the battles' states, waypoints, and saves them to the database.
      */
     public void updateBattles() {
-
         for (Map.Entry<String, Battle> entry : ACTIVE_BATTLES.entrySet()) {
             Battle battle = entry.getValue();
 

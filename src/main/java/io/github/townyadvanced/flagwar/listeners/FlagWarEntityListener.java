@@ -17,6 +17,7 @@
 
 package io.github.townyadvanced.flagwar.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import io.github.townyadvanced.flagwar.FlagWar;
+import sopho.battria.WorldCore.TNTPP.event.PostTNTPPExplosionEvent;
 
 /**
  * Entity Listener.
@@ -40,6 +42,19 @@ public class FlagWarEntityListener implements Listener {
     public void onEntityExplode(final EntityExplodeEvent event) {
         for (Block block : event.blockList()) {
             FlagWar.checkBlock(null, block, event);
+        }
+    }
+
+    /** Listens for instances of the {@link PostTNTPPExplosionEvent},
+     * and runs a {@link FlagWar#checkBlock(org.bukkit.entity.Player, Block, org.bukkit.event.Cancellable)}
+     * for each block against a null {@link org.bukkit.entity.Player}.
+     * @param event the {@link PostTNTPPExplosionEvent}.
+     */
+    @EventHandler
+    public void onTNTPPExplosion(final PostTNTPPExplosionEvent event) {
+        var affectedBlocks = event.getDestroyedBlocks();
+        for (Block block : affectedBlocks) {
+            FlagWar.checkTNTPP(block, event);
         }
     }
 }

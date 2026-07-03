@@ -90,6 +90,8 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import sopho.battria.WorldCore.TNTPP.event.PostTNTPPExplosionEvent;
+import sopho.battria.WorldCore.TNTPP.event.TNTPPExplosionEvent;
 
 /**
  * The main class of the TownyAdvanced: FlagWar addon. Houses core functionality.
@@ -551,9 +553,12 @@ public class FlagWar extends JavaPlugin {
                         FlagWar.attackDefended(player, cellAttackData);
                     }
 
-                    else Broadcasts.sendMessage(player, ChatColor.AQUA + "You have removed a life! Only " + cellAttackData.getLives() + " more to win this attack!");
+                    else {
+                        event.setCancelled(true);
+                        if (player != null)
+                            Broadcasts.sendMessage(player, ChatColor.AQUA + "You have removed a life! Only " + cellAttackData.getLives() + " more to win this attack!");
+                    }
 
-                    event.setCancelled(true);
 
                 } else if (cellAttackData.isImmutableBlock(block)) {
                     event.setCancelled(true);
@@ -561,6 +566,24 @@ public class FlagWar extends JavaPlugin {
             }
         }
     }
+
+    public static void checkTNTPP(final Block block, final PostTNTPPExplosionEvent event) {
+        var cell = Cell.parse(block.getLocation());
+        if (cell != null && cell.isUnderAttack()) {
+            CellUnderAttack cellAttackData = cell.getAttackData();
+            if (cellAttackData.isFlagPart(block)) {
+                Player player = event.getPrimingEntity() instanceof Player ? (Player) event.getPrimingEntity() : null;
+                if (cellAttackData.decrementLife() == 0) {
+                    FlagWar.attackDefended(player, cellAttackData);
+                } else {
+                    cellAttackData.drawFlag();
+                    if (player != null)
+                        Broadcasts.sendMessage(player, ChatColor.AQUA + "You have removed a life! Only " + cellAttackData.getLives() + " more to win this attack!");
+                }
+            }
+        }
+    }
+
 
     /**
      * Qualifies an action as a successful attack, charges any fees (if economy enabled), then kick-starts the
