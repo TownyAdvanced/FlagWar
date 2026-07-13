@@ -7,6 +7,7 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.extension.platform.Actor;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.*;
@@ -123,7 +124,9 @@ public final class WorldEditService {
                 throw new NullPointerException("Failed to read schematic, " + e.getMessage());
             }
 
-            try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world))) {
+            try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+                .world(BukkitAdapter.adapt(world))
+                .build()) {
 
                 Operation operation = new ClipboardHolder(clipboard)
                         .createPaste(editSession)
@@ -139,13 +142,17 @@ public final class WorldEditService {
                 BoundingBox box = BattleUtil.boundingBoxFrom(chunks);
                 unSuffocateNearbyEntities(box, town.getWorld());
                 deleteItems(box, town.getWorld());
+                editSession.flushQueue();
 
             } catch (WorldEditException e) {
                 e.printStackTrace();
             } finally {
                 deleteFile(town.getUUID().toString());
             }
-        }, runnable -> TaskManager.taskManager().async(runnable));
+        }, runnable -> TaskManager.taskManager().async(runnable)).exceptionally(e -> {
+            e.printStackTrace();
+            return null;
+        });
     }
 
 

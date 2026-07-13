@@ -6,13 +6,10 @@ import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.object.*;
 import com.palmergames.bukkit.towny.utils.TownRuinUtil;
 import io.github.townyadvanced.flagwar.BannerWarAPI;
+import io.github.townyadvanced.flagwar.events.*;
 import io.github.townyadvanced.flagwar.worldedit.WorldEditService;
-import io.github.townyadvanced.flagwar.events.BattlePrematureEndEvent;
 import io.github.townyadvanced.flagwar.managers.BattleManager;
 import io.github.townyadvanced.flagwar.FlagWar;
-import io.github.townyadvanced.flagwar.events.BattleEndEvent;
-import io.github.townyadvanced.flagwar.events.BattleFlaggableEvent;
-import io.github.townyadvanced.flagwar.events.BattleRuinEvent;
 import io.github.townyadvanced.flagwar.util.BattleUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -101,9 +98,6 @@ public class Battle {
         this.MANAGER = mgr;
 
         createBossBar();
-
-        var chunks = BattleUtil.chunksFrom(getInitialTownBlocks());
-        WorldEditService.copyToDisk(CONTESTED_TOWN, BattleUtil.boundingBoxFrom(chunks));
     }
 
     /**
@@ -131,6 +125,8 @@ public class Battle {
             contestedTown.getMayor(),
             mgr
         );
+        var chunks = BattleUtil.chunksFrom(getInitialTownBlocks());
+        WorldEditService.copyToDisk(contestedTown, BattleUtil.boundingBoxFrom(chunks));
     }
 
     /**
@@ -335,7 +331,7 @@ public class Battle {
     }
 
     /**
-     * The function to be called when a defense is won (time runs out before defense is won).
+     * The function to be called when a defense is won (time runs out before homeblock is won).
      */
     public void winDefense() {
         endWarProcedures();
@@ -345,13 +341,16 @@ public class Battle {
 
     /**
      * Deletes the {@link Battle#bossBar} and sets the {@link Battle#stage} to {@link BattleStage#DORMANT}.
+     * Also restores the town and fires a {@link TownRegenerationFinishEvent}.
      * This effectively ends the battle and begins the battle cooldown.
      */
     private void makeDormant() {
         setStage(BattleStage.DORMANT);
         deleteBossBar();
 
-        WorldEditService.pasteToWorld(getContestedTown());
+        WorldEditService.pasteToWorld(getContestedTown()).thenRun(() ->
+            Bukkit.getPluginManager().callEvent(new TownRegenerationFinishEvent(this))
+        );
     }
 
     public void prematurelyEndBattle() {
@@ -378,9 +377,7 @@ public class Battle {
     /** Procedures to be performed at the end of a war, regardless of the result,
      * such as transferring ownership of {@link TownBlock}s back and cancelling ongoing flags. */
     private void endWarProcedures() {
-
         for (String n : flags) FlagWar.removeAttackerFlags(n);
-
         transferBlockOwnership(getContestedTown(), getInitialTownBlocks(), getHomeBlock());
     }
 
