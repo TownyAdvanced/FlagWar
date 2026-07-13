@@ -17,7 +17,6 @@
 
 package io.github.townyadvanced.flagwar.listeners;
 
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -40,14 +39,15 @@ public class FlagWarEntityListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     @SuppressWarnings("unused")
     public void onEntityExplode(final EntityExplodeEvent event) {
-        for (Block block : event.blockList()) {
+        /* for (Block block : event.blockList()) {
             FlagWar.checkBlock(null, block, event);
         }
+        */ // this method is likely causing wind charges and whatnot to destroy the flag,
+           // it is also no longer important due to the implementation of TNT++.
     }
 
     /** Listens for instances of the {@link PostTNTPPExplosionEvent},
-     * and runs a {@link FlagWar#checkBlock(org.bukkit.entity.Player, Block, org.bukkit.event.Cancellable)}
-     * for each block against a null {@link org.bukkit.entity.Player}.
+     * and runs a {@link FlagWar#checkTNTPP(Block, PostTNTPPExplosionEvent)}
      * @param event the {@link PostTNTPPExplosionEvent}.
      */
     @EventHandler
