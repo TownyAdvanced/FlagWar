@@ -348,8 +348,10 @@ public class Battle {
         setStage(BattleStage.DORMANT);
         deleteBossBar();
 
-        WorldEditService.pasteToWorld(getContestedTown()).thenRun(() ->
-            Bukkit.getPluginManager().callEvent(new TownRegenerationFinishEvent(this))
+        WorldEditService.pasteToWorld(getContestedTown()).thenRunAsync(() ->
+            Bukkit.getScheduler().runTask(FlagWar.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new TownRegenerationFinishEvent(this))
+            )
         );
     }
 
