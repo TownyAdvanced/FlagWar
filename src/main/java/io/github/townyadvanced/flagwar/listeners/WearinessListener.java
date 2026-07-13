@@ -59,12 +59,13 @@ public class WearinessListener implements Listener {
 
     @EventHandler
     public void onCellDefend(CellDefendedEvent e) {
-
-        WorldCoord coord = new WorldCoord(e.getPlayer().getWorld(), e.getCell().getX(), e.getCell().getZ());
+        Player player = e.getPlayer();
+        if (player == null) return;
+        WorldCoord coord = new WorldCoord(player.getWorld(), e.getCell().getX(), e.getCell().getZ());
 
         Battle battle = BannerWarAPI.getBattleAt(TownyAPI.getInstance().getTownBlock(coord));
         if (battle == null) {
-            PLUGIN.getLogger().warning("The flag defended by " + e.getPlayer().getName() + " is during a null battle!");
+            PLUGIN.getLogger().warning("The flag defended by " + player.getName() + " is during a null battle!");
             return;
         }
 
@@ -194,16 +195,5 @@ public class WearinessListener implements Listener {
                 else CivicsUtil.decreaseWeariness(placer, expiredDecrease);
             })
         );
-    }
-
-    @EventHandler
-    public void onChat(PlayerChatEvent e) {
-
-        if (e.getMessage().equals("supersecretcommand")) {
-
-        Player p = e.getPlayer();
-
-        p.sendMessage(TownyAPI.getInstance().getTown(p.getLocation()).getHomeBlockOrNull().toString());
-        }
     }
 }

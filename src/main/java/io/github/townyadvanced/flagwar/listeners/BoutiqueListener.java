@@ -29,7 +29,8 @@ public class BoutiqueListener implements Listener {
         if (Bukkit.getServer().getPluginManager().getPlugin("Boutique") == null) return;
         Player player = e.getPlayer();
         Location timerBlockLocation = e.getCell().getAttackData().getFlagTimerBlockLocation();
-
-        Boutique.getAPI().playFlagEffect(player, timerBlockLocation);
+        if (player != null  && timerBlockLocation != null) {
+            Boutique.getAPI().playFlagEffect(player, timerBlockLocation);
+        }
     }
 }
