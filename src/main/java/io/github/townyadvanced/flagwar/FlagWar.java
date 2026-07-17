@@ -497,6 +497,7 @@ public class FlagWar extends JavaPlugin {
         if (cells != null) {
             for (CellUnderAttack cell : cells) {
                 attackCanceled(cell);
+                getFlagWar().waypointManager.deleteWaypoint(playerName); // hacky but whatever
             }
         }
     }
