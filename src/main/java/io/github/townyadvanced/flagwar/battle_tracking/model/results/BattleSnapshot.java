@@ -7,6 +7,7 @@ import io.github.townyadvanced.flagwar.battle_tracking.model.occurrences.DamageO
 import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,7 +19,7 @@ import java.util.Map;
  * @param unixStartTime the Unix epoch timestamp when the battle started
  * @param battleDuration the amount of time that has elapsed in this battle upon taking this snapshot
  * @param playerResultMap a {@link Map} of all {@link PlayerSnapshot}s and their names
- * @param damageOccurrences a collection of every {@link DamageOccurrence} that has been logged in this battle
+ * @param damageOccurrences legacy occurrences awaiting migration to the append-only damage table
  */
 public record BattleSnapshot(
     String townName,
@@ -53,7 +54,7 @@ public record BattleSnapshot(
             battle.getStartTime(),
             Duration.ofMillis(System.currentTimeMillis() - battle.getStartTime()),
             playerResultMap,
-            battle.getDamageOccurrences()
+            List.of()
         );
     }
 

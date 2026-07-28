@@ -69,6 +69,34 @@ public final class DatabaseManager {
             FlagLogs TEXT,
             PRIMARY KEY(Name, BattleTown)
         );
+""",
+        """
+        CREATE TABLE IF NOT EXISTS TrackedDamageOccurrence (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            BattleTown TEXT NOT NULL,
+            Hurter TEXT NOT NULL,
+            Hurted TEXT NOT NULL,
+            Damage REAL NOT NULL,
+            TimeStamp INTEGER NOT NULL
+        );
+""",
+        """
+        CREATE INDEX IF NOT EXISTS TrackedDamageOccurrence_BattleTown_TimeStamp
+            ON TrackedDamageOccurrence(BattleTown, TimeStamp);
+""",
+        """
+        CREATE TABLE IF NOT EXISTS BattleResult (
+            BattleID INTEGER PRIMARY KEY AUTOINCREMENT,
+            ContestedTown TEXT NOT NULL,
+            Attacker TEXT NOT NULL,
+            Defender TEXT NOT NULL,
+            Status TEXT NOT NULL,
+            StartTime INTEGER NOT NULL,
+            EndTime INTEGER NOT NULL,
+            SummaryJson TEXT NOT NULL,
+            DamageArchivePath TEXT,
+            PackageStatus TEXT NOT NULL
+        );
 """
     );
 

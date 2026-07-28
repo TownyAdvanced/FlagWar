@@ -302,7 +302,7 @@ public class FlagWar extends JavaPlugin {
         trackerDatabase = new TrackerDatabase(databaseManager);
         battleManager = new BattleManager(this, battleDatabase, waypointManager);
         battleClock = new BattleClock(this, battleManager);
-        trackedBattleManager = new TrackedBattleManager(trackerDatabase);
+        trackedBattleManager = new TrackedBattleManager(trackerDatabase, battleManager);
     }
 
     /** Initialize Event Listeners. */

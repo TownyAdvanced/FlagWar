@@ -44,7 +44,7 @@ public class VanillaListener implements Listener {
             battle.addKillOccurrence(killer, deadPlayer, itemHeld, damageCause);
     }
 
-    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = false)
     public void onPlayerConsume(PlayerItemConsumeEvent e) {
         Player p = e.getPlayer();
         ItemStack item = e.getItem();

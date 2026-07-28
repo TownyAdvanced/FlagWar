@@ -3,6 +3,7 @@ package io.github.townyadvanced.flagwar.battle_tracking.listeners;
 import io.github.townyadvanced.flagwar.battle_tracking.TrackedBattle;
 import io.github.townyadvanced.flagwar.battle_tracking.TrackedBattleManager;
 import io.github.townyadvanced.flagwar.battle_tracking.model.enums.FlagStatus;
+import io.github.townyadvanced.flagwar.battle_tracking.model.enums.BattleStatus;
 import io.github.townyadvanced.flagwar.battle_tracking.model.occurrences.FlagOccurrence;
 import io.github.townyadvanced.flagwar.events.*;
 import io.github.townyadvanced.flagwar.objects.Cell;
@@ -12,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,13 +29,18 @@ public class FlagWarListener implements Listener {
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onBattleStart(BattleStartEvent e) {
-         // todo figure out why this is causing the server to freeze
-        // TRACKED_BATTLE_MANAGER.trackBattle(e.getBattle());
+        TRACKED_BATTLE_MANAGER.trackBattle(e.getBattle());
     }
 
     @EventHandler (priority = EventPriority.MONITOR)
     public void onBattleEnd(BattleEndEvent e) {
-        // todo: add procedure for stopping battle tracking and starting uploads.
+        TRACKED_BATTLE_MANAGER.finalizeBattle(e.getBattle(),
+            e.isDefenseWon() ? BattleStatus.DEFENDER_VICTORY : BattleStatus.ATTACKER_VICTORY);
+    }
+
+    @EventHandler (priority = EventPriority.MONITOR)
+    public void onBattlePrematureEnd(BattlePrematureEndEvent e) {
+        TRACKED_BATTLE_MANAGER.finalizeBattle(e.getBattle(), BattleStatus.PREMATURELY_ENDED);
     }
 
     @EventHandler (priority = EventPriority.MONITOR)
@@ -66,10 +71,7 @@ public class FlagWarListener implements Listener {
         Player player = e.getPlayer();
         Cell cell = e.getCell();
         String flagOwner = cell.getAttackData().getNameOfFlagOwner();
-        //Vector vec = new Vector(cell.getX()*16d, 0, cell.getZ()*16d); in case the other breaks
-        Vector vec = cell.getAttackData().getFlagBaseBlock().getLocation().toVector();
-
-        TrackedBattle battle = TRACKED_BATTLE_MANAGER.getBattleAt(vec);
+        TrackedBattle battle = TRACKED_BATTLE_MANAGER.getBattleAt(cell.getAttackData().getFlagBaseBlock().getLocation());
         if (battle != null) {
             battle.flagBreakEvent(
                 FLAG_OCCURRENCES.get(flagOwner).completed(FlagStatus.FLAG_DEFENDED, player.getName())

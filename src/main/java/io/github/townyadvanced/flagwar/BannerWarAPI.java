@@ -5,8 +5,10 @@ import com.palmergames.bukkit.towny.object.*;
 import io.github.townyadvanced.flagwar.managers.BattleManager;
 import io.github.townyadvanced.flagwar.objects.Battle;
 import io.github.townyadvanced.flagwar.objects.BattleStage;
+import io.github.townyadvanced.flagwar.battle_tracking.util.BattleRegionDeterminer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
 import town.sheepy.townyAI.TownyAI;
 
 import java.util.ArrayList;
@@ -79,6 +81,18 @@ public final class BannerWarAPI {
      */
     public static Battle getBattle(String townName) {
         return BattleManager.getBattle(townName);
+    }
+
+    /**
+     * Returns the expanded regions in which a battle is tracked. Regions are derived from the claims
+     * captured when the battle began, rather than the town's current claims, and are therefore stable
+     * across server restarts.
+     *
+     * @param battle the battle whose regions to retrieve
+     * @return newly-created bounding boxes covering the battle regions
+     */
+    public static Collection<BoundingBox> getBattleRegions(Battle battle) {
+        return BattleRegionDeterminer.determineRegionFor(battle);
     }
 
     /**

@@ -48,8 +48,8 @@ public class TrackedBattle {
     /** Holds a {@link Map} of all {@link TrackedPlayer}s that are being logged in this battle. */
     private final Map<UUID, TrackedPlayer> TRACKED_PLAYERS;
 
-    /** Holds a collection of all {@link DamageOccurrence}s of this battle. */
-    private final Collection<DamageOccurrence> DAMAGE_OCCURRENCES;
+    /** Holds damage occurrences waiting to be persisted in the append-only damage table. */
+    private final Queue<DamageOccurrence> PENDING_DAMAGE_OCCURRENCES;
 
     private TrackedBattle(Town town, Nation attacker, Nation defender, long startTime, Map<UUID, TrackedPlayer> trackedPlayers, Collection<DamageOccurrence> damageOccurrences) {
         this.TOWN = town;
@@ -58,7 +58,7 @@ public class TrackedBattle {
         this.UNIX_START_TIME = startTime;
         BATTLE_REGION = BattleRegionDeterminer.determineRegionFor(town);
         TRACKED_PLAYERS = trackedPlayers;
-        DAMAGE_OCCURRENCES = damageOccurrences;
+        PENDING_DAMAGE_OCCURRENCES = new ArrayDeque<>(damageOccurrences);
     }
 
     /**
@@ -100,6 +100,11 @@ public class TrackedBattle {
         return false;
     }
 
+    /** Returns the bounding boxes that make up this battle's region. */
+    Collection<BoundingBox> getBattleRegion() {
+        return Collections.unmodifiableCollection(BATTLE_REGION);
+    }
+
     /** Logs a new {@link KillOccurrence} relevant to the tracked players of this battle. */
     public void addKillOccurrence(Entity killer, Player killed, ItemStack weapon, EntityDamageEvent.DamageCause cause) {
         var killOccurrence = KillOccurrence.from(killer, killed, weapon, cause);
@@ -113,7 +118,7 @@ public class TrackedBattle {
     /** Logs a new {@link DamageOccurrence} relevant to the tracked players of this battle. */
     public void addDamageOccurrence(Entity hurter, Entity hurted, double damage) {
         if (hurted instanceof Player hurtedPlayer) {
-            DAMAGE_OCCURRENCES.add(DamageOccurrence.from(hurter, hurted, damage));
+            PENDING_DAMAGE_OCCURRENCES.add(DamageOccurrence.from(hurter, hurted, damage));
             getTrackedPlayer(hurtedPlayer).addDamageTaken(damage);
 
             if (hurter instanceof Player hurterPlayer) {
@@ -228,8 +233,18 @@ public class TrackedBattle {
         return DEFENDER;
     }
 
-    /** Returns a collection of all {@link DamageOccurrence}s of this battle. */
-    public Collection<DamageOccurrence> getDamageOccurrences() {
-        return DAMAGE_OCCURRENCES;
+    /**
+     * Removes and returns the damage occurrences waiting to be written to persistent storage.
+     * The caller must restore the returned occurrences if the write fails.
+     */
+    public Collection<DamageOccurrence> drainPendingDamageOccurrences() {
+        Collection<DamageOccurrence> occurrences = new ArrayList<>(PENDING_DAMAGE_OCCURRENCES);
+        PENDING_DAMAGE_OCCURRENCES.clear();
+        return occurrences;
+    }
+
+    /** Restores damage occurrences whose persistent write did not complete. */
+    public void restorePendingDamageOccurrences(Collection<DamageOccurrence> occurrences) {
+        PENDING_DAMAGE_OCCURRENCES.addAll(occurrences);
     }
 }

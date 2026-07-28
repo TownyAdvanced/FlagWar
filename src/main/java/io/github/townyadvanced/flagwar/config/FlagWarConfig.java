@@ -112,6 +112,21 @@ public final class FlagWarConfig {
         return PLUGIN.getConfig().getString("rules.flag_broadcast_accuracy", "towny");
     }
 
+    /** Returns whether completed battle results should be uploaded to the configured website. */
+    public static boolean isBattleResultUploadEnabled() {
+        return PLUGIN.getConfig().getBoolean("battle_results.website.enabled", false);
+    }
+
+    /** Returns the base URL of the battle-result website. */
+    public static String getBattleResultWebsiteUrl() {
+        return PLUGIN.getConfig().getString("battle_results.website.base_url", "");
+    }
+
+    /** Returns the HMAC key used to authenticate battle-result uploads. */
+    public static String getBattleResultHmacKey() {
+        return PLUGIN.getConfig().getString("battle_results.website.hmac_key", "");
+    }
+
     /**
      * Returns a copy of the {@link Material} array making up the WarFlag's timer indicators.
      * @return a clone of the Material array.

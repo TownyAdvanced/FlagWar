@@ -42,6 +42,9 @@ public final class BattleManager {
     /** Holds a {@link HashMap} of every {@link Battle} and its associated contested town's name. */
     private static final Map<String, Battle> ACTIVE_BATTLES = new HashMap<>();
 
+    /** Completes after all persisted battles have been restored on the server thread. */
+    private final CompletableFuture<Void> battlesResumed = new CompletableFuture<>();
+
     public BattleManager(JavaPlugin plugin, BattleDatabase db, WaypointManager waypointManager) {
         DATABASE = db;
         PLUGIN = plugin;
@@ -56,20 +59,25 @@ public final class BattleManager {
     private void resumeBattles() {
         ACTIVE_BATTLES.clear();
 
-        DATABASE.getBattles().thenAccept(battleRecords -> {
+        DATABASE.getBattles().thenAcceptAsync(battleRecords -> {
             for (BattleRecord r : battleRecords) {
                 Battle battle = new Battle(r, this);
                 ACTIVE_BATTLES.put(r.contestedTown(), battle);
                 PLUGIN.getLogger().info("Battle " + r.contestedTown() + " has been resumed");
 
-                CompletableFuture.runAsync(() ->
-                    Bukkit.getPluginManager().callEvent(new BattleResumeEvent(battle)),
-                runnable -> SCHEDULER.runTask(PLUGIN, runnable));
+                Bukkit.getPluginManager().callEvent(new BattleResumeEvent(battle));
             }
-        }).exceptionally(ex -> {
+            battlesResumed.complete(null);
+        }, runnable -> SCHEDULER.runTask(PLUGIN, runnable)).exceptionally(ex -> {
+            battlesResumed.completeExceptionally(ex);
             ex.printStackTrace();
             return null;
         });
+    }
+
+    /** Returns a future that completes after persisted battles are available through {@link #getActiveBattles()}. */
+    public CompletableFuture<Void> whenBattlesResumed() {
+        return battlesResumed;
     }
 
     /**

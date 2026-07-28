@@ -117,6 +117,7 @@ This class exposes BannerWar's newer battle-level state and player-association h
 | `getBattle(String townName)` | `Battle` | Name-based battle lookup, or `null`. |
 | `getBattleAt(TownBlock townBlock)` | `Battle` | Battle whose initial townblock set contains the provided townblock, or `null`. |
 | `getBattleAt(WorldCoord coord)` | `Battle` | Looks up the Towny townblock at the coordinate and delegates to `getBattleAt(TownBlock)`. |
+| `getBattleRegions(Battle battle)` | `Collection<BoundingBox>` | Newly-created, 64-block-expanded region boxes derived from the battle's initial claims. They remain stable when claims change and across server restarts. |
 | `isAssociatedWithNation(Resident res, Nation nat)` | `boolean` | Whether a resident belongs to the nation or one of its allies. |
 | `isAssociatedWithAttacker(Resident res, Battle battle)` | `boolean` | Whether a resident is associated with the attacking nation. |
 | `isAssociatedWithAttacker(String residentName, Battle battle)` | `boolean` | Name-based attacker association lookup. |
